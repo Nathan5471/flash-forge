@@ -30,6 +30,11 @@ router.post('/login', async (req, res) => {
     }
 });
 
+router.get('/logout', (req, res) => {
+    res.clearCookie('token');
+    res.status(200).json({ message: 'Logged out successfully' });
+})
+
 router.get('/', authenticate, (req, res) => {
     res.status(200).json({ message: 'Authenticated user', user: {username: req.user.username, email: req.user.email} });
 });

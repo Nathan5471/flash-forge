@@ -26,6 +26,16 @@ export const login = async (credentials) => {
     }
 }
 
+export const logout = async () => {
+    try {
+        const response = await api.get('/logout');
+        return response.data;
+    } catch (error) {
+        console.error('Logout error:', error);
+        throw new Error('Failed to logout');
+    }
+}
+
 export const getUser = async () => {
     try {
         const response = await api.get('/');

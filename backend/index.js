@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import authRoutes from './routes/authRoute.js';
+import authRouter from './routes/authRouter.js';
 
 dotenv.config();
 
@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Routes
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRouter);
 
 // Frontend
 app.use('/', createProxyMiddleware({
