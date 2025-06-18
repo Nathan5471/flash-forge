@@ -14,8 +14,7 @@ export default function Login() {
         try {
             await login({ email, password })
         } catch (error) {
-            console.error('Login error:', error)
-            setError('Login failed. Please check your credentials.')
+            setError(error.message || 'Login failed. Please try again.')
             return
         } finally {
             setEmail('')
@@ -25,7 +24,7 @@ export default function Login() {
     }
     return (
         <div className="flex items-center justify-center w-screen h-screen bg-gray-700">
-            <div className="bg-gray-600 p-6 rounded-lg text-white">
+            <div className="bg-gray-600 p-6 rounded-lg text-white w-[calc(30%)]">
                 <h1 className="text-2xl mb-4">Login</h1>
                 {error && <p className="text-red-500 mb-2">{error}</p>}
                 <form>

@@ -15,8 +15,7 @@ export default function Register() {
         try {
             await register({ email, username, password })
         } catch (error) {
-            console.error('Registration error:', error)
-            setError('Registration failed. Please try again.')
+            setError(error.message || 'Login failed. Please try again.')
             return
         } finally {
             setEmail('')
@@ -28,7 +27,7 @@ export default function Register() {
 
     return (
         <div className="flex items-center justify-center w-screen h-screen bg-gray-700">
-            <div className="bg-gray-600 p-6 rounded-lg text-white">
+            <div className="bg-gray-600 p-6 rounded-lg text-white w-[calc(30%)]">
                 <h1 className="text-2xl mb-4">Register</h1>
                 {error && <p className="text-red-500 mb-2">{error}</p>}
                 <form>

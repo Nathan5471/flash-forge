@@ -6,42 +6,29 @@ const api = axios.create({
     withCredentials: true,
 })
 
-export const register = async (userData) => {
-    try {
-        const response = await api.post('/register', userData);
-        return response.data;
-    } catch (error) {
-        console.error('Registration error:', error);
-        throw new Error('Failed to register user');
+api.interceptors.response.use(
+    response => response,
+    error => {
+        return Promise.reject(error.response ? error.response.data : 'Network Error');
     }
+)
+
+export const register = async (userData) => {
+    const response = await api.post('/register', userData);
+    return response.data;
 }
 
 export const login = async (credentials) => {
-    try {
-        const response = await api.post('/login', credentials);
-        return response.data;
-    } catch (error) {
-        console.error('Login error:', error);
-        throw new Error('Failed to login');
-    }
+    const response = await api.post('/login', credentials);
+    return response.data;
 }
 
 export const logout = async () => {
-    try {
-        const response = await api.get('/logout');
-        return response.data;
-    } catch (error) {
-        console.error('Logout error:', error);
-        throw new Error('Failed to logout');
-    }
+    const response = await api.get('/logout');
+    return response.data;
 }
 
 export const getUser = async () => {
-    try {
-        const response = await api.get('/');
-        return response.data;
-    } catch (error) {
-        console.error('Get user error:', error);
-        throw new Error('Failed to fetch user data');
-    }
+    const response = await api.get('/');
+    return response.data;
 }
