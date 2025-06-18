@@ -28,6 +28,26 @@ export const logout = async () => {
     return response.data;
 }
 
+export const updateUsername = async (username) => {
+    const response = await api.put('/update', { toUpdate: 'username', username });
+    return response.data;
+}
+
+export const updateEmail = async (email) => {
+    const response = await api.put('/update', { toUpdate: 'email', email });
+    return response.data;
+}
+
+export const updatePassword = async (newPassword) => {
+    const response = await api.put('/update', { toUpdate: 'password', newPassword });
+    return response.data;
+}
+
+export const deleteUser = async () => {
+    const response = await api.delete('/delete');
+    return response.data;
+}
+
 export const getUser = async () => {
     const response = await api.get('/');
     return response.data;

@@ -57,3 +57,74 @@ export const loginUser = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+export const updateUsername = async (req, res) => {
+    const { username } = req.body;
+    const userId = req.user._id;
+
+    try {
+        const doesUsernameExist = await User.findOne({ username });
+        if (doesUsernameExist) {
+            return res.status(400).json({ message: 'Username already exists' });
+        }
+        const updatedUser = await User.findByIdAndUpdate(userId, { username }, { new: true });
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json({ message: 'Username updated successfully', newUsername: updatedUser.username });
+    } catch (error) {
+        console.error('Error updating username:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+export const updateEmail = async (req, res) => {
+    const { email } = req.body;
+    const userId = req.user._id;
+    try {
+        const doesEmailExist = await User.find({ email });
+        if (doesEmailExist.length > 0) {
+            return res.status(400).json({ message: 'Email already exists' });
+        }
+        const updatedUser = await User.findByIdAndUpdate(userId, { email }, { new: true });
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json({ message: 'Email updated successfully', newEmail: updatedUser.email });
+    } catch (error) {
+        console.error('Error updating email:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+export const updatePassword = async (req, res) => {
+    const { newPassword } = req.body;
+    const userId = req.user._id;
+    try {
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        const updatedUser = await User.findByIdAndUpdate(userId, { password: hashedPassword }, { new: true });
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json({ message: 'Password updated successfully' });
+    } catch (error) {
+        console.error('Error updating password:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+export const deleteUser = async (req, res) => {
+    const userId = req.user._id;
+
+    try {
+        const deletedUser = await User.findByIdAndDelete(userId);
+        if (!deletedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.clearCookie('token');
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
