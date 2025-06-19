@@ -17,3 +17,8 @@ export const createFlashcardSet = async (flashcardSetData) => {
     const response = await api.post('/create', flashcardSetData);
     return response.data;
 }
+
+export const getFlashcardSet = async (id) => {
+    const response = await api.get(`/${id}`);
+    return response.data;
+}

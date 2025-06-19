@@ -17,3 +17,17 @@ export const createFlashcardSet = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+export const getFlashcardSet = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const flashcardSet = await FlashcardSet.findById(id).populate('userId', ['username', '_id']);
+        if (!flashcardSet) {
+            return res.status(404).json({ message: 'Flashcard set not found' });
+        }
+        res.status(200).json(flashcardSet);
+    } catch (error) {
+        console.error('Error fetching flashcard set:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}

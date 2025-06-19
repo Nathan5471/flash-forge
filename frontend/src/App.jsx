@@ -5,6 +5,7 @@ import Overlay from './components/Overlay.jsx'
 import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
+import FlashcardSet from './pages/FlashcardSet.jsx'
 import Settings from './pages/Settings.jsx'
 import Create from './pages/Create.jsx'
 import AuthenticatedRoute from './utils/AuthenticatedRoute.jsx'
@@ -17,6 +18,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<Home />} />
+          <Route path="/set/:id" element={<FlashcardSet />} />
           <Route element={<AuthenticatedRoute />}>
             <Route path="/settings" element={<Settings />} />
             <Route path="/create" element={<Create />} />
