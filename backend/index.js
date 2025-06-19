@@ -5,6 +5,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import authRouter from './routes/authRouter.js';
+import flashcardRouter from './routes/flashcardRouter.js';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(cookieParser());
 
 // Routes
 app.use('/api/auth', authRouter);
+app.use('/api/flashcards', flashcardRouter);
 
 // Frontend
 app.use('/', createProxyMiddleware({

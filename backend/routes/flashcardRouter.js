@@ -1,6 +1,6 @@
 import express from 'express';
 import { createFlashcardSet } from '../controllers/flashcardController.js';
-import { authenticate } from '../middleware/authMiddleware.js';
+import authenticate from '../middleware/authenticate.js';
 
 const router = express.Router();
 
@@ -16,3 +16,5 @@ router.post('/create', authenticate, async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+export default router;

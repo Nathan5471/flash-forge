@@ -1,4 +1,4 @@
-import FlashcardSet from "../models/flashcardSet";
+import FlashcardSet from "../models/flashcardSet.js";
 
 export const createFlashcardSet = async (req, res) => {
     const { title, description, flashcards } = req.body;

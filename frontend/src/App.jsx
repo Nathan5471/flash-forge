@@ -6,6 +6,7 @@ import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import Settings from './pages/Settings.jsx'
+import Create from './pages/Create.jsx'
 import AuthenticatedRoute from './utils/AuthenticatedRoute.jsx'
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route element={<AuthenticatedRoute />}>
             <Route path="/settings" element={<Settings />} />
+            <Route path="/create" element={<Create />} />
           </Route>
         </Routes>
       </Router>
