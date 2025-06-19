@@ -34,7 +34,7 @@ export default function EditUsername({ setRefetch }) {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="New Username"
-                    className="mb-4 p-2 bg-gray-700 rounded w-full"
+                    className="mb-4 p-2 bg-gray-600 rounded w-full"
                     required
                 />
                 {error && <p className="text-red-500 mb-2">{error}</p>}

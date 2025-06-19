@@ -33,7 +33,7 @@ export default function EditPassword() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="New Password"
-                    className="mb-4 p-2 bg-gray-700 rounded w-full"
+                    className="mb-4 p-2 bg-gray-600 rounded w-full"
                     required
                 />
                 {error && <p className="text-red-500 mb-2">{error}</p>}

@@ -61,14 +61,14 @@ export default function Settings() {
 
     if (loading) {
         return (
-            <div className="flex flex-col h-screen w-screen bg-gray-800 text-white">
+            <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
                 <Navbar />
                 <h1 className="text-4xl text-center mt-20">Loading...</h1>
             </div>
         )
     }
     return (
-        <div className="flex flex-col h-screen w-screen bg-gray-800 text-white">
+        <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
             <Navbar />
             <div className="flex flex-col items-center justify-center h-full">
                 <h1 className="text-4xl mb-4">Settings</h1>
