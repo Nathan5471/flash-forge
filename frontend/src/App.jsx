@@ -6,6 +6,7 @@ import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import FlashcardSet from './pages/FlashcardSet.jsx'
+import Search from './pages/Search.jsx'
 import Settings from './pages/Settings.jsx'
 import Create from './pages/Create.jsx'
 import AuthenticatedRoute from './utils/AuthenticatedRoute.jsx'
@@ -19,6 +20,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<Home />} />
           <Route path="/set/:id" element={<FlashcardSet />} />
+          <Route path="/search/:searchTerm" element={<Search />} />
           <Route element={<AuthenticatedRoute />}>
             <Route path="/settings" element={<Settings />} />
             <Route path="/create" element={<Create />} />

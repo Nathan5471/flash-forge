@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { getUser } from '../utils/AuthAPIHandler';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { GoSearch } from "react-icons/go";
 import { FaPlus } from "react-icons/fa";
 
 export default function Navbar() {
+    const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState('');
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (searchTerm.trim()) {
+            navigate(`/search/${encodeURIComponent(searchTerm.trim())}`);
+        }
+    }
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -27,8 +36,8 @@ export default function Navbar() {
         <div className="flex flex-row h-[calc(10%)] w-full bg-gray-700 items-center justify-between p-2">
             <Link to="/" className="text-white text-3xl hover:text-gray-300 font-bold">Flash Forge</Link>
             <div className="flex flex-row gap-2 w-[calc(50%)]">
-                <input type="text" placeholder="Search flashcards..." className="p-2 rounded-lg bg-gray-600 text-white w-full" />
-                <button className="bg-gray-600 hover:bg-gray-500 text-white p-2 rounded-lg"><GoSearch /></button>
+                <input type="text" placeholder="Search flashcards..." className="p-2 rounded-lg bg-gray-600 text-white w-full" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={(e) => {if (e.key === 'Enter') handleSearch(e)}}/>
+                <button className="bg-gray-600 hover:bg-gray-500 text-white p-2 rounded-lg" onClick={handleSearch}><GoSearch /></button>
             </div>
             { loading ? (
                 <div className="text-white">Loading...</div>

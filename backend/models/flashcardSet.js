@@ -30,5 +30,6 @@ const flashcardSetSchema = new mongoose.Schema({
     }
 })
 
+flashcardSetSchema.index({ title: 'text', description: 'text' });
 const FlashcardSet = mongoose.model('FlashcardSet', flashcardSetSchema);
 export default FlashcardSet;

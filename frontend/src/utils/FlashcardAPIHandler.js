@@ -22,3 +22,14 @@ export const getFlashcardSet = async (id) => {
     const response = await api.get(`/${id}`);
     return response.data;
 }
+
+export const searchFlashcardSets = async (Query, page, limit) => {
+    const response = await api.get('/search', {
+        params: {
+            query: Query,
+            page: page,
+            limit: limit
+        }
+    });
+    return response.data;
+}

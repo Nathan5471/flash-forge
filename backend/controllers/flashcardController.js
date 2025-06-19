@@ -31,3 +31,16 @@ export const getFlashcardSet = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+export const searchFlashcardSets = async (req, res) => {
+    const { query, page, limit } = req.query;
+    try {
+        const searchQuery = { $text: { $search: query } };
+        const matchingSets = await FlashcardSet.find(searchQuery, { score: { $meta: "textScore" } }
+        ).sort({ score: { $meta: "textScore" } }).skip(page * limit).limit(Number(limit)).populate('userId', ['username', '_id']);
+        res.status(200).json(matchingSets);
+    } catch (error) {
+        console.error('Error searching flashcard sets:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
