@@ -25,7 +25,7 @@ export default function Navbar() {
 
     return (
         <div className="flex flex-row h-[calc(10%)] w-full bg-gray-700 items-center justify-between p-2">
-            <Link to="/" className="text-white text-3xl hover:text-gray-300 hover:underline font-bold">Flash Forge</Link>
+            <Link to="/" className="text-white text-3xl hover:text-gray-300 font-bold">Flash Forge</Link>
             <div className="flex flex-row gap-2 w-[calc(50%)]">
                 <input type="text" placeholder="Search flashcards..." className="p-2 rounded-lg bg-gray-600 text-white w-full" />
                 <button className="bg-gray-600 hover:bg-gray-500 text-white p-2 rounded-lg"><GoSearch /></button>
