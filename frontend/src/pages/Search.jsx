@@ -11,6 +11,7 @@ export default function Search() {
 
     useEffect(() => {
         const fetchFlashcardSets = async () => {
+            setFlashcardSets([]);
             try {
                 const flashcardData = await searchFlashcardSets(searchTerm, 0, 10);
                 setFlashcardSets(flashcardData);
