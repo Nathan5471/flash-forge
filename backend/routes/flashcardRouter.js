@@ -1,5 +1,5 @@
 import express from 'express';
-import { createFlashcardSet, getFlashcardSet, searchFlashcardSets, getUserFlashcardSets } from '../controllers/flashcardController.js';
+import { createFlashcardSet, getFlashcardSet, searchFlashcardSets, getUserFlashcardSets, getRecentFlashcardSets } from '../controllers/flashcardController.js';
 import authenticate from '../middleware/authenticate.js';
 import nonRequiredAuthenticate from '../middleware/nonRequiredAuthenticate.js';
 
@@ -42,6 +42,13 @@ router.get('/search', async (req, res) => {
         console.error('Error in search flashcard sets route:', error);
         return res.status(500).json({ message: 'Internal server error' });
     }
+});
+
+router.get('/recents', authenticate, async (req, res) => {
+    if (!req.user.recentlyViewed || req.user.recentlyViewed.length === 0) {
+        return res.status(404).json({ message: 'No recently viewed flashcard sets found' });
+    }
+    await getRecentFlashcardSets(req, res);
 });
 
 router.get('/:id', nonRequiredAuthenticate, async (req, res) => {

@@ -38,3 +38,8 @@ export const getUserFlashcardSets = async (userId) => {
     const response = await api.get(`/user/${userId}`);
     return response.data;
 }
+
+export const getRecentlyViewedFlashcardSets = async () => {
+    const response = await api.get('/recents');
+    return response.data;
+}

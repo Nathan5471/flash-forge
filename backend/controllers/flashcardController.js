@@ -1,4 +1,5 @@
 import FlashcardSet from "../models/flashcardSet.js";
+import User from "../models/user.js";
 import fuse from "fuse.js";
 
 export const createFlashcardSet = async (req, res) => {
@@ -27,11 +28,12 @@ export const getFlashcardSet = async (req, res) => {
             return res.status(404).json({ message: 'Flashcard set not found' });
         }
         if (req.user && !req.user.recentlyViewed.includes(id)) {
-            if (req.user.recentlyViewed.length >= 10) {
-                req.user.recentlyViewed.shift();
+            const user = await User.findById(req.user._id);
+            if (user.recentlyViewed.length >= 10) {
+                user.recentlyViewed.shift(); // Remove the oldest viewed set if limit is reached
             }
-            req.user.recentlyViewed.push(id);
-            await req.user.save();
+            user.recentlyViewed.push(id);
+            await user.save();
         }
         res.status(200).json(flashcardSet);
     } catch (error) {
@@ -76,6 +78,23 @@ export const getUserFlashcardSets = async (req, res) => {
         res.status(200).json(flashcardSets);
     } catch (error) {
         console.error('Error fetching user flashcard sets:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+export const getRecentFlashcardSets = async (req, res) => {
+    try {
+        const { recentlyViewed } = req.user;
+        if (!recentlyViewed || recentlyViewed.length === 0) {
+            return res.status(404).json({ message: 'No recently viewed flashcard sets found' });
+        }
+        const flashcardSets = await FlashcardSet.find({ _id: { $in: recentlyViewed } }).populate('userId', ['username', '_id']);
+        if (!flashcardSets || flashcardSets.length === 0) {
+            return res.status(404).json({ message: 'No flashcard sets found for recently viewed IDs' });
+        }
+        res.status(200).json(flashcardSets);
+    } catch (error) {
+        console.error('Error fetching recent flashcard sets:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }
