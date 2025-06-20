@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerUser, loginUser, updateUsername, updateEmail, updatePassword, deleteUser } from '../controllers/authController.js';
+import { registerUser, loginUser, updateUsername, updateEmail, updatePassword, deleteUser, getUsername } from '../controllers/authController.js';
 import authenticate from '../middleware/authenticate.js';
 
 const router = express.Router();
@@ -66,6 +66,19 @@ router.delete('/delete', authenticate, async (req, res) => {
 
 router.get('/', authenticate, (req, res) => {
     res.status(200).json({ message: 'Authenticated user', user: {username: req.user.username, email: req.user.email} });
+});
+
+router.get('/username/:userId', async (req, res) => {
+    const { userId } = req.params;
+    try {
+        if (!userId) {
+            return res.status(400).json({ message: 'User ID is required' });
+        }
+        await getUsername(req, res);
+    } catch (error) {
+        console.error('Error in get username route:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 export default router;

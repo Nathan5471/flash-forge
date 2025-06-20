@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { getFlashcardSet } from '../utils/FlashcardAPIHandler';
 import Navbar from '../components/Navbar';
 import Flashcard from '../components/Flashcard';
@@ -57,7 +57,7 @@ export default function FlashcardSet() {
                         disabled={currentFlashcardIndex >= flashcardSet.flashCards.length - 1}
                     >Next</button>
                 </div>
-                <p className="text-lg text-gray-300 text-left w-1/2">Created By: {flashcardSet.userId.username}</p>
+                <p className="text-lg text-gray-300 text-left w-1/2">Created By: <Link to={`/user/${flashcardSet.userId._id}`}className="hover:underline">{flashcardSet.userId.username}</Link></p>
                 <p className="text-lg text-gray-300 text-left w-1/2">Description: {flashcardSet.description}</p>
             </div>
         </div>

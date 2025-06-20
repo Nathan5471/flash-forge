@@ -52,3 +52,8 @@ export const getUser = async () => {
     const response = await api.get('/');
     return response.data;
 }
+
+export const getUsername = async (userId) => {
+    const response = await api.get(`/username/${userId}`);
+    return response.data;
+}

@@ -1,5 +1,5 @@
 import express from 'express';
-import { createFlashcardSet, getFlashcardSet, searchFlashcardSets } from '../controllers/flashcardController.js';
+import { createFlashcardSet, getFlashcardSet, searchFlashcardSets, getUserFlashcardSets } from '../controllers/flashcardController.js';
 import authenticate from '../middleware/authenticate.js';
 
 const router = express.Router();
@@ -13,6 +13,19 @@ router.post('/create', authenticate, async (req, res) => {
         await createFlashcardSet(req, res);
     } catch (error) {
         console.error('Error in create flashcard set route:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+router.get('/user/:userId', async (req, res) => {
+    const { userId } = req.params;
+    try {
+        if (!userId) {
+            return res.status(400).json({ message: 'User ID is required' });
+        }
+        await getUserFlashcardSets(req, res);
+    } catch (error) {
+        console.error('Error in get user flashcard sets route:', error);
         return res.status(500).json({ message: 'Internal server error' });
     }
 });

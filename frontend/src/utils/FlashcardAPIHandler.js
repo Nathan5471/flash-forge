@@ -33,3 +33,8 @@ export const searchFlashcardSets = async (Query, page, limit) => {
     });
     return response.data;
 }
+
+export const getUserFlashcardSets = async (userId) => {
+    const response = await api.get(`/user/${userId}`);
+    return response.data;
+}
