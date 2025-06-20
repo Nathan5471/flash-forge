@@ -8,7 +8,7 @@ export default function Flashcard({ flashcardData }) {
     }
 
     return (
-        <button className="flex items-center justify-center bg-gray-700 w-full h-full p-4 rounded-lg shadow-lg mb-4" onClick={flipCard}>
+        <button className="flex items-center justify-center aspect-[2/1] w-full bg-gray-700 p-4 rounded-lg shadow-lg mb-4" onClick={flipCard}>
             <p className="text-4xl">{onScreen === 'question' ? flashcardData.question : flashcardData.answer}</p>
         </button>
     )

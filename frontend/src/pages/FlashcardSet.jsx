@@ -41,27 +41,21 @@ export default function FlashcardSet() {
             <Navbar />
             <div className="flex flex-col items-center justify-center mt-6 w-screen">
                 <h1 className="text-4xl font-bold mb-4">{flashcardSet.title}</h1>
-                <div className='w-1/2 aspect-[2/1] mb-4'>
+                <div className='w-1/2 mb-4'>
                     <Flashcard flashcardData={flashcardSet.flashCards[currentFlashcardIndex]} />
                 </div>
-                <div className="grid grid-cols-3 w-1/2 mb-4 gap-4">
-                    <div>
-                        {currentFlashcardIndex > 0 && (
-                            <button
-                                className="bg-gray-700 p-2 rounded-lg hover:bg-gray-800 w-[calc(50%)]"
-                                onClick={() => setCurrentFlashcardIndex(prev => prev - 1)}
-                            >Previous</button>
-                        )}
-                    </div>
+                <div className="flex flex-row justify-between w-1/2 mb-4 gap-4">
+                    <button
+                        className={`${currentFlashcardIndex > 0 ? 'text-white' : 'text-gray-400'} bg-gray-700 p-2 rounded-lg hover:bg-gray-800 w-[calc(25%)]`}
+                        onClick={() => setCurrentFlashcardIndex(prev => prev - 1)}
+                        disabled={currentFlashcardIndex === 0}
+                    >Previous</button>
                     <p className="text-2xl">{currentFlashcardIndex + 1}/{flashcardSet.flashCards.length}</p>
-                    <div>
-                        {currentFlashcardIndex < flashcardSet.flashCards.length - 1 && (
-                            <button
-                                className="bg-gray-700 p-2 rounded-lg hover:bg-gray-800 w-[calc(50%)]"
-                                onClick={() => setCurrentFlashcardIndex(prev => prev + 1)}
-                            >Next</button>
-                        )}
-                    </div>
+                    <button
+                        className={`${currentFlashcardIndex < flashcardSet.flashCards.length - 1 ? 'text-white' : 'text-gray-400'} bg-gray-700 p-2 rounded-lg hover:bg-gray-800 w-[calc(25%)]`}
+                        onClick={() => setCurrentFlashcardIndex(prev => prev + 1)}
+                        disabled={currentFlashcardIndex >= flashcardSet.flashCards.length - 1}
+                    >Next</button>
                 </div>
                 <p className="text-lg text-gray-300 text-left w-1/2">Created By: {flashcardSet.userId.username}</p>
                 <p className="text-lg text-gray-300 text-left w-1/2">Description: {flashcardSet.description}</p>
