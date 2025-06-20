@@ -51,9 +51,7 @@ export default function User() {
 
     useEffect(() => {
         if (searchQuery.trim() === '') {
-            console.log('SearchOption changed:', sortOption);
             const [sortBy, ascending] = sortOption.split(',');
-            console.log('Sorting by:', sortBy, 'Ascending:', ascending);
             setDisplayedSets(SortSets(flashcardSets, sortBy, ascending === 'true'));
         }
     }, [flashcardSets, searchQuery, sortOption]);
