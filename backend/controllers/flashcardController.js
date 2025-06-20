@@ -52,7 +52,7 @@ export const searchFlashcardSets = async (req, res) => {
         }
         const sortedResults = results.sort((a, b) => b.score - a.score);
         const filteredResults = sortedResults.slice(page * limit, (page + 1) * limit).map(result => result.item);
-        res.status(200).json(filteredResults);
+        res.status(200).json({searchResults: filteredResults, totalResults: results.length});
     } catch (error) {
         console.error('Error searching flashcard sets:', error);
         res.status(500).json({ message: 'Internal server error' });
