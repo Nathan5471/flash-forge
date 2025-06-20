@@ -27,7 +27,11 @@ const flashcardSetSchema = new mongoose.Schema({
     lastEdited: {
         type: Date,
         default: Date.now,
-    }
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
 })
 
 flashcardSetSchema.index({ title: 'text', description: 'text' });

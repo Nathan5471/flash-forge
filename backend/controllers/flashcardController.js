@@ -26,6 +26,13 @@ export const getFlashcardSet = async (req, res) => {
         if (!flashcardSet) {
             return res.status(404).json({ message: 'Flashcard set not found' });
         }
+        if (req.user && !req.user.recentlyViewed.includes(id)) {
+            if (req.user.recentlyViewed.length >= 10) {
+                req.user.recentlyViewed.shift();
+            }
+            req.user.recentlyViewed.push(id);
+            await req.user.save();
+        }
         res.status(200).json(flashcardSet);
     } catch (error) {
         console.error('Error fetching flashcard set:', error);

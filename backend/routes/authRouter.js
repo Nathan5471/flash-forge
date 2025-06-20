@@ -81,4 +81,11 @@ router.get('/username/:userId', async (req, res) => {
     }
 });
 
+router.get('/recents', authenticate, (req, res) => {
+    if (!req.user.recentlyViewed || req.user.recentlyViewed.length === 0) {
+        return res.status(404).json({ message: 'No recently viewed flashcard sets found' });
+    }
+    res.status(200).json({ recentlyViewed: req.user.recentlyViewed });
+});
+
 export default router;

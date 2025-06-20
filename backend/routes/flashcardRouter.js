@@ -1,6 +1,7 @@
 import express from 'express';
 import { createFlashcardSet, getFlashcardSet, searchFlashcardSets, getUserFlashcardSets } from '../controllers/flashcardController.js';
 import authenticate from '../middleware/authenticate.js';
+import nonRequiredAuthenticate from '../middleware/nonRequiredAuthenticate.js';
 
 const router = express.Router();
 
@@ -43,7 +44,7 @@ router.get('/search', async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', nonRequiredAuthenticate, async (req, res) => {
     const { id } = req.params;
     try {
         if (!id) {

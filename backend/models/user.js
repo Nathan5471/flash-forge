@@ -15,6 +15,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    recentlyViewed: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'flashcardSet',
+        default: []
+    }],
 })
 
 const User = mongoose.model('User', userSchema);
