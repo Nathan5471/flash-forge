@@ -1,5 +1,5 @@
 import express from 'express';
-import { createFlashcardSet, getFlashcardSet, searchFlashcardSets, getUserFlashcardSets, getRecentFlashcardSets } from '../controllers/flashcardController.js';
+import { createFlashcardSet, getFlashcardSet, searchFlashcardSets, getUserFlashcardSets, getRecentFlashcardSets, updateFlashcardSet, deleteFlashcardSet } from '../controllers/flashcardController.js';
 import authenticate from '../middleware/authenticate.js';
 import nonRequiredAuthenticate from '../middleware/nonRequiredAuthenticate.js';
 
@@ -63,5 +63,32 @@ router.get('/:id', nonRequiredAuthenticate, async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+router.put('/:id', authenticate, async (req, res) => {
+    const { id } = req.params;
+    const { title, description, flashcards } = req.body;
+    try {
+        if (!id || !title || !description || !flashcards) {
+            return res.status(400).json({ message: 'All fields are required' });
+        }
+        await updateFlashcardSet(req, res);
+    } catch (error) {
+        console.error('Error in update flashcard set route:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+router.delete('/:id', authenticate, async (req, res) => {
+    const { id } = req.params;
+    try {
+        if (!id) {
+            return res.status(400).json({ message: 'Flashcard set ID is required' });
+        }
+        await deleteFlashcardSet(req, res);
+    } catch (error) {
+        console.error('Error in delete flashcard set route:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+})
 
 export default router;

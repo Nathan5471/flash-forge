@@ -10,6 +10,7 @@ import Search from './pages/Search.jsx'
 import User from './pages/User.jsx'
 import Settings from './pages/Settings.jsx'
 import Create from './pages/Create.jsx'
+import Edit from './pages/Edit.jsx'
 import AuthenticatedRoute from './utils/AuthenticatedRoute.jsx'
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
           <Route element={<AuthenticatedRoute />}>
             <Route path="/settings" element={<Settings />} />
             <Route path="/create" element={<Create />} />
+            <Route path="/edit/:id" element={<Edit />} />
           </Route>
         </Routes>
       </Router>

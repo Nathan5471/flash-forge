@@ -18,6 +18,16 @@ export const createFlashcardSet = async (flashcardSetData) => {
     return response.data;
 }
 
+export const updateFlashcardSet = async (id, flashcardSetData) => {
+    const response = await api.put(`/${id}`, flashcardSetData);
+    return response.data;
+}
+
+export const deleteFlashcardSet = async (id) => {
+    const response = await api.delete(`/${id}`);
+    return response.data;
+}
+
 export const getFlashcardSet = async (id) => {
     const response = await api.get(`/${id}`);
     return response.data;

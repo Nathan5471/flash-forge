@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useOverlayContext } from '../contexts/OverlayContext';
 import { getFlashcardSet } from '../utils/FlashcardAPIHandler';
+import { getUser } from '../utils/AuthAPIHandler';
 import Navbar from '../components/Navbar';
 import Flashcard from '../components/Flashcard';
+import DeleteFlashcardSet from '../components/DeleteFlashcardSet';
 
 export default function FlashcardSet() {
+    const { openOverlay } = useOverlayContext();
     const { id } = useParams();
     const [flashcardSet, setFlashcardSet] = useState(null);
+    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [currentFlashcardIndex, setCurrentFlashcardIndex] = useState(0);
 
@@ -15,6 +20,12 @@ export default function FlashcardSet() {
             try {
                 const flashcardData = await getFlashcardSet(id);
                 setFlashcardSet(flashcardData);
+                const userData = await getUser();
+                if (userData) {
+                    setUser(userData.user);
+                } else {
+                    setUser(null);
+                }
             } catch (error) {
                 console.error('Error fetching flashcard set:', error);
                 setFlashcardSet(null);
@@ -24,6 +35,11 @@ export default function FlashcardSet() {
         }
         fetchFlashcardSet();
     }, [id]);
+
+    const handleDeleteFlashcardSet = (e) => {
+        e.preventDefault();
+        openOverlay(<DeleteFlashcardSet id={id} />);
+    }
 
     if (loading) {
         return (
@@ -59,6 +75,17 @@ export default function FlashcardSet() {
                 </div>
                 <p className="text-lg text-gray-300 text-left w-1/2">Created By: <Link to={`/user/${flashcardSet.userId._id}`}className="hover:underline">{flashcardSet.userId.username}</Link></p>
                 <p className="text-lg text-gray-300 text-left w-1/2">Description: {flashcardSet.description}</p>
+                {flashcardSet.userId._id === user?._id && (
+                    <div className="flex flex-row">
+                        <Link to={`/edit/${flashcardSet._id}`} className="mt-4 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600">
+                            Edit Flashcard Set
+                        </Link>
+                        <button
+                            className="mt-4 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 ml-4"
+                            onClick={handleDeleteFlashcardSet}
+                        >Delete</button>
+                    </div>
+                )}
             </div>
         </div>
     )

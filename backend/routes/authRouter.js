@@ -65,7 +65,7 @@ router.delete('/delete', authenticate, async (req, res) => {
 }) 
 
 router.get('/', authenticate, (req, res) => {
-    res.status(200).json({ message: 'Authenticated user', user: {username: req.user.username, email: req.user.email} });
+    res.status(200).json({ message: 'Authenticated user', user: {_id: req.user._id, username: req.user.username, email: req.user.email} });
 });
 
 router.get('/username/:userId', async (req, res) => {
