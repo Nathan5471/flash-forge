@@ -1,13 +1,30 @@
 import React, { useState } from 'react'
+import { useOverlayContext } from '../contexts/OverlayContext';
+import { createFlashcardSet } from '../utils/FlashcardAPIHandler';
 import Navbar from '../components/Navbar'
 import { FaRegTrashAlt } from "react-icons/fa";
-import { createFlashcardSet } from '../utils/FlashcardAPIHandler';
+import ImportFlashcards from '../components/ImportFlashcards';
 
 export default function Home() {
+    const { openOverlay } = useOverlayContext();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [flashcards, setFlashcards] = useState([{ question: '', answer: '' }]);
     const [error, setError] = useState(null);
+
+    const handleImport = (importedFlashcards) => {
+        if (flashcards == [{ question: '', answer: '' }]) {
+            setFlashcards(importedFlashcards);
+        } else {
+            const newFlashcards = flashcards.concat(importedFlashcards);
+            setFlashcards(newFlashcards);
+        }
+    }
+
+    const handleOpenImport = (e) => {
+        e.preventDefault();
+        openOverlay(<ImportFlashcards importFlashcards={handleImport} />);
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -55,7 +72,12 @@ export default function Home() {
                     </div>
                     <div className="mb-4">
                         <label className="block text-2xl">Questions</label>
-                        <div className="flex flex-row justify-around">
+                        <button
+                            type="button"
+                            onClick={handleOpenImport}
+                            className="mt-2 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg"
+                        >Import Flashcards</button>
+                        <div className="flex flex-row justify-around mt-2">
                             <p className="text-lg">Question</p>
                             <p className="text-lg">Answer</p>
                         </div>
