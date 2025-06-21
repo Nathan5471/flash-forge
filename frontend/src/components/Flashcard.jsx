@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export default function Flashcard({ flashcardData }) {
     const [onScreen, setOnScreen] = useState('question');
+
+    useEffect(() => {
+        setOnScreen('question'); // Change the card back to question when going to a new flashcard
+    }, [flashcardData]);
 
     const flipCard = () => {
         setOnScreen(prev => (prev === 'question' ? 'answer' : 'question'));
