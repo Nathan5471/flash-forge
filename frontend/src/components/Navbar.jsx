@@ -21,7 +21,7 @@ export default function Navbar() {
         const fetchUser = async () => {
             try {
                 const userData = await getUser();
-                setUser(userData);
+                setUser(userData.user);
             } catch (error) {
                 console.error('Error fetching user data:', error);
                 setUser(null);
@@ -46,6 +46,7 @@ export default function Navbar() {
                     {user ? (
                         <div className="flex flex-row gap-2">
                             <Link to="/create" className="text-white bg-gray-600 rounded-full p-2 hover:bg-gray-500 text-2xl"><FaPlus /></Link>
+                            <Link to={`/user/${user._id}`} className="text-white bg-gray-600 rounded-lg py-1 px-2 hover:bg-gray-500 text-2xl">My Sets</Link>
                             <Link to="/settings" className="text-white bg-gray-600 rounded-lg py-1 px-2 hover:bg-gray-500 text-2xl">Settings</Link>
                         </div>
                     ) : (

@@ -99,6 +99,19 @@ export const getRecentFlashcardSets = async (req, res) => {
     }
 }
 
+export const getRecentlyCreatedFlashcardSets = async (req, res) => {
+    try {
+        const flashcardSets = await FlashcardSet.find().sort({ createdAt: -1 }).limit(10).populate('userId', ['username', '_id']);
+        if (!flashcardSets || flashcardSets.length === 0) {
+            return res.status(404).json({ message: 'No recently created flashcard sets found' });
+        }
+        res.status(200).json(flashcardSets);
+    } catch (error) {
+        console.error('Error fetching recently created flashcard sets:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
 export const updateFlashcardSet = async (req, res) => {
     const { id } = req.params;
     const { title, description, flashcards } = req.body;

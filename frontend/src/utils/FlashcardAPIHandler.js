@@ -53,3 +53,8 @@ export const getRecentlyViewedFlashcardSets = async () => {
     const response = await api.get('/recents');
     return response.data;
 }
+
+export const getRecentlyCreatedFlashcardSets = async () => {
+    const response = await api.get('/recentlyCreated');
+    return response.data;
+}
