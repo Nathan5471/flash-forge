@@ -5,6 +5,7 @@ import { getFlashcardSet } from '../utils/FlashcardAPIHandler';
 import { getUser } from '../utils/AuthAPIHandler';
 import Navbar from '../components/Navbar';
 import Flashcard from '../components/Flashcard';
+import CloneSet from '../components/CloneSet';
 import DeleteFlashcardSet from '../components/DeleteFlashcardSet';
 
 export default function FlashcardSet() {
@@ -75,17 +76,25 @@ export default function FlashcardSet() {
                 </div>
                 <p className="text-lg text-gray-300 text-left w-1/2">Created By: <Link to={`/user/${flashcardSet.userId._id}`}className="hover:underline">{flashcardSet.userId.username}</Link></p>
                 <p className="text-lg text-gray-300 text-left w-1/2">Description: {flashcardSet.description}</p>
-                {flashcardSet.userId._id === user?._id && (
-                    <div className="flex flex-row">
-                        <Link to={`/edit/${flashcardSet._id}`} className="mt-4 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600">
-                            Edit Flashcard Set
-                        </Link>
+                <div className="flex flex-row">
+                    {user && (
                         <button
-                            className="mt-4 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 ml-4"
-                            onClick={handleDeleteFlashcardSet}
-                        >Delete</button>
-                    </div>
-                )}
+                            className="mt-4 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600"
+                            onClick={() => openOverlay(<CloneSet flashcardSet={flashcardSet} />)}
+                        >Clone Flashcard Set</button>
+                    )}
+                    {flashcardSet.userId._id === user?._id && (
+                        <>
+                            <Link to={`/edit/${flashcardSet._id}`} className="mt-4 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 ml-4">
+                                Edit Flashcard Set
+                            </Link>
+                            <button
+                                className="mt-4 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 ml-4"
+                                onClick={handleDeleteFlashcardSet}
+                            >Delete</button>
+                        </>
+                    )}
+                </div>
             </div>
         </div>
     )

@@ -58,3 +58,8 @@ export const getRecentlyCreatedFlashcardSets = async () => {
     const response = await api.get('/recentlyCreated');
     return response.data;
 }
+
+export const cloneFlashcardSet = async (id, newTitle) => {
+    const response = await api.post(`/clone/${id}`, { newTitle });
+    return response.data;
+}

@@ -1,5 +1,5 @@
 import express from 'express';
-import { createFlashcardSet, getFlashcardSet, searchFlashcardSets, getUserFlashcardSets, getRecentFlashcardSets, getRecentlyCreatedFlashcardSets, updateFlashcardSet, deleteFlashcardSet } from '../controllers/flashcardController.js';
+import { createFlashcardSet, getFlashcardSet, searchFlashcardSets, getUserFlashcardSets, getRecentFlashcardSets, getRecentlyCreatedFlashcardSets, updateFlashcardSet, deleteFlashcardSet, cloneFlashcardSet } from '../controllers/flashcardController.js';
 import authenticate from '../middleware/authenticate.js';
 import nonRequiredAuthenticate from '../middleware/nonRequiredAuthenticate.js';
 
@@ -56,6 +56,20 @@ router.get('/recentlyCreated', async (req, res) => {
         await getRecentlyCreatedFlashcardSets(req, res);
     } catch (error) {
         console.error('Error in get recently created flashcard sets route:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+router.post('/clone/:id', authenticate, async (req, res) => {
+    const { id } = req.params;
+    const { newTitle } = req.body;
+    try {
+        if (!id || !newTitle) {
+            return res.status(400).json({ message: 'Flashcard set ID and new title are required' });
+        }
+        await cloneFlashcardSet(req, res);
+    } catch (error) {
+        console.error('Error in clone flashcard set route:', error);
         return res.status(500).json({ message: 'Internal server error' });
     }
 });
