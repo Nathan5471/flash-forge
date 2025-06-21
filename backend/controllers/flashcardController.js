@@ -120,9 +120,13 @@ export const updateFlashcardSet = async (req, res) => {
         if (!flashcardSet) {
             return res.status(404).json({ message: 'Flashcard set not found' });
         }
+        if (flashcardSet.userId.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'You do not have permission to update this flashcard set' });
+        }
         flashcardSet.title = title;
         flashcardSet.description = description;
         flashcardSet.flashCards = flashcards;
+        flashcardSet.lastEdited = new Date();
         await flashcardSet.save();
         res.status(200).json({ message: 'Flashcard set updated successfully', flashcardSet });
     } catch (error) {
