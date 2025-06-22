@@ -9,6 +9,8 @@ import MultipleChoice from '../components/testComponents/MultipleChoice';
 import Written from '../components/testComponents/Written';
 import TrueFalse from '../components/testComponents/TrueFalse';
 import Matching from '../components/testComponents/Matching';
+import UnansweredQuestionsPopup from '../components/testComponents/UnansweredQuestionsPopup';
+import GradePopup from '../components/testComponents/GradePopup';
 
 export default function Test() {
     const { id } = useParams();
@@ -18,6 +20,7 @@ export default function Test() {
     const [amountPerType, setAmountPerType] = useState({}); // Format: [startIndex, amount]
     const [possibleAnswers, setPossibleAnswers] = useState([]);
     const [questions, setQuestions] = useState([]);
+    const [selectedAnswers, setSelectedAnswers] = useState({});
     const [loading, setLoading] = useState(true);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [readyForTest, setReadyForTest] = useState(false);
@@ -63,6 +66,40 @@ export default function Test() {
         }
     }, [flashcardSet, loading, openOverlay, isPopupOpen, readyForTest]);
 
+    const handleAnswerChange = (answerData) => {
+        const newSelectedAnswers = { ...selectedAnswers };
+        newSelectedAnswers[answerData.questionNumber] = answerData;
+        setSelectedAnswers(newSelectedAnswers);
+    }
+
+    const gradeTest = () => {
+        const correctAnswers = Object.values(selectedAnswers).filter(answer => answer.isCorrect).length;
+        const totalQuestions = questions.length;
+        const score = (correctAnswers / totalQuestions) * 100;
+        openOverlay(
+            <GradePopup
+                id={flashcardSet._id}
+                grade={Math.round(score)}
+                questionCount={totalQuestions}
+                correctAnswerCount={correctAnswers}
+            />
+        );
+    }
+
+    const handleSubmitTest = () => {
+        const answerCount = Object.keys(selectedAnswers).length;
+        if (answerCount < questions.length) {
+            openOverlay(
+                <UnansweredQuestionsPopup
+                    amount={questions.length - answerCount}
+                    onClose={gradeTest}
+                />
+            )
+        } else {
+            gradeTest();
+        }
+    }
+
     if (loading || !readyForTest) {
         return (
             <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
@@ -88,7 +125,7 @@ export default function Test() {
                                     flashcard={flashcard}
                                     questionNumber={amountPerType.multipleChoice[0] + index + 1}
                                     possibleAnswers={possibleAnswers}
-                                    onAnswerSelected={(answerData) => console.log('Multiple Choice Answer:', answerData)}
+                                    onAnswerSelected={handleAnswerChange}
                                 />
                             ))}
                         </>
@@ -100,7 +137,7 @@ export default function Test() {
                                     key={index}
                                     flashcard={flashcard}
                                     questionNumber={amountPerType.written[0] + index + 1}
-                                    onAnswerSelected={(answerData) => console.log('Written Answer:', answerData)}
+                                    onAnswerSelected={handleAnswerChange}
                                 />
                             ))}
                         </>
@@ -113,7 +150,7 @@ export default function Test() {
                                     flashcard={flashcard}
                                     questionNumber={amountPerType.trueFalse[0] + index + 1}
                                     answerChoices={possibleAnswers}
-                                    onAnswerSelected={(answerData) => console.log('True/False Answer:', answerData)}
+                                    onAnswerSelected={handleAnswerChange}
                                 />
                             ))}
                         </>
@@ -122,9 +159,19 @@ export default function Test() {
                         <Matching
                             flashcards={questions.slice(amountPerType.matching[0], amountPerType.matching[0] + amountPerType.matching[1])}
                             startQuestionNumber={amountPerType.matching[0] + 1}
-                            onAnswerSelected={(answerData) => console.log('Matching Answer:', answerData)}
+                            onAnswerSelected={handleAnswerChange}
                         />
                     )}
+                    <div className="flex flex-row justify-between mt-4">
+                        <button
+                            onClick={handleSubmitTest}
+                            className="bg-blue-500 hover:bg-blue-600 py-2 px-6 rounded-lg w-[calc(50%)] mr-2"
+                        >Submit Test</button>
+                        <button
+                            onClick={() => window.location.href = `/set/${flashcardSet._id}`}
+                            className="bg-gray-500 hover:bg-gray-700 py-2 px-6 rounded-lg w-[calc(50%)]"
+                        >Cancel</button>
+                    </div>
                 </div>
             </div>
         </div>
