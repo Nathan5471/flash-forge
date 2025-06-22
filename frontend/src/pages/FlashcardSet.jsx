@@ -64,6 +64,9 @@ export default function FlashcardSet() {
             <Navbar />
             <div className="flex flex-col items-center justify-center mt-6 w-screen">
                 <h1 className="text-4xl font-bold mb-4">{flashcardSet.title}</h1>
+                <div className="flex flex-row mb-4">
+                    <Link to={`/test/${flashcardSet._id}`} className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 mr-4">Take Test</Link>
+                </div>
                 <div className='w-1/2 mb-4'>
                     <Flashcard flashcardData={flashcardSet.flashCards[currentFlashcardIndex]} />
                 </div>

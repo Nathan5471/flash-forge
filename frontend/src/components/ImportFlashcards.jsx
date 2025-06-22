@@ -40,7 +40,7 @@ export default function ImportFlashcards({ importFlashcards }) {
                         <label className="text-pretty">
                             <input
                                 type="radio"
-                                value="\t"
+                                value={'\t'}
                                 checked={importBetweenSelected === '\t'}
                                 onChange={(e) => {
                                     setImportBetweenSelected(e.target.value);
@@ -91,7 +91,7 @@ export default function ImportFlashcards({ importFlashcards }) {
                         <label className="text-pretty">
                             <input
                                 type="radio"
-                                value="\n"
+                                value={'\n'}
                                 checked={importBetweenRowsSelected === '\n'}
                                 onChange={(e) => {
                                     setImportBetweenRowsSelected(e.target.value);

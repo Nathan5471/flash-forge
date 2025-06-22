@@ -40,7 +40,7 @@ export default function ExportFlashcards({ flashcardSetData }) {
                     <label className="text-pretty">
                         <input
                             type="radio"
-                            value="\t"
+                            value={'\t'}
                             checked={exportBetweenSelected === '\t'}
                             onChange={(e) => {
                                 setExportBetweenSelected(e.target.value);
@@ -91,7 +91,7 @@ export default function ExportFlashcards({ flashcardSetData }) {
                     <label className="text-pretty">
                         <input
                             type="radio"
-                            value="\n"
+                            value={'\n'}
                             checked={exportBetweenRowsSelected === '\n'}
                             onChange={(e) => {
                                 setExportBetweenRowsSelected(e.target.value);
