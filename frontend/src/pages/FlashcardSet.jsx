@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useOverlayContext } from '../contexts/OverlayContext';
 import { getFlashcardSet } from '../utils/FlashcardAPIHandler';
 import { getUser } from '../utils/AuthAPIHandler';
+import { isFlashcardSetDownloaded, downloadFlashcardSet, syncFlashcardSet } from '../utils/DownloadManager';
 import Navbar from '../components/Navbar';
 import Flashcard from '../components/Flashcard';
 import ExportFlashcards from '../components/ExportFlashcards';
@@ -16,12 +17,14 @@ export default function FlashcardSet() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [currentFlashcardIndex, setCurrentFlashcardIndex] = useState(0);
+    const [isDownloaded, setIsDownloaded] = useState(false);
 
     useEffect(() => {
         const fetchFlashcardSet = async () => {
             try {
                 const flashcardData = await getFlashcardSet(id);
                 setFlashcardSet(flashcardData);
+                setIsDownloaded(isFlashcardSetDownloaded(id));
                 const userData = await getUser();
                 if (userData) {
                     setUser(userData.user);
@@ -66,6 +69,20 @@ export default function FlashcardSet() {
                 <h1 className="text-4xl font-bold mb-4">{flashcardSet.title}</h1>
                 <div className="flex flex-row mb-4">
                     <Link to={`/test/${flashcardSet._id}`} className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 mr-4">Take Test</Link>
+                    { isDownloaded ? (
+                        <button
+                            className="bg-blue-500 p-2 rounded-lg hover:bg-blue-600"
+                            onClick={() => syncFlashcardSet(flashcardSet._id)}
+                        >Sync Set</button>
+                    ) : (
+                        <button
+                            className="bg-blue-500 p-2 rounded-lg hover:bg-blue-600"
+                            onClick={() => {
+                                downloadFlashcardSet(flashcardSet._id)
+                                setIsDownloaded(true);
+                            }}
+                        >Download Set</button>
+                    )}
                 </div>
                 <div className='w-1/2 mb-4'>
                     <Flashcard flashcardData={flashcardSet.flashCards[currentFlashcardIndex]} />

@@ -173,3 +173,17 @@ export const cloneFlashcardSet = async (req, res) => {
         console.error()
     }
 }
+
+export const getLastEditTime = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const flashcardSet = await FlashcardSet.findById(id);
+        if (!flashcardSet) {
+            return res.status(404).json({ message: 'Flashcard set not found' });
+        }
+        res.status(200).json({ lastEdited: flashcardSet.lastEdited });
+    } catch (error) {
+        console.error('Error fetching last edit time:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}

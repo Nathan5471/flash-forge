@@ -1,5 +1,5 @@
 import express from 'express';
-import { createFlashcardSet, getFlashcardSet, searchFlashcardSets, getUserFlashcardSets, getRecentFlashcardSets, getRecentlyCreatedFlashcardSets, updateFlashcardSet, deleteFlashcardSet, cloneFlashcardSet } from '../controllers/flashcardController.js';
+import { createFlashcardSet, getFlashcardSet, searchFlashcardSets, getUserFlashcardSets, getRecentFlashcardSets, getRecentlyCreatedFlashcardSets, updateFlashcardSet, deleteFlashcardSet, cloneFlashcardSet, getLastEditTime } from '../controllers/flashcardController.js';
 import authenticate from '../middleware/authenticate.js';
 import nonRequiredAuthenticate from '../middleware/nonRequiredAuthenticate.js';
 
@@ -73,6 +73,19 @@ router.post('/clone/:id', authenticate, async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+router.get('/lastEdit/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        if (!id) {
+            return res.status(400).json({ message: 'Flashcard set ID is required' });
+        }
+        await getLastEditTime(req, res);
+    } catch (error) {
+        console.error('Error in get last edit time route:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+})
 
 router.get('/:id', nonRequiredAuthenticate, async (req, res) => {
     const { id } = req.params;

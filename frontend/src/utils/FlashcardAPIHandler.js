@@ -33,6 +33,11 @@ export const getFlashcardSet = async (id) => {
     return response.data;
 }
 
+export const getLastEditTime = async (id) => {
+    const response = await api.get(`/lastEdit/${id}`);
+    return response.data;
+}
+
 export const searchFlashcardSets = async (Query, page, limit) => {
     const response = await api.get('/search', {
         params: {
