@@ -17,7 +17,6 @@ export default defineConfig({
             expiration: {
               maxEntries: 30,
             },
-            fallbackURL: '/downloads',
           },
         },
       ],
@@ -28,6 +27,10 @@ export default defineConfig({
       start_url: '/',
       display: 'standalone',
       background_color: '#4B5563',
-    }
+    },
+    devOptions: {
+      enabled: true,
+      type: 'module',
+    },
   })],
 })

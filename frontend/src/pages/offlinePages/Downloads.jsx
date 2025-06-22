@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { getDownloadedFlashcardSets } from '../utils/DownloadManager';
-import Navbar from '../components/offlineComponents/Navbar';
-import SetDisplay from '../components/offlineComponents/SetDisplay';
+import { getDownloadedFlashcardSets } from '../../utils/DownloadManager';
+import Navbar from '../../components/offlineComponents/Navbar';
+import SetDisplay from '../../components/offlineComponents/SetDisplay';
 
 export default function Downloads() {
     const [flashcards, setFlashcards] = useState([]);
@@ -34,7 +34,7 @@ export default function Downloads() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 mt-4">
                 {flashcards.length > 0 ? (
                     flashcards.map((flashcardSet) => (
-                        <SetDisplay key={flashcardSet._id} flashcardSet={flashcardSet.data} />
+                        <SetDisplay key={flashcardSet.data._id} flashcardSet={flashcardSet.data} />
                     ))
                 ) : (
                     <div className="col-span-full text-center">
