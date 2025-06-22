@@ -13,6 +13,7 @@ import Settings from './pages/Settings.jsx'
 import Create from './pages/Create.jsx'
 import Edit from './pages/Edit.jsx'
 import AuthenticatedRoute from './utils/AuthenticatedRoute.jsx'
+import Downloads from './pages/Downloads.jsx'
 
 function App() {
   return (
@@ -26,6 +27,9 @@ function App() {
           <Route path="/test/:id" element={<Test />} />
           <Route path="/search/:searchTerm" element={<Search />} />
           <Route path="/user/:userId" element={<User />} />
+          {/* Offline Routes */}
+          <Route path="/downloads" element={<Downloads />} />
+          {/* End of Offline Routes */}
           <Route element={<AuthenticatedRoute />}>
             <Route path="/settings" element={<Settings />} />
             <Route path="/create" element={<Create />} />

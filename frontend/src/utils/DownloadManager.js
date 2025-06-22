@@ -57,6 +57,25 @@ export const getDownloadedFlashcardSet = (id) => {
     }
 }
 
+export const getDownloadedFlashcardSets = () => {
+    try {
+        const keys = Object.keys(localStorage);
+        const flashcardSets = keys
+            .filter(key => key.startsWith('flashcardSet-'))
+            .map(key => {
+                const id = key.split('flashcardSet-')[1];
+                return {
+                    id,
+                    data: JSON.parse(localStorage.getItem(key))
+                }
+            })
+        return flashcardSets;
+    } catch (error) {
+        console.error('Error getting downloaded flashcard sets:', error);
+        return [];
+    }
+}
+
 export const deleteDownloadedFlashcardSet = (id) => {
     try {
         if (!isFlashcardSetDownloaded(id)) {

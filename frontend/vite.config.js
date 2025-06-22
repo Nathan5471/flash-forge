@@ -8,9 +8,9 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), VitePWA({
     registerType: 'autoUpdate',
     workbox: {
-      runtimeChaching: [
+      runtimeCaching: [
         {
-          urlPattern: /^\/downloads\/.*$/,
+          urlPattern: /^\/downloads(\/.*)?$/,
           handler: 'NetworkFirst',
           options: {
             cacheName: 'downloads-pages',
