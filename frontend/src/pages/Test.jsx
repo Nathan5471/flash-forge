@@ -5,6 +5,9 @@ import { getFlashcardSet } from '../utils/FlashcardAPIHandler';
 import Navbar from '../components/Navbar';
 import StartTest from '../components/StartTest';
 import MultipleChoice from '../components/testComponents/MultipleChoice';
+import Written from '../components/testComponents/Written';
+import TrueFalse from '../components/testComponents/TrueFalse';
+import Matching from '../components/testComponents/Matching';
 
 export default function Test() {
     const { id } = useParams();
@@ -79,17 +82,13 @@ export default function Test() {
             <div className="flex flex-col items-center justify-center p-4">
                 <h1 className="text-3xl mb-4 text-center">Test: {flashcardSet.title}</h1>
                 <div className="w-[calc(50%)]">
-                {questions.map((flashcard, index) => (
-                    <MultipleChoice
-                        key={index}
-                        flashcard={flashcard}
-                        questionNumber={index + 1}
-                        possibleAnswers={possibleAnswers}
+                    <Matching
+                        flashcards={questions}
+                        startQuestionNumber={1}
                         onAnswerSelected={(answerData) => {
-                            console.log(`Question ${answerData.questionNumber}: Selected Answer - ${answerData.selectedAnswer}, Correct - ${answerData.isCorrect}`);
+                            console.log('Matching answer selected:', answerData);
                         }}
                     />
-                ))}
                 </div>
             </div>
         </div>
