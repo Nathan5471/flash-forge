@@ -5,7 +5,7 @@ export default function TrueFalse({ flashcard, questionNumber, answerChoices, on
     const [givenAnswer, setGivenAnswer] = useState(null);
 
     useEffect(() => {
-        const shuffledAnswers = answerChoices.filter(answer => answer !== flashcard.answer).sort(() => Math.random() - 0.5);
+        const shuffledAnswers = [...answerChoices].filter(answer => answer !== flashcard.answer).sort(() => Math.random() - 0.5);
         const unshuffledAnswerChoices = shuffledAnswers.slice(0, 1).concat(flashcard.answer);
         setGivenAnswer(unshuffledAnswerChoices.sort(() => Math.random() - 0.5)[0]);
     }, [flashcard, answerChoices]);

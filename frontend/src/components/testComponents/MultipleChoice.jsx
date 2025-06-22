@@ -5,7 +5,7 @@ export default function MultipleChoice({ flashcard, questionNumber, possibleAnsw
     const [answerChoices, setAnswerChoices] = useState([]);
 
     useEffect(() => {
-        const shuffledAnswers = possibleAnswers.filter(answer => answer !== flashcard.answer).sort(() => Math.random() - 0.5);
+        const shuffledAnswers = [...possibleAnswers].filter(answer => answer !== flashcard.answer).sort(() => Math.random() - 0.5);
         const unshuffledAnswerChoices = shuffledAnswers.slice(0, 3).concat(flashcard.answer);
         setAnswerChoices(unshuffledAnswerChoices.sort(() => Math.random() - 0.5));
     }, [flashcard, possibleAnswers]);
