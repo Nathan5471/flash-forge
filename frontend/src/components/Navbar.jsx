@@ -35,17 +35,18 @@ export default function Navbar() {
     return (
         <div className="flex flex-row h-[calc(10%)] w-full bg-gray-700 items-center justify-between p-2">
             <Link to="/" className="text-white text-3xl hover:text-gray-300 font-bold">Flash Forge</Link>
-            <div className="flex flex-row gap-2 w-[calc(50%)]">
+            <div className="flex flex-row gap-2 w-[calc(40%)]">
                 <input type="text" placeholder="Search flashcards..." className="p-2 rounded-lg bg-gray-600 text-white w-full" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={(e) => {if (e.key === 'Enter') handleSearch(e)}}/>
                 <button className="bg-gray-600 hover:bg-gray-500 text-white p-2 rounded-lg" onClick={handleSearch}><GoSearch /></button>
             </div>
             { loading ? (
-                <div className="text-white">Loading...</div>
+                <Link to="/downloads" className="text-white bg-gray-600 rounded-lg py-1 px-2 hover:bg-gray-500 text-2xl">Downloads</Link>
             ) : (
                 <div className="flex flex-row gap-4">
                     {user ? (
                         <div className="flex flex-row gap-2">
                             <Link to="/create" className="text-white bg-gray-600 rounded-full p-2 hover:bg-gray-500 text-2xl"><FaPlus /></Link>
+                            <Link to="/downloads" className="text-white bg-gray-600 rounded-lg py-1 px-2 hover:bg-gray-500 text-2xl">Downloads</Link>
                             <Link to={`/user/${user._id}`} className="text-white bg-gray-600 rounded-lg py-1 px-2 hover:bg-gray-500 text-2xl">My Sets</Link>
                             <Link to="/settings" className="text-white bg-gray-600 rounded-lg py-1 px-2 hover:bg-gray-500 text-2xl">Settings</Link>
                         </div>
