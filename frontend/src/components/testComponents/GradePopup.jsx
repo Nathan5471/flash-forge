@@ -1,11 +1,15 @@
 import { useOverlayContext } from "../../contexts/OverlayContext";
 import GradeChart from "./GradeChart";
 
-export default function GradePopup({ id, grade, questionCount, correctAnswerCount }) {
+export default function GradePopup({ id, grade, questionCount, correctAnswerCount, isOffline = false }) {
     const { closeOverlay } = useOverlayContext();
 
     const handleClose = () => {
-        window.location.href = `/set/${id}`;
+        if (isOffline) {
+            window.location.href = `/downloads/set/${id}`;
+        } else {
+            window.location.href = `/set/${id}`;
+        }
         closeOverlay();
     }
 

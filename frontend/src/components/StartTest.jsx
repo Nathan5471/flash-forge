@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useOverlayContext } from '../contexts/OverlayContext';
 
-export default function StartTest({ flashcardSetData, onStartTest }) {
+export default function StartTest({ flashcardSetData, onStartTest, isOffline = false }) {
     const { closeOverlay } = useOverlayContext();
     const [questionCount, setQuestionCount] = useState(10);
     const [questionTypes, setQuestionTypes] = useState(['multipleChoice']);
@@ -26,7 +26,11 @@ export default function StartTest({ flashcardSetData, onStartTest }) {
     const handleCancel = (e) => {
         e.preventDefault();
         closeOverlay();
-        window.location.href = `/set/${flashcardSetData._id}`;
+        if (isOffline) {
+            window.location.href = `/downloads/set/${flashcardSetData._id}`;
+        } else {
+            window.location.href = `/set/${flashcardSetData._id}`;
+        }
     }
 
     return (
