@@ -90,6 +90,9 @@ export default function Test() {
 
     const handleSubmitTest = () => {
         const answerCount = Object.keys(selectedAnswers).length;
+        console.log('Answer Count:', answerCount);
+        console.log('Selected Answers:', selectedAnswers);
+        console.log('Total Questions:', questions.length);
         if (answerCount < questions.length) {
             openOverlay(
                 <UnansweredQuestionsPopup
@@ -125,7 +128,7 @@ export default function Test() {
                                 <MultipleChoice
                                     key={index}
                                     flashcard={flashcard}
-                                    questionNumber={amountPerType.multipleChoice[0] + index}
+                                    questionNumber={amountPerType.multipleChoice[0] + index + 1}
                                     possibleAnswers={possibleAnswers}
                                     onAnswerSelected={handleAnswerChange}
                                 />
@@ -138,7 +141,7 @@ export default function Test() {
                                 <Written
                                     key={index}
                                     flashcard={flashcard}
-                                    questionNumber={amountPerType.written[0] + index}
+                                    questionNumber={amountPerType.written[0] + index + 1}
                                     onAnswerSelected={handleAnswerChange}
                                 />
                             ))}
@@ -150,7 +153,7 @@ export default function Test() {
                                 <TrueFalse
                                     key={index}
                                     flashcard={flashcard}
-                                    questionNumber={amountPerType.trueFalse[0] + index}
+                                    questionNumber={amountPerType.trueFalse[0] + index + 1}
                                     answerChoices={possibleAnswers}
                                     onAnswerSelected={handleAnswerChange}
                                 />

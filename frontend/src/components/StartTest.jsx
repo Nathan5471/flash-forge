@@ -19,7 +19,13 @@ export default function StartTest({ flashcardSetData, onStartTest, isOffline = f
 
     const handleStartTest = (e) => {
         e.preventDefault();
-        onStartTest(questionCount, questionTypes);
+        const sortOrder = ["multipleChoice", "written", "trueFalse", "matching"];
+        const sortedTypes = questionTypes.sort((a, b) => sortOrder.indexOf(a) - sortOrder.indexOf(b));
+        if (sortedTypes.length === 0) {
+            alert("Please select at least one question type.");
+            return;
+        }
+        onStartTest(questionCount, sortedTypes);
         closeOverlay();
     }
 

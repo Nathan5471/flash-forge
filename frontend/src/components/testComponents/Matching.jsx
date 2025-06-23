@@ -6,8 +6,7 @@ export default function Matching({ flashcards, startQuestionNumber, onAnswerSele
     const [selectedAnswers, setSelectedAnswers] = useState({});
 
     useEffect(() => {
-        const shuffledFlashcards = [...flashcards].sort(() => Math.random() - 0.5);
-        setQuestions(shuffledFlashcards);
+        setQuestions(flashcards);
         const reshuffledFlashcards = [...flashcards].sort(() => Math.random() - 0.5);
         setPossibleAnswers(reshuffledFlashcards.map(card => card.answer));
     }, [flashcards]);
