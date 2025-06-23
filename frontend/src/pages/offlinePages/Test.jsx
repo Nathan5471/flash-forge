@@ -146,7 +146,7 @@ export default function Test() {
                     )}
                     {questionTypes.includes('trueFalse') && (
                         <>
-                            {questions.slice(amountPerType.trueFlase[0], amountPerType.trueFalse[0] + amountPerType.trueFalse[1]).map((flashcard, index) => (
+                            {questions.slice(amountPerType.trueFalse[0], amountPerType.trueFalse[0] + amountPerType.trueFalse[1]).map((flashcard, index) => (
                                 <TrueFalse
                                     key={index}
                                     flashcard={flashcard}
