@@ -170,3 +170,22 @@ export const createOfflineFlashcardSet = (flashcardSetData) => {
         return null;
     }
 }
+
+export const createOfflineClone = (id, newTitle) => {
+    try {
+        const flashcardSet = getDownloadedFlashcardSet(id);
+        if (!flashcardSet) {
+            throw new Error('Flashcard set not found');
+        }
+        const newFlashcardSetData = {
+            title: newTitle,
+            description: flashcardSet.description,
+            flashCards: flashcardSet.flashCards.map(card => ({ ...card })),
+        }
+        const newFlashcardSet = createOfflineFlashcardSet(newFlashcardSetData);
+        return newFlashcardSet;
+    } catch (error) {
+        console.error('Error creating offline clone of flashcard set:', error);
+        return null;
+    }
+}

@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useOverlayContext } from '../../contexts/OverlayContext';
 import { getDownloadedFlashcardSet } from '../../utils/DownloadManager';
 import Navbar from '../../components/offlineComponents/Navbar';
 import Flashcard from '../../components/Flashcard';
+import CloneSet from '../../components/offlineComponents/CloneSet';
 
 export default function FlashcardSet() {
     const { id } = useParams();
+    const { openOverlay } = useOverlayContext();
     const [flashcardSet, setFlashcardSet] = useState(null);
     const [loading, setLoading] = useState(true);
     const [currentFlashcardIndex, setCurrentFlashcardIndex] = useState(0);
@@ -63,6 +66,14 @@ export default function FlashcardSet() {
                         onClick={() => setCurrentFlashcardIndex(prev => prev + 1)}
                         disabled={currentFlashcardIndex >= flashcardSet.flashCards.length - 1}
                     >Next</button>
+                </div>
+                <p className="text-lg text-gray-300 text-left w-1/2">Created By: <Link to={`/downloads/user/${flashcardSet.userId._id}`} className="hover:underline">{flashcardSet.userId.username}</Link></p>
+                <p className="text-lg text-gray-300 text-left w-1/2">Description: {flashcardSet.description}</p>
+                <div className="flex flex-row">
+                    <button
+                        className="mt-4 bg-blue-500 hover:bg-blue-600 p-2 rounded-lg"
+                        onClick={() => openOverlay(<CloneSet flashcardSet={flashcardSet} />)}
+                    >Clone Set</button>
                 </div>
             </div>
         </div>

@@ -100,7 +100,7 @@ export default function FlashcardSet() {
                         disabled={currentFlashcardIndex >= flashcardSet.flashCards.length - 1}
                     >Next</button>
                 </div>
-                <p className="text-lg text-gray-300 text-left w-1/2">Created By: <Link to={`/user/${flashcardSet.userId._id}`}className="hover:underline">{flashcardSet.userId.username}</Link></p>
+                <p className="text-lg text-gray-300 text-left w-1/2">Created By: <Link to={`/user/${flashcardSet.userId._id}`} className="hover:underline">{flashcardSet.userId.username}</Link></p>
                 <p className="text-lg text-gray-300 text-left w-1/2">Description: {flashcardSet.description}</p>
                 <div className="flex flex-row">
                     <button
