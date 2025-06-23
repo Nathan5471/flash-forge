@@ -4,6 +4,7 @@ import { createFlashcardSet } from '../utils/FlashcardAPIHandler';
 import Navbar from '../components/Navbar'
 import { FaRegTrashAlt } from "react-icons/fa";
 import ImportFlashcards from '../components/ImportFlashcards';
+import OfflineImport from '../components/OfflineImport';
 
 export default function Create() {
     const { openOverlay } = useOverlayContext();
@@ -24,6 +25,11 @@ export default function Create() {
     const handleOpenImport = (e) => {
         e.preventDefault();
         openOverlay(<ImportFlashcards importFlashcards={handleImport} />);
+    }
+
+    const handleOpenOfflineImport = (e) => {
+        e.preventDefault();
+        openOverlay(<OfflineImport onImport={handleImport} />);
     }
 
     const handleSubmit = async (e) => {
@@ -72,11 +78,19 @@ export default function Create() {
                     </div>
                     <div className="mb-4">
                         <label className="block text-2xl">Questions</label>
-                        <button
-                            type="button"
-                            onClick={handleOpenImport}
-                            className="mt-2 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg"
-                        >Import Flashcards</button>
+                        <div className="flex flex-row">
+                            <button
+                                type="button"
+                                onClick={handleOpenImport}
+                                className="mt-2 bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded-lg"
+                            >Import Flashcards</button>
+                            <button
+                                type="button"
+                                onClick={handleOpenOfflineImport}
+                                className="mt-2 ml-2 bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded-lg"
+                            >Import Offline Flashcards</button>
+                        </div>
+                        
                         <div className="flex flex-row justify-around mt-2">
                             <p className="text-lg">Question</p>
                             <p className="text-lg">Answer</p>
