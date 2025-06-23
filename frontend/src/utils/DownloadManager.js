@@ -132,3 +132,41 @@ export const searchDownloadedFlashcardSets = (query) => {
         return [];
     }
 }
+
+const getCurrentLocalIndex = () => {
+    try {
+        const index = localStorage.getItem('currentLocalIndex');
+        return index ? parseInt(index, 10) : 0;
+    } catch (error) {
+        console.error('Error getting current local index:', error);
+        return 0;
+    }
+}
+
+export const createOfflineFlashcardSet = (flashcardSetData) => {
+    try {
+        const { title, description, flashCards } = flashcardSetData;
+        const currentIndex = getCurrentLocalIndex();
+        if (!title || !description || !flashCards || flashCards.length === 0) {
+            throw new Error('Invalid flashcard set data');
+        }
+        const newFlashcardSet = {
+            _id: `local-${currentIndex}`,
+            title,
+            description,
+            flashCards,
+            userId: {
+                _id: 'local-user',
+                username: 'Local User'
+            },
+            lastEdited: new Date(),
+            createdAt: new Date()
+        }
+        localStorage.setItem(`flashcardSet-local-${currentIndex}`, JSON.stringify(newFlashcardSet));
+        localStorage.setItem('currentLocalIndex', (currentIndex + 1).toString());
+        return newFlashcardSet;
+    } catch (error) {
+        console.error('Error creating offline flashcard set:', error);
+        return null;
+    }
+}

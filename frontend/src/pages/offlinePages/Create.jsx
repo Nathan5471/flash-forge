@@ -1,41 +1,27 @@
-import React, { useState } from 'react'
-import { useOverlayContext } from '../contexts/OverlayContext';
-import { createFlashcardSet } from '../utils/FlashcardAPIHandler';
-import Navbar from '../components/Navbar'
+import React, { useState } from 'react';
+import { createOfflineFlashcardSet } from '../../utils/DownloadManager';
+import Navbar from '../../components/offlineComponents/Navbar';
 import { FaRegTrashAlt } from "react-icons/fa";
-import ImportFlashcards from '../components/ImportFlashcards';
 
 export default function Create() {
-    const { openOverlay } = useOverlayContext();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [flashcards, setFlashcards] = useState([{ question: '', answer: '' }]);
     const [error, setError] = useState(null);
 
-    const handleImport = (importedFlashcards) => {
-        if (flashcards[0].question === '' && flashcards[0].answer === '') {
-            setFlashcards(importedFlashcards);
-        } else {
-            const newFlashcards = flashcards.concat(importedFlashcards);
-            setFlashcards(newFlashcards);
-        }
-    }
-
-    const handleOpenImport = (e) => {
-        e.preventDefault();
-        openOverlay(<ImportFlashcards importFlashcards={handleImport} />);
-    }
-
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         setError(null);
         const flashcardSetData = {
             title,
             description,
-            flashcards: flashcards.filter(flashcard => flashcard.question && flashcard.answer)
+            flashCards: flashcards.filter(flashcard => flashcard.question && flashcard.answer)
         }
         try {
-            await createFlashcardSet(flashcardSetData);
+            const response = createOfflineFlashcardSet(flashcardSetData);
+            if (response === null) {
+                throw new Error('Failed to create flashcard set. Please ensure all fields are filled out correctly.');
+            }
             setTitle('');
             setDescription('');
             setFlashcards([{ question: '', answer: '' }]);
@@ -44,39 +30,34 @@ export default function Create() {
         }
     }
 
-
     return (
         <div className="flex flex-col min-h-screen w-screen bg-gray-600 text-white">
             <Navbar />
             <div className="flex flex-col items-center justify-center mt-6">
-                <h1 className="text-4xl font-bold mb-4">Create Flashcard Set</h1>
+                <h1 className="text-4xl font-bold mb-4">Create Offline Flashcard Set</h1>
                 <form className="w-1/2 bg-gray-700 p-6 rounded-lg shadow-lg" onSubmit={handleSubmit}>
+                    <p className="text-lg mb-4">This set will be local only and not accessible on the online part of the website. You can make a new flashcard set in the online mode and import ones you make offline.</p>
                     <div className="mb-4">
                         <label className="block text-2xl">Title</label>
                         <input
                             type="text"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            placeholder='Enter title'
+                            placeholder="Enter title"
                             className="w-full p-2 mt-2 bg-gray-600 rounded-lg"
                         />
                     </div>
-                    <div className='mb-4'>
+                    <div className="mb-4">
                         <label className="block text-2xl">Description</label>
                         <textarea
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            placeholder='Enter description'
+                            placeholder="Enter description"
                             className="w-full p-2 mt-2 bg-gray-600 rounded-lg"
                         />
                     </div>
                     <div className="mb-4">
                         <label className="block text-2xl">Questions</label>
-                        <button
-                            type="button"
-                            onClick={handleOpenImport}
-                            className="mt-2 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg"
-                        >Import Flashcards</button>
                         <div className="flex flex-row justify-around mt-2">
                             <p className="text-lg">Question</p>
                             <p className="text-lg">Answer</p>
@@ -92,8 +73,8 @@ export default function Create() {
                                         newFlashcards[index].question = e.target.value;
                                         setFlashcards(newFlashcards);
                                     }}
-                                    placeholder='Enter question'
-                                    className='w-1/2 p-2 mt-2 mr-1 bg-gray-600 rounded-lg'
+                                    placeholder="Enter question"
+                                    className="w-1/2 p-2 mt-2 mr-1 bg-gray-600 rounded-lg"
                                 />
                                 <input
                                     type="text"
@@ -103,8 +84,8 @@ export default function Create() {
                                         newFlashcards[index].answer = e.target.value;
                                         setFlashcards(newFlashcards);
                                     }}
-                                    placeholder='Enter answer'
-                                    className='w-1/2 p-2 mt-2 ml-1 bg-gray-600 rounded-lg'
+                                    placeholder="Enter answer"
+                                    className="w-1/2 p-2 mt-2 bg-gray-600 rounded-lg"
                                 />
                                 <button
                                     type="button"
@@ -119,14 +100,14 @@ export default function Create() {
                         <button
                             type="button"
                             onClick={() => setFlashcards([...flashcards, { question: '', answer: '' }])}
-                            className="mt-2 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg"
+                            className="mt-2 bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded-lg"
                         >Add question</button>
                     </div>
                     <p className="text-red-500 mb-4">{error}</p>
                     <button
                         type="submit"
-                        className="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg"
-                    >Create Flashcard Set</button>
+                        className="w-full bg-green-500 hover:bg-green-600 py-2 px-4 rounded-lg"
+                    >Create Offline Flashcard Set</button>
                 </form>
             </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoSearch } from "react-icons/go";
+import { FaPlus } from "react-icons/fa";
 
 export default function Navbar() {
     const navigate = useNavigate();
@@ -21,6 +22,7 @@ export default function Navbar() {
                 <button className="bg-gray-600 hover:bg-gray-500 p-2 rounded-lg" onClick={handleSearch}><GoSearch /></button>
             </div>
             <div className="flex flex-row gap-2">
+                <Link to="/downloads/create" className="text-white bg-gray-600 rounded-full p-2 hover:bg-gray-500 text-2xl"><FaPlus /></Link>
                 <Link to="/" className="text-white bg-gray-600 rounded-lg py-1 px-2 hover:bg-gray-500 text-2xl">Online</Link>    
             </div>     
         </div>
