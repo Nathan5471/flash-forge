@@ -1,17 +1,15 @@
-import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { deleteDownloadedFlashcardSet } from '../utils/DownloadManager';
+import { useOverlayContext } from '../contexts/OverlayContext';
+import DeleteFlashcardSet from './offlineComponents/DeleteFlashcardSet';
 
 export default function SetDisplay({ flashcardSet, isOffline = false }) {
-    const [isDeleted, setIsDeleted] = useState(false);
+    const { openOverlay } = useOverlayContext();
+
     const handleDelete = (e) => {
         e.preventDefault();
-        deleteDownloadedFlashcardSet(flashcardSet._id);
-        setIsDeleted(true);
+        openOverlay(<DeleteFlashcardSet id={flashcardSet._id} />);
     }
-    if (isDeleted) {
-        return null;
-    }
+
     return (
         <div className="flex flex-col bg-gray-700 text-white p-4 rounded-lg">
             <Link to={`${isOffline ? "/downloads" : ""}/set/${flashcardSet._id}`} className="flex flex-col">

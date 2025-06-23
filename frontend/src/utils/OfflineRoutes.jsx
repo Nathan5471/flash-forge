@@ -6,6 +6,7 @@ import Test from '../pages/offlinePages/Test.jsx';
 import User from '../pages/offlinePages/User.jsx';
 import Search from '../pages/offlinePages/Search.jsx';
 import Create from '../pages/offlinePages/Create.jsx';
+import Edit from '../pages/offlinePages/Edit.jsx';
 
 export const OfflineRoutes = (
         <>
@@ -15,5 +16,6 @@ export const OfflineRoutes = (
             <Route path="/downloads/user/:userId" element={<User />} />
             <Route path="/downloads/search/:searchTerm" element={<Search />} />
             <Route path="/downloads/create" element={<Create />} />
+            <Route path="/downloads/edit/:id" element={<Edit />} />
         </>
 );

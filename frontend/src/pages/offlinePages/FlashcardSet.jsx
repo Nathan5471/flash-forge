@@ -5,6 +5,7 @@ import { getDownloadedFlashcardSet } from '../../utils/DownloadManager';
 import Navbar from '../../components/offlineComponents/Navbar';
 import Flashcard from '../../components/Flashcard';
 import CloneSet from '../../components/offlineComponents/CloneSet';
+import DeleteFlashcardSet from '../../components/offlineComponents/DeleteFlashcardSet';
 
 export default function FlashcardSet() {
     const { id } = useParams();
@@ -69,11 +70,18 @@ export default function FlashcardSet() {
                 </div>
                 <p className="text-lg text-gray-300 text-left w-1/2">Created By: <Link to={`/downloads/user/${flashcardSet.userId._id}`} className="hover:underline">{flashcardSet.userId.username}</Link></p>
                 <p className="text-lg text-gray-300 text-left w-1/2">Description: {flashcardSet.description}</p>
-                <div className="flex flex-row">
+                <div className="flex flex-row mt-4">
                     <button
-                        className="mt-4 bg-blue-500 hover:bg-blue-600 p-2 rounded-lg"
+                        className="bg-blue-500 hover:bg-blue-600 p-2 rounded-lg"
                         onClick={() => openOverlay(<CloneSet flashcardSet={flashcardSet} />)}
                     >Clone Set</button>
+                    { flashcardSet.userId._id === 'local-user' && (
+                        <Link to={`/downloads/edit/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 p-2 rounded-lg ml-4">Edit Flashcard Set</Link>
+                    )}
+                    <button
+                        className="bg-red-500 hover:bg-red-600 p-2 rounded-lg ml-4"
+                        onClick={() => openOverlay(<DeleteFlashcardSet id={flashcardSet._id} />)}
+                    >Delete</button>
                 </div>
             </div>
         </div>

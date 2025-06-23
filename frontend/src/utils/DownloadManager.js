@@ -189,3 +189,28 @@ export const createOfflineClone = (id, newTitle) => {
         return null;
     }
 }
+
+export const editOfflineFlashcardSet = (id, updatedData) => {
+    try {
+        const { newTitle, newDescription, newFlashCards } = updatedData;
+        if (!newTitle || !newDescription || !newFlashCards || newFlashCards.length === 0) {
+            throw new Error('Invalid updated flashcard set data');
+        }
+        const newFlashcardSet = getDownloadedFlashcardSet(id);
+        if (!newFlashcardSet) {
+            throw new Error('Flashcard set not found');
+        }
+        if (!newFlashcardSet._id.startsWith('local-')) {
+            throw new Error('Cannot edit a non-local flashcard set');
+        }
+        newFlashcardSet.title = newTitle;
+        newFlashcardSet.description = newDescription;
+        newFlashcardSet.flashCards = newFlashCards.map(card => ({ ...card }));
+        newFlashcardSet.lastEdited = new Date();
+        localStorage.setItem(`flashcardSet-${id}`, JSON.stringify(newFlashcardSet));
+        return newFlashcardSet;
+    } catch (error) {
+        console.error('Error editing offline flashcard set:', error);
+        return null;
+    }
+}
