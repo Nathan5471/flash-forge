@@ -1,3 +1,4 @@
+import fuse from 'fuse.js';
 import { getFlashcardSet, getLastEditTime } from './FlashcardAPIHandler';
 
 export const isFlashcardSetDownloaded = (id) => {
@@ -107,6 +108,27 @@ export const getUserDownloadedFlashcardSets = (userId) => {
         return flashcardSets.filter(set => set !== null);
     } catch (error) {
         console.error('Error getting user downloaded flashcard sets:', error);
+        return [];
+    }
+}
+
+export const searchDownloadedFlashcardSets = (query) => {
+    try {
+        const flashcardSets = getDownloadedFlashcardSets().map(set => set.data);
+        const fuseOptions = {
+            keys: [{ name: 'title', weight: 0.7 }, { name: 'description', weight: 0.3 }],
+            includedScore: true,
+            threshold: 0.3,
+        };
+        const fuseInstance = new fuse(flashcardSets, fuseOptions);
+        const results = fuseInstance.search(query);
+        const sortedResults = results.sort((a, b) => b.score - a.score);
+        return sortedResults.map(result => ({
+            id: result.item._id,
+            data: result.item
+        }));
+    } catch (error) {
+        console.error('Error searching downloaded flashcard sets:', error);
         return [];
     }
 }

@@ -37,7 +37,7 @@ export default function Search() {
     }
 
     return (
-        <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
+        <div className="flex flex-col min-h-screen w-screen bg-gray-600 text-white">
             <Navbar />
             <div className="flex flex-col justify-center mt-4">
                 <h1 className="text-2xl font-bold text-center mb-4">Search Results for "{searchTerm}"</h1>
