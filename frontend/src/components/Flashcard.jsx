@@ -1,19 +1,41 @@
 import React, { useEffect, useState } from 'react';
 
 export default function Flashcard({ flashcardData }) {
-    const [onScreen, setOnScreen] = useState('question');
+    const [flipped, setFlipped] = useState(false);
+    const [disableTransition, setDisableTransition] = useState(false);
 
     useEffect(() => {
-        setOnScreen('question'); // Change the card back to question when going to a new flashcard
+        const handleKeyDown = (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                setFlipped(prev => !prev);
+            }
+        }
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        }
+    }, []);
+
+    useEffect(() => {
+        setDisableTransition(true);
+        setFlipped(false); // Reset flip state when new data is received
+
+        const timer = setTimeout(() => {
+            setDisableTransition(false);
+        }, 100); // Delay to allow the transition to reset
+        return () => clearTimeout(timer);
     }, [flashcardData]);
 
-    const flipCard = () => {
-        setOnScreen(prev => (prev === 'question' ? 'answer' : 'question'));
-    }
-
     return (
-        <button className="flex items-center justify-center aspect-[2/1] w-full bg-gray-700 p-4 rounded-lg shadow-lg mb-4" onClick={flipCard}>
-            <p className="text-4xl">{onScreen === 'question' ? flashcardData.question : flashcardData.answer}</p>
-        </button>
+        <div className="aspect-[2/1] w-full [perspective:1000px] text-3xl" onClick={() => setFlipped(!flipped)}>
+            <div className={`relative w-full h-full ${disableTransition ? '' : 'duration-700 transition-transform'} [transform-style:preserve-3d] ${flipped ? '[transform:rotateX(180deg)]': ''}`}>
+                <div className="absolute w-full h-full bg-gray-700 rounded-lg shadow-lg flex items-center justify-center [backface-visibility:hidden]">
+                    {flashcardData.question}
+                </div>
+                <div className="absolute w-full h-full bg-gray-700 rounded-lg shadow-lg flex items-center justify-center [transform:rotateX(180deg)] [backface-visibility:hidden]">
+                    {flashcardData.answer}
+                </div>
+            </div>
+        </div>
     )
 }
