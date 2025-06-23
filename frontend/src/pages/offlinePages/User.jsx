@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import fuse from 'fuse.js';
-import { getUsername } from '../utils/AuthAPIHandler';
-import { getUserFlashcardSets } from '../utils/FlashcardAPIHandler';
-import SortSets from '../utils/SortSets';
-import Navbar from '../components/Navbar';
-import SetDisplay from '../components/SetDisplay';
+import { getUserDownloadedFlashcardSets } from '../../utils/DownloadManager';
+import SortSets from '../../utils/SortSets';
+import Navbar from '../../components/offlineComponents/Navbar';
+import SetDisplay from '../../components/SetDisplay';
 
 export default function User() {
     const { userId } = useParams();
@@ -19,10 +18,12 @@ export default function User() {
     useEffect(() => {
         const fetchUserFlashcardSets = async () => {
             try {
-                const userData = await getUsername(userId);
-                setUsername(userData.username);
-                const sets = await getUserFlashcardSets(userId);
-                setFlashcardSets(sets);
+                const sets = getUserDownloadedFlashcardSets(userId);
+                console.log('Fetched sets:', sets);
+                if (sets.length > 0) {
+                    setUsername(sets[0].data.userId.username);
+                }
+                setFlashcardSets(sets.map(set => set.data));
             } catch (error) {
                 console.error('Error fetching user flashcard sets:', error);
             } finally {
@@ -38,7 +39,7 @@ export default function User() {
                 keys: [{ name: 'title', weight: 0.7 }, { name: 'description', weight: 0.3 }],
                 includeScore: true,
                 threshold: 0.3,
-            };
+            }
             const fuseInstance = new fuse(flashcardSets, fuseOptions);
             const results = fuseInstance.search(searchQuery);
             const sortedResults = results.sort((a, b) => a.score - b.score).map(result => result.item);
@@ -64,6 +65,9 @@ export default function User() {
         return (
             <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
                 <Navbar />
+                <div className="flex flex-col items-center justify-center h-full">
+                    <p className="text-lg">Loading...</p>
+                </div>
             </div>
         )
     }
@@ -71,7 +75,7 @@ export default function User() {
     return (
         <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
             <Navbar />
-            <h1 className="text-4xl font-bold text-center mt-6">{username}'s Flashcard Sets</h1>
+            <div className="text-4xl font-bolt text-center mt-6">{username}'s Flashcard Sets</div>
             <div className="flex flex-row justify-center mt-4">
                 <input
                     type="text"
@@ -81,18 +85,18 @@ export default function User() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <select className="bg-gray-700 p-2 rounded ml-3" value={sortOption} onChange={(e) => handleSortChange(e)}>
-                    <option value='date,false'>Sort by Date (Newest)</option>
-                    <option value='date,true'>Sort by Date (Oldest)</option>
-                    <option value='title,true'>Sort by Title (A-Z)</option>
-                    <option value='title,false'>Sort by Title (Z-A)</option>
-                    <option value='flashcardCount,false'>Sort by Flashcard Count (High to Low)</option>
-                    <option value='flashcardCount,true'>Sort by Flashcard Count (Low to High)</option>
+                    <option value="date,false">Sort by Date (Newest)</option>
+                    <option value="date,true">Sort by Date (Oldest)</option>
+                    <option value="title,true">Sort by Title (A-Z)</option>
+                    <option value="title,false">Sort by Title (Z-A)</option>
+                    <option value="flashcardCount,false">Sort by Flashcard Count (High to Low)</option>
+                    <option value="flashcardCount,true">Sort by Flashcard Count (Low to High)</option>
                 </select>
             </div>
             {displayedSets.length > 0 ? (
-                <div className="grid gird-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 mt-4">
                     {displayedSets.map((set) => (
-                        <SetDisplay key={set._id} flashcardSet={set} />
+                        <SetDisplay key={set._id} flashcardSet={set} isOffline={true} />
                     ))}
                 </div>
             ) : (

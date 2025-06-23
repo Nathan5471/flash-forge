@@ -30,7 +30,7 @@ export default function sortSets(sets, sortBy, ascending) {
             return sortByTitle(sets, ascending);
         case 'date':
             return sortByDate(sets, ascending);
-        case 'flashcardsCount':
+        case 'flashcardCount':
             return sortByFlashcardsCount(sets, ascending);
         default:
             return sets;

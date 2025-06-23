@@ -86,3 +86,27 @@ export const deleteDownloadedFlashcardSet = (id) => {
         console.error('Error deleting downloaded flashcard set:', error);
     }
 }
+
+export const getUserDownloadedFlashcardSets = (userId) => {
+    try {
+        const keys = Object.keys(localStorage);
+        const flashcardSets = keys
+            .filter(key => key.startsWith('flashcardSet-'))
+            .map(key => {
+                const id = key.split('flashcardSet-')[1];
+                const flashcardSet = JSON.parse(localStorage.getItem(key));
+                if (flashcardSet.userId && flashcardSet.userId._id === userId) {
+                    return {
+                        id,
+                        data: flashcardSet
+                    }
+                } else {
+                    return null;
+                }
+            })
+        return flashcardSets.filter(set => set !== null);
+    } catch (error) {
+        console.error('Error getting user downloaded flashcard sets:', error);
+        return [];
+    }
+}
