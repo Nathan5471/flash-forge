@@ -12,18 +12,42 @@ const learnSchema = new mongoose.Schema({
         required: true
     },
     settings: {
-        type: Object,
-        default: {}
+        amountPerSession: {
+            type: Number,
+            required: true,
+            min: 1
+        },
+        trueFalseAmount: {
+            type: Number,
+            required: true,
+            min: 0
+        },
+        multipleChoiceAmount: {
+            type: Number,
+            required: true,
+            min: 0
+        },
+        writtenAmount: {
+            type: Number,
+            required: true,
+            min: 0
+        }
     },
-    progress: [{
-        flashcard: {
-            type: Object,
+    questions: [{
+        order: {
+            type: Number,
             required: true
         },
-        status: {
-            type: Object,
-            default: {}
+        flashcard: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Flashcard',
+            required: true
         },
+        questionType: {
+            type: String,
+            enum: ['trueFlase', 'multipleChoice', 'written'],
+            required: true
+        }
     }],
     createdAt: {
         type: Date,

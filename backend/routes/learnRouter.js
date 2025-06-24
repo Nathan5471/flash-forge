@@ -1,5 +1,5 @@
 import express from 'express';
-import { createLearnSession, checkIfLearnSessionExists } from '../controllers/learnController.js';
+import { createLearnSession, checkIfLearnSessionExists, getLearnSession, deleteLearnSession, generateLearnSession } from '../controllers/learnController.js';
 import { authenticate } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -23,9 +23,23 @@ router.get('/session/:id', authenticate, async (req, res) => {
         if (!id) {
             return res.status(400).json({ message: 'Learn session ID is required' });
         }
-        // TODO: Add session generation logic
+        await generateLearnSession(req, res);
     } catch (error) {
         console.error('Error in get learn session route:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+})
+
+router.get('/check/:id/:order', authenticate, async (req, res) => {
+    const { id, order } = req.params;
+    const { answer } = req.query;
+    try {
+        if (!id || !order || !answer) {
+            return res.status(400).json({ message: 'Flashcard set ID, order, and answer are required' });
+        }
+        // TODO: Implement logic to check if the question is correct
+    } catch (error) {
+        console.error('Error in check learn session route:', error);
         return res.status(500).json({ message: 'Internal server error' });
     }
 })
@@ -36,7 +50,7 @@ router.get('/:id', authenticate, async (req, res) => {
         if (!id) {
             return res.status(400).json({ message: 'Flashcard set ID is required' });
         }
-        // TODO: Add retrival logic
+        await getLearnSession(req, res);
     } catch (error) {
         console.error('Error in get learn session route:', error);
         return res.status(500).json({ message: 'Internal server error' });
@@ -62,7 +76,7 @@ router.delete('/:id', authenticate, async (req, res) => {
         if (!id) {
             return res.status(400).json({ message: 'Learn session ID is required' });
         }
-        // TODO: Add deletion logic
+        await deleteLearnSession(req, res);
     } catch (error) {
         console.error('Error in delete learn session route:', error);
         return res.status(500).json({ message: 'Internal server error' });
