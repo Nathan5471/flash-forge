@@ -154,7 +154,7 @@ export const createOfflineFlashcardSet = (flashcardSetData) => {
             _id: `local-${currentIndex}`,
             title,
             description,
-            flashCards,
+            flashCards: flashCards.map((card, index) => ({ ...card, _id: `${currentIndex}-${index}` })),
             userId: {
                 _id: 'local-user',
                 username: 'Local User'
