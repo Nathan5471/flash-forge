@@ -61,7 +61,7 @@ export default function Edit() {
 
     const handleCancel = (e) => {
         e.preventDefault();
-        navigate(`/downloads/${id}`);
+        navigate(`/downloads/set/${id}`);
     }
 
     if (loading) {
