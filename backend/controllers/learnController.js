@@ -27,8 +27,8 @@ export const createLearnSession = async (req, res) => {
                         flashcard: flashcard._id,
                         questionType: 'trueFalse'
                     });
-                    trueFalseAmount--;
                 }
+                trueFalseAmount--;
             }
             if (multipleChoiceAmount > 0) {
                 const shuffledFlashcards = [...flashcardSet.flashCards].sort(() => Math.random() - 0.5);
@@ -39,6 +39,7 @@ export const createLearnSession = async (req, res) => {
                         questionType: 'multipleChoice'
                     })
                 }
+                multipleChoiceAmount--;
             }
             if (writtenAmount > 0) {
                 const shuffledFlashcards = [...flashcardSet.flashCards].sort(() => Math.random() - 0.5);
@@ -49,6 +50,7 @@ export const createLearnSession = async (req, res) => {
                         questionType: 'written'
                     })
                 }
+                writtenAmount--;
             }
         }
         const learnSettings = new Learn({
