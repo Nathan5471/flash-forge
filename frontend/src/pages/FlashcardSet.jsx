@@ -68,7 +68,8 @@ export default function FlashcardSet() {
             <div className="flex flex-col items-center justify-center mt-6 w-screen">
                 <h1 className="text-4xl font-bold mb-4">{flashcardSet.title}</h1>
                 <div className="flex flex-row mb-4">
-                    <Link to={`/test/${flashcardSet._id}`} className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 mr-4">Take Test</Link>
+                    <Link to={`/set/${flashcardSet._id}/flashcard`} className="bg-blue-500 hover:bg-blue-600 p-2 rounded-lg mr-4">Flashcards</Link>
+                    <Link to={`/test/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 p-2 rounded-lg mr-4">Take Test</Link>
                     { isDownloaded ? (
                         <button
                             className="bg-blue-500 p-2 rounded-lg hover:bg-blue-600"
