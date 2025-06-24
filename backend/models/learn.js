@@ -56,3 +56,4 @@ const learnSchema = new mongoose.Schema({
 })
 
 const Learn = mongoose.model('Learn', learnSchema);
+export default Learn;

@@ -78,10 +78,11 @@ export const checkIfLearnSessionExists = async (req, res) => {
         }
         const learnSession = await Learn.findOne({ flashcardSet: id, user: req.user._id });
         if (!learnSession) {
-            return res.status(404).json({ message: 'Learn session not found for this flashcard set' });
+            return res.status(200).json({ learnSessionId: null, message: 'No learn session found for this flashcard set' });
         }
         if (new Date(learnSession.createdAt).getTime() < new Date(flashcardSet.lastEdited).getTime()) {
-            return res.status(400).json({ message: 'Learn session is outdated, please create a new one' });
+            await Learn.findByIdAndDelete(learnSession._id);
+            return res.status(200).json({ learnSessionId: null, message: 'Learn session is outdated, please create a new one' });
         }
         res.status(200).json({learnSessionId: learnSession._id });
     } catch (error) {

@@ -1,6 +1,6 @@
 import express from 'express';
 import { createLearnSession, checkIfLearnSessionExists, getLearnSession, deleteLearnSession, generateLearnSession } from '../controllers/learnController.js';
-import { authenticate } from '../middleware/authMiddleware.js';
+import authenticate from '../middleware/authenticate.js';
 
 const router = express.Router();
 
@@ -82,3 +82,5 @@ router.delete('/:id', authenticate, async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 })
+
+export default router;
