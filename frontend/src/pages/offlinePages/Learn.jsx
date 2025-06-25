@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { useOverlayContext } from '../contexts/OverlayContext';
-import { checkIfLearnSessionExists, generateLearnSession, submitAnswer, deleteLearnSession } from '../utils/LearnAPIHandler';
-import { getRandomFlashcards } from '../utils/FlashcardAPIHandler';
-import Navbar from '../components/Navbar';
-import StartLearn from '../components/StartLearn';
-import TrueFalse from '../components/learnComponents/TrueFalse';
-import MultipleChoice from '../components/learnComponents/MultipleChoice';
-import Written from '../components/learnComponents/Written';
+import { useOverlayContext } from '../../contexts/OverlayContext';
+import { checkIfLearnSessionExists, generateLearnSession, checkAnswer, deleteLearnSession } from '../../utils/OfflineLearnManager';
+import { getRandomFlashcards } from '../../utils/DownloadManager';
+import Navbar from '../../components/offlineComponents/Navbar';
+import StartLearn from '../../components/StartLearn';
+import TrueFalse from '../../components/learnComponents/TrueFalse';
+import MultipleChoice from '../../components/learnComponents/MultipleChoice';
+import Written from '../../components/learnComponents/Written';
 
 export default function Learn() {
     const { openOverlay } = useOverlayContext();
@@ -23,11 +23,11 @@ export default function Learn() {
     const [correctAnswer, setCorrectAnswer] = useState('');
     const [finished, setFinished] = useState(false);
 
-    const handleGetQuestions = useCallback(async (id) => {
+    const handleGetQuestions = useCallback((id) => {
         try {
-            const session = await generateLearnSession(id);
-            if (session.questions.length === 0) {
-                await deleteLearnSession(id);
+            const session = generateLearnSession(id);
+            if (session.length === 0) {
+                deleteLearnSession(id);
                 setId(null);
                 return;
             }
@@ -38,13 +38,12 @@ export default function Learn() {
             setLoading(false);
         }
     }, []);
-    
 
-    useEffect(() => { 
-        const initializeLearnSession = async () => {
+    useEffect(() => {
+        const initializeLearnSession = () => {
             try {
                 if (!id && !isPopupOpen) {
-                    const exists = await checkIfLearnSessionExists(flashcardSetId);
+                    const exists = checkIfLearnSessionExists(flashcardSetId);
                     if (!exists.learnSessionId) {
                         setIsPopupOpen(true);
                         openOverlay(<StartLearn flashcardSetId={flashcardSetId} onStart={handleGetQuestions} setId={setId} />);
@@ -54,18 +53,18 @@ export default function Learn() {
                     }
                 }
             } catch (error) {
-                console.error('Error checking learn session:', error);
+                console.error('Error initializing learn session:', error);
             }
         }
         initializeLearnSession();
-    }, [flashcardSetId, handleGetQuestions, openOverlay, id, isPopupOpen]);
+    }, [flashcardSetId, handleGetQuestions, openOverlay, id, isPopupOpen])
 
     useEffect(() => {
         if (questions.length === 0) return;
         const fetchOtherAnswer = async (amount) => {
             try {
-                const flashcards = await getRandomFlashcards(flashcardSetId, amount, questions[currentQuestionIndex].flashcard._id);
-                setOtherAnswers(flashcards.map(flashcard => flashcard.answer));
+                const flashcards = await getRandomFlashcards(flashcardSetId, amount);
+                setOtherAnswers(flashcards.map(flashcard => flashcard.question));
             } catch (error) {
                 console.error('Error fetching other answers:', error);
             }
@@ -81,19 +80,19 @@ export default function Learn() {
         setCurrentAnswer(answer);
     }
 
-    const handleAnswerSubmit = async (e) => {
+    const handleAnswerSubmit = (e) => {
         e.preventDefault();
         try {
             const question = questions[currentQuestionIndex];
-            const response = await submitAnswer(id, question.order, currentAnswer);
+            const response = checkAnswer(id, question.order, currentAnswer);
             if (!response.isCorrect) {
                 setIsWrong(true);
-                setCorrectAnswer(response.correctAnswer);
+                setCorrectAnswer(response.flashcard.answer);
                 return;
             }
             handleNextQuestion();
         } catch (error) {
-            console.error('Error submitting answer:', error);
+            console.error('Error checking answer:', error);
         }
     }
 
@@ -109,9 +108,9 @@ export default function Learn() {
         }
     }
 
-    const handleReset = async () => {
+    const handleReset = () => {
         try {
-            await deleteLearnSession(id);
+            deleteLearnSession(id);
             setQuestions([]);
             setCurrentQuestionIndex(0);
             setCurrentAnswer('');
@@ -124,14 +123,14 @@ export default function Learn() {
         }
     }
 
-    const handleNextSession = async () => {
+    const handleNextSession = () => {
         setLoading(true);
         setFinished(false);
         setQuestions([]);
         setCurrentQuestionIndex(0);
         setCurrentAnswer('');
         try {
-            const nextSession = await generateLearnSession(id);
+            const nextSession = generateLearnSession(id);
             setQuestions(nextSession.questions);
             setLoading(false);
         } catch (error) {
@@ -165,7 +164,7 @@ export default function Learn() {
                             >Next Session</button>
                             <button
                                 className="bg-gray-500 hover:bg-gray-600 rounded-lg py-2 px-4 w-1/2"
-                                onClick={() => window.location.href = `/set/${flashcardSetId}`}
+                                onClick={() => window.location.href = `/downloads/set/${flashcardSetId}`}
                             >Return to set</button>
                         </div>
                     </div>
@@ -178,7 +177,7 @@ export default function Learn() {
         <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
             <Navbar />
             <div className="flex flex-col items-center justify-center h-full w-screen">
-                <form className="flex flex-col items-center justify-center bg-gray-700 rounded-lg p-4 w-1/3" onSubmit={handleAnswerSubmit}>
+                <form className="flex flex-col items-center justify-center h-full w-screen" onSubmit={handleAnswerSubmit}>
                     {questions[currentQuestionIndex].questionType === 'trueFalse' && (
                         <TrueFalse
                             flashcard={questions[currentQuestionIndex].flashcard}
@@ -200,8 +199,8 @@ export default function Learn() {
                         />
                     )}
                     {isWrong && (
-                        <p className="text-red-500 mb-4">
-                            Incorrect! The correct answer was: <strong>{correctAnswer}</strong>
+                        <p className="text-rec-500 mb-4">
+                            Incorrect! The correct answer is: <strong>{correctAnswer}</strong>
                         </p>
                     )}
                     <div className="flex flex-row justify-between w-full p-2 rounded-lg">
@@ -219,7 +218,7 @@ export default function Learn() {
                         )}
                         <button
                             type="button"
-                            className="bg-red-500 hover:bg-red-600 rounded-lg py-2 w-1/2 ml-2"
+                            className="bg-red-500 hover:bg-red-600 rounded-lg w-1/2 ml-2"
                             onClick={handleReset}
                         >Reset</button>
                     </div>

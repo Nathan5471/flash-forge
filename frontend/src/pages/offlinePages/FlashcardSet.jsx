@@ -52,6 +52,7 @@ export default function FlashcardSet() {
                 <div className="flex flex-row mb-4">
                     <Link to={`/downloads/set/${flashcardSet._id}/flashcard`} className="bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded mr-2">Flashcards</Link>
                     <Link to={`/downloads/test/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded mr-2">Take Test</Link>
+                    <Link to={`/downloads/learn/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded mr-2">Start Learn</Link>
                 </div>
                 <div className="w-1/2 mb-4">
                     <Flashcard flashcardData={flashcardSet.flashCards[currentFlashcardIndex]} />

@@ -214,3 +214,21 @@ export const editOfflineFlashcardSet = (id, updatedData) => {
         return null;
     }
 }
+
+export const getRandomFlashcards = (id, amount, exludedId) => {
+    try {
+        const flashcardSet = getDownloadedFlashcardSet(id);
+        if (!flashcardSet || !flashcardSet.flashCards || flashcardSet.flashCards.length === 0) {
+            return [];
+        }
+        const flashcards = flashcardSet.flashCards.filter(flashcard => flashcard._id !== exludedId);
+        if (flashcards.length === 0) {
+            return [];
+        }
+        const shuffledFlashcards = flashcards.sort(() => Math.random() - 0.5);
+        return shuffledFlashcards.slice(0, parseInt(amount, 10));
+    } catch (error) {
+        console.error('Error getting random flashcards:', error);
+        return [];
+    }
+}
