@@ -45,16 +45,16 @@ export const syncFlashcardSet = async (id) => {
     }
 }
 
-export const getDownloadedFlashcardSet = (id) => {
+export const getDownloadedFlashcardSet = async (id) => {
     try {
         if (!isFlashcardSetDownloaded(id)) {
-            return null;
+            return Promise.reject({ message: 'Flashcard set not downloaded' });
         }
         const flashcardSet = localStorage.getItem(`flashcardSet-${id}`);
         return JSON.parse(flashcardSet);
     } catch (error) {
         console.error('Error getting downloaded flashcard set:', error);
-        return null;
+        return Promise.reject({ message: 'Error retrieving flashcard set' });
     }
 }
 

@@ -3,7 +3,7 @@ import { useOverlayContext } from '../contexts/OverlayContext';
 
 export default function StartTest({ flashcardSetData, onStartTest, isOffline = false }) {
     const { closeOverlay } = useOverlayContext();
-    const [questionCount, setQuestionCount] = useState(10);
+    const [questionCount, setQuestionCount] = useState(Math.min(10, flashcardSetData.flashCards.length));
     const [questionTypes, setQuestionTypes] = useState(['multipleChoice']);
 
     const handleQuestionTypeChange = (e) => {

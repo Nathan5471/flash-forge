@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useOverlayContext } from '../contexts/OverlayContext';
 import { getFlashcardSet } from '../utils/FlashcardAPIHandler';
+import { getDownloadedFlashcardSet } from '../utils/DownloadManager';
 import CalcAmountPerType from '../utils/CalcAmountPerType';
 import Navbar from '../components/Navbar';
 import StartTest from '../components/StartTest';
@@ -12,7 +13,7 @@ import Matching from '../components/testComponents/Matching';
 import UnansweredQuestionsPopup from '../components/testComponents/UnansweredQuestionsPopup';
 import GradePopup from '../components/testComponents/GradePopup';
 
-export default function Test() {
+export default function Test({ isOffline = false }) {
     const { id } = useParams();
     const { openOverlay } = useOverlayContext();
     const [flashcardSet, setFlashcardSet] = useState(null);
@@ -28,7 +29,12 @@ export default function Test() {
     useEffect(() => {
         const fetchFlashcardSet = async () => {
             try {
-                const flashcardData = await getFlashcardSet(id);
+                let flashcardData;
+                if (isOffline) {
+                    flashcardData = await getDownloadedFlashcardSet(id);
+                } else {
+                    flashcardData = await getFlashcardSet(id);
+                }
                 setFlashcardSet(flashcardData);
                 if (flashcardData && flashcardData.flashCards) {
                     const answers = flashcardData.flashCards.map(card => card.answer);
@@ -42,7 +48,7 @@ export default function Test() {
             }
         }
         fetchFlashcardSet();
-    }, [id]);
+    }, [id, isOffline]);
 
     useEffect(() => {
         if (flashcardSet && loading === false && readyForTest === false && !isPopupOpen) {
@@ -61,10 +67,11 @@ export default function Test() {
                 <StartTest
                     flashcardSetData={flashcardSet}
                     onStartTest={handleAddTestInfo}
+                    isOffline={isOffline}
                 />
             );
         }
-    }, [flashcardSet, loading, openOverlay, isPopupOpen, readyForTest]);
+    }, [flashcardSet, loading, openOverlay, isPopupOpen, readyForTest, isOffline]);
 
     const handleAnswerChange = (answerData) => {
         const newSelectedAnswers = { ...selectedAnswers };
@@ -103,7 +110,7 @@ export default function Test() {
     if (loading || !readyForTest) {
         return (
             <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
-                <Navbar />
+                <Navbar isOffline={isOffline}/>
                 <div className="flex items-center justify-center h-full">
                     <p className="text-lg">Loading...</p>
                 </div>
@@ -113,7 +120,7 @@ export default function Test() {
 
     return (
         <div className="flex flex-col min-h-screen w-screen bg-gray-600 text-white">
-            <Navbar />
+            <Navbar isOffline={isOffline}/>
             <div className="flex flex-col items-center justify-center p-4">
                 <h1 className="text-3xl mb-4 text-center">Test: {flashcardSet.title}</h1>
                 <div className="w-[calc(50%)]">
