@@ -124,7 +124,6 @@ export const deleteLearnSession = async (req, res) => {
 
 export const generateLearnSession = async (req, res) => {
     const { id } = req.params;
-    console.log('Generating learn session for ID:', id);
     try {
         const learnSession = await Learn.findById(id).populate('flashcardSet').populate('user', ['username', '_id']);
         if (!learnSession) {
@@ -132,7 +131,10 @@ export const generateLearnSession = async (req, res) => {
         }
         const settings = learnSession.settings;
         const questions = [...learnSession.questions].sort((a, b) => a.order - b.order);
-        const populatedQuestions = questions.splice(0, settings.amountPerSession).map(question => question.flashcard = learnSession.flashcardSet.flashCards.find(flashcard => flashcard._id.toString() === question.flashcard.toString()));
+        const populatedQuestions = questions.splice(0, settings.amountPerSession).map((question) => {
+            question.flashcard = learnSession.flashcardSet.flashCards.find(flashcard => flashcard._id.toString() === question.flashcard.toString());
+            return question;
+        })
         res.status(200).json({
             questions: populatedQuestions
         })

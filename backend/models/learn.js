@@ -45,7 +45,7 @@ const learnSchema = new mongoose.Schema({
         },
         questionType: {
             type: String,
-            enum: ['trueFlase', 'multipleChoice', 'written'],
+            enum: ['trueFalse', 'multipleChoice', 'written'],
             required: true
         }
     }],

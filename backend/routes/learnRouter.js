@@ -19,7 +19,6 @@ router.get('/flashcardSet/:id', authenticate, async (req, res) => {
 
 router.get('/session/:id', authenticate, async (req, res) => {
     const { id } = req.params;
-    console.log('Learn session ID:', id);
     try {
         if (!id) {
             return res.status(400).json({ message: 'Learn session ID is required' });

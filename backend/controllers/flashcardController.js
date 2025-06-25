@@ -187,3 +187,23 @@ export const getLastEditTime = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+export const getRandomFlashcards = async (req, res) => {
+    const { id } = req.params;
+    const { amount, excludeFlashcardId } = req.query;
+    try {
+        const flashcardSet = await FlashcardSet.findById(id);
+        if (!flashcardSet) {
+            return res.status(404).json({ message: 'Flashcard set not found' });
+        }
+        const flashcards = flashcardSet.flashCards.filter(flashcard => flashcard._id.toString() !== excludeFlashcardId);
+        if (flashcards.length === 0) {
+            return res.status(404).json({ message: 'No flashcards available in this set' });
+        }
+        const shuffledFlashcards = flashcards.sort(() => Math.random() - 0.5);
+        res.status(200).json(shuffledFlashcards.slice(0, parseInt(amount)));
+    } catch (error) {
+        console.error('Error fetching random flashcards:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}

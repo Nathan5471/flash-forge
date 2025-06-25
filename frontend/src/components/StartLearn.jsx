@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useOverlayContext } from '../contexts/OverlayContext';
-import { createLearnSession } from '../utils/LearnAPIHandle';
+import { createLearnSession } from '../utils/LearnAPIHandler';
 
 export default function StartLearn({ flashcardSetId, onStart, setId }) {
     const { closeOverlay } = useOverlayContext();

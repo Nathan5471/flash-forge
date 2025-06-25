@@ -68,3 +68,13 @@ export const cloneFlashcardSet = async (id, newTitle) => {
     const response = await api.post(`/clone/${id}`, { newTitle });
     return response.data;
 }
+
+export const getRandomFlashcards = async (id, amount, excludeFlashcardId) => {
+    const response = await api.get(`/random/${id}`, {
+        params: {
+            amount: amount,
+            excludeFlashcardId: excludeFlashcardId
+        }
+    });
+    return response.data;
+}

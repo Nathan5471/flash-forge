@@ -1,5 +1,5 @@
 import express from 'express';
-import { createFlashcardSet, getFlashcardSet, searchFlashcardSets, getUserFlashcardSets, getRecentFlashcardSets, getRecentlyCreatedFlashcardSets, updateFlashcardSet, deleteFlashcardSet, cloneFlashcardSet, getLastEditTime } from '../controllers/flashcardController.js';
+import { createFlashcardSet, getFlashcardSet, searchFlashcardSets, getUserFlashcardSets, getRecentFlashcardSets, getRecentlyCreatedFlashcardSets, updateFlashcardSet, deleteFlashcardSet, cloneFlashcardSet, getLastEditTime, getRandomFlashcards } from '../controllers/flashcardController.js';
 import authenticate from '../middleware/authenticate.js';
 import nonRequiredAuthenticate from '../middleware/nonRequiredAuthenticate.js';
 
@@ -83,6 +83,20 @@ router.get('/lastEdit/:id', async (req, res) => {
         await getLastEditTime(req, res);
     } catch (error) {
         console.error('Error in get last edit time route:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+})
+
+router.get('/random/:id', async (req, res) => {
+    const { id } = req.params;
+    const { amount, excludeFlashcardId } = req.query;
+    try {
+        if (!id || !amount) {
+            return res.status(400).json({ message: 'Flashcard set ID and amount are required' });
+        }
+        await getRandomFlashcards(req, res);
+    } catch (error) {
+        console.error('Error in get random flashcards route:', error);
         return res.status(500).json({ message: 'Internal server error' });
     }
 })
