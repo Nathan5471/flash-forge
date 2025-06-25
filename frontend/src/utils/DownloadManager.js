@@ -58,7 +58,7 @@ export const getDownloadedFlashcardSet = async (id) => {
     }
 }
 
-export const getDownloadedFlashcardSets = () => {
+export const getDownloadedFlashcardSets = async () => {
     try {
         const keys = Object.keys(localStorage);
         const flashcardSets = keys
@@ -70,25 +70,29 @@ export const getDownloadedFlashcardSets = () => {
                     data: JSON.parse(localStorage.getItem(key))
                 }
             })
+        if (!flashcardSets || flashcardSets.length === 0) {
+            return Promise.reject({ message: 'No downloaded flashcard sets found' });
+        }
         return flashcardSets;
     } catch (error) {
         console.error('Error getting downloaded flashcard sets:', error);
-        return [];
+        return Promise.reject({ message: 'Error retrieving flashcard sets' });
     }
 }
 
-export const deleteDownloadedFlashcardSet = (id) => {
+export const deleteDownloadedFlashcardSet = async (id) => {
     try {
         if (!isFlashcardSetDownloaded(id)) {
-            return;
+            return Promise.reject({ message: 'Flashcard set not downloaded' });
         }
         localStorage.removeItem(`flashcardSet-${id}`);
     } catch (error) {
         console.error('Error deleting downloaded flashcard set:', error);
+        return Promise.reject({ message: 'Error deleting flashcard set' });
     }
 }
 
-export const getUserDownloadedFlashcardSets = (userId) => {
+export const getUserDownloadedFlashcardSets = async (userId) => {
     try {
         const keys = Object.keys(localStorage);
         const flashcardSets = keys
@@ -105,16 +109,22 @@ export const getUserDownloadedFlashcardSets = (userId) => {
                     return null;
                 }
             })
+        if (!flashcardSets || flashcardSets.length === 0) {
+            return Promise.reject({ message: 'No downloaded flashcard sets found for this user' });
+        }
         return flashcardSets.filter(set => set !== null);
     } catch (error) {
         console.error('Error getting user downloaded flashcard sets:', error);
-        return [];
+        return Promise.reject({ message: 'Error retrieving user flashcard sets' });
     }
 }
 
-export const searchDownloadedFlashcardSets = (query) => {
+export const searchDownloadedFlashcardSets = async (query) => {
     try {
-        const flashcardSets = getDownloadedFlashcardSets().map(set => set.data);
+        const flashcardSets = await getDownloadedFlashcardSets().map(set => set.data);
+        if (!flashcardSets || flashcardSets.length === 0) {
+            return Promise.reject({ message: 'No downloaded flashcard sets available' });
+        }
         const fuseOptions = {
             keys: [{ name: 'title', weight: 0.7 }, { name: 'description', weight: 0.3 }],
             includedScore: true,
@@ -122,6 +132,9 @@ export const searchDownloadedFlashcardSets = (query) => {
         };
         const fuseInstance = new fuse(flashcardSets, fuseOptions);
         const results = fuseInstance.search(query);
+        if (results.length === 0) {
+            return Promise.reject({ message: 'No flashcard sets found for the given query' });
+        }
         const sortedResults = results.sort((a, b) => b.score - a.score);
         return sortedResults.map(result => ({
             id: result.item._id,
@@ -129,11 +142,11 @@ export const searchDownloadedFlashcardSets = (query) => {
         }));
     } catch (error) {
         console.error('Error searching downloaded flashcard sets:', error);
-        return [];
+        return Promise.reject({ message: 'Error searching flashcard sets' });
     }
 }
 
-const getCurrentLocalIndex = () => {
+const getCurrentLocalIndex = async () => {
     try {
         const index = localStorage.getItem('currentLocalIndex');
         return index ? parseInt(index, 10) : 0;
@@ -143,12 +156,12 @@ const getCurrentLocalIndex = () => {
     }
 }
 
-export const createOfflineFlashcardSet = (flashcardSetData) => {
+export const createOfflineFlashcardSet = async (flashcardSetData) => {
     try {
         const { title, description, flashCards } = flashcardSetData;
-        const currentIndex = getCurrentLocalIndex();
+        const currentIndex = await getCurrentLocalIndex();
         if (!title || !description || !flashCards || flashCards.length === 0) {
-            throw new Error('Invalid flashcard set data');
+            return Promise.reject({ message: 'All fields are required to create a flashcard set' });
         }
         const newFlashcardSet = {
             _id: `local-${currentIndex}`,
@@ -167,41 +180,41 @@ export const createOfflineFlashcardSet = (flashcardSetData) => {
         return newFlashcardSet;
     } catch (error) {
         console.error('Error creating offline flashcard set:', error);
-        return null;
+        return Promise.reject({ message: 'Error creating flashcard set' });
     }
 }
 
-export const createOfflineClone = (id, newTitle) => {
+export const createOfflineClone = async (id, newTitle) => {
     try {
-        const flashcardSet = getDownloadedFlashcardSet(id);
+        const flashcardSet = await getDownloadedFlashcardSet(id);
         if (!flashcardSet) {
-            throw new Error('Flashcard set not found');
+            return Promise.reject({ message: 'Flashcard set not found' });
         }
         const newFlashcardSetData = {
             title: newTitle,
             description: flashcardSet.description,
             flashCards: flashcardSet.flashCards.map(card => ({ ...card })),
         }
-        const newFlashcardSet = createOfflineFlashcardSet(newFlashcardSetData);
+        const newFlashcardSet = await createOfflineFlashcardSet(newFlashcardSetData);
         return newFlashcardSet;
     } catch (error) {
         console.error('Error creating offline clone of flashcard set:', error);
-        return null;
+        return Promise.reject({ message: 'Error creating offline clone' });
     }
 }
 
-export const editOfflineFlashcardSet = (id, updatedData) => {
+export const editOfflineFlashcardSet = async (id, updatedData) => {
     try {
         const { newTitle, newDescription, newFlashCards } = updatedData;
         if (!newTitle || !newDescription || !newFlashCards || newFlashCards.length === 0) {
-            throw new Error('Invalid updated flashcard set data');
+            return Promise.reject({ message: 'All fields are required to edit a flashcard set' });
         }
         const newFlashcardSet = getDownloadedFlashcardSet(id);
         if (!newFlashcardSet) {
-            throw new Error('Flashcard set not found');
+            return Promise.reject({ message: 'Flashcard set not found' });
         }
         if (!newFlashcardSet._id.startsWith('local-')) {
-            throw new Error('Cannot edit a non-local flashcard set');
+            return Promise.reject({ message: 'Flashcards need to be local-only to be edited' });
         }
         newFlashcardSet.title = newTitle;
         newFlashcardSet.description = newDescription;
@@ -211,24 +224,24 @@ export const editOfflineFlashcardSet = (id, updatedData) => {
         return newFlashcardSet;
     } catch (error) {
         console.error('Error editing offline flashcard set:', error);
-        return null;
+        return Promise.reject({ message: 'Error editing flashcard set' });
     }
 }
 
-export const getRandomFlashcards = (id, amount, exludedId) => {
+export const getRandomFlashcards = async (id, amount, exludedId) => {
     try {
-        const flashcardSet = getDownloadedFlashcardSet(id);
+        const flashcardSet = await getDownloadedFlashcardSet(id);
         if (!flashcardSet || !flashcardSet.flashCards || flashcardSet.flashCards.length === 0) {
-            return [];
+            return Promise.reject({ message: 'No flashcards available in this set' });
         }
         const flashcards = flashcardSet.flashCards.filter(flashcard => flashcard._id !== exludedId);
         if (flashcards.length === 0) {
-            return [];
+            return Promise.reject({ message: 'No flashcards available after exclusion' });
         }
         const shuffledFlashcards = flashcards.sort(() => Math.random() - 0.5);
         return shuffledFlashcards.slice(0, parseInt(amount, 10));
     } catch (error) {
         console.error('Error getting random flashcards:', error);
-        return [];
+        return Promise.reject({ message: 'Error retrieving random flashcards' });
     }
 }

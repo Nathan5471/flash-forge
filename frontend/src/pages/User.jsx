@@ -3,11 +3,12 @@ import { useParams } from 'react-router-dom';
 import fuse from 'fuse.js';
 import { getUsername } from '../utils/AuthAPIHandler';
 import { getUserFlashcardSets } from '../utils/FlashcardAPIHandler';
+import { getUserDownloadedFlashcardSets } from '../utils/DownloadManager';
 import SortSets from '../utils/SortSets';
 import Navbar from '../components/Navbar';
 import SetDisplay from '../components/SetDisplay';
 
-export default function User() {
+export default function User({ isOffline = false }) {
     const { userId } = useParams();
     const [username, setUsername] = useState(null);
     const [flashcardSets, setFlashcardSets] = useState([]);
@@ -19,10 +20,18 @@ export default function User() {
     useEffect(() => {
         const fetchUserFlashcardSets = async () => {
             try {
-                const userData = await getUsername(userId);
-                setUsername(userData.username);
-                const sets = await getUserFlashcardSets(userId);
-                setFlashcardSets(sets);
+                if (isOffline) {
+                    const sets = getUserDownloadedFlashcardSets(userId);
+                    if (sets.length > 0) {
+                        setUsername(sets[0].data.userId.username);
+                    }
+                    setFlashcardSets(sets.map(set => set.data));
+                } else {
+                    const userData = await getUsername(userId);
+                    setUsername(userData.username);
+                    const sets = await getUserFlashcardSets(userId);
+                    setFlashcardSets(sets);
+                }
             } catch (error) {
                 console.error('Error fetching user flashcard sets:', error);
             } finally {
@@ -30,7 +39,7 @@ export default function User() {
             }
         }
         fetchUserFlashcardSets();
-    }, [userId]);
+    }, [userId, isOffline]);
 
     useEffect(() => {
         const handleSearch = () => {
@@ -63,14 +72,14 @@ export default function User() {
     if (loading) {
         return (
             <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
-                <Navbar />
+                <Navbar isOffline={isOffline} />
             </div>
         )
     }
 
     return (
         <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
-            <Navbar />
+            <Navbar isOffline={isOffline} />
             <h1 className="text-4xl font-bold text-center mt-6">{username}'s Flashcard Sets</h1>
             <div className="flex flex-row justify-center mt-4">
                 <input
@@ -92,7 +101,7 @@ export default function User() {
             {displayedSets.length > 0 ? (
                 <div className="grid gird-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
                     {displayedSets.map((set) => (
-                        <SetDisplay key={set._id} flashcardSet={set} />
+                        <SetDisplay key={set._id} flashcardSet={set} isOffline={isOffline} />
                     ))}
                 </div>
             ) : (
