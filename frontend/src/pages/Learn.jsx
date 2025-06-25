@@ -6,6 +6,8 @@ import { getRandomFlashcards } from '../utils/FlashcardAPIHandler';
 import Navbar from '../components/Navbar';
 import StartLearn from '../components/StartLearn';
 import TrueFalse from '../components/learnComponents/TrueFalse';
+import MultipleChoice from '../components/learnComponents/MultipleChoice';
+import Written from '../components/learnComponents/Written';
 
 export default function Learn() {
     const { openOverlay } = useOverlayContext();
@@ -15,13 +17,20 @@ export default function Learn() {
     const [otherAnswers, setOtherAnswers] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [currentAnswer, setCurrentAnswer] = useState('');
-    const [currentQuestionOrder, setCurrentQuestionOrder] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [isWrong, setIsWrong] = useState(false);
+    const [correctAnswer, setCorrectAnswer] = useState('');
     const [finished, setFinished] = useState(false);
 
     const handleGetQuestions = useCallback(async (id) => {
         try {
             const session = await generateLearnSession(id);
+            if (session.questions.length === 0) {
+                await deleteLearnSession(id);
+                setId(null);
+                return;
+            }
             setQuestions(session.questions);
             console.log('Learn session generated:', session);
         } catch (error) {
@@ -35,11 +44,12 @@ export default function Learn() {
     useEffect(() => { 
         const initializeLearnSession = async () => {
             try {
-                if (!id) {
+                if (!id && !isPopupOpen) {
                     console.log(id);
                     const exists = await checkIfLearnSessionExists(flashcardSetId);
                     console.log('Learn session exists:', exists);
                     if (!exists.learnSessionId) {
+                        setIsPopupOpen(true);
                         openOverlay(<StartLearn flashcardSetId={flashcardSetId} onStart={handleGetQuestions} setId={setId} />);
                     } else {
                         console.log('Learn session ID found:', exists.learnSessionId);
@@ -52,7 +62,7 @@ export default function Learn() {
             }
         }
         initializeLearnSession();
-    }, [flashcardSetId, handleGetQuestions, openOverlay, id]);
+    }, [flashcardSetId, handleGetQuestions, openOverlay, id, isPopupOpen]);
 
     useEffect(() => {
         if (questions.length === 0) return;
@@ -71,9 +81,8 @@ export default function Learn() {
         }
     }, [flashcardSetId, questions, currentQuestionIndex]);
 
-    const handleAnswerChange = (order, answer) => {
+    const handleAnswerChange = (answer) => {
         setCurrentAnswer(answer);
-        setCurrentQuestionOrder(order);
     }
 
     const handleAnswerSubmit = async (e) => {
@@ -82,10 +91,10 @@ export default function Learn() {
             const question = questions[currentQuestionIndex];
             console.log(id, question.order, currentAnswer);
             const response = await submitAnswer(id, question.order, currentAnswer);
-            if (response.isCorrect) {
-                console.log('Correct answer!');
-            } else {
-                console.log('Incorrect answer. Correct answer was:', question.flashcard.answer);
+            if (!response.isCorrect) {
+                setIsWrong(true);
+                setCorrectAnswer(response.correctAnswer);
+                return;
             }
             setCurrentAnswer('');
             if ( currentQuestionIndex < questions.length - 1) {
@@ -98,13 +107,24 @@ export default function Learn() {
         }
     }
 
+    const handleNextQuestion = () => {
+        if (currentQuestionIndex < questions.length - 1) {
+            setCurrentQuestionIndex(currentQuestionIndex + 1);
+            setIsWrong(false);
+            setCurrentAnswer('');
+        } else {
+            setFinished(true);
+            setIsWrong(false);
+            setCurrentAnswer('');
+        }
+    }
+
     const handleReset = async () => {
         try {
             await deleteLearnSession(id);
             setQuestions([]);
             setCurrentQuestionIndex(0);
             setCurrentAnswer('');
-            setCurrentQuestionOrder(null);
             setLoading(true);
             setId(null);
             openOverlay(<StartLearn flashcardSetId={flashcardSetId} onStart={handleGetQuestions} setId={setId} />);
@@ -114,14 +134,14 @@ export default function Learn() {
     }
 
     const handleNextSession = async () => {
+        setLoading(true);
+        setFinished(false);
         setQuestions([]);
         setCurrentQuestionIndex(0);
         setCurrentAnswer('');
-        setCurrentQuestionOrder(null);
-        setLoading(true);
-        setFinished(false);
         try {
             const nextSession = await generateLearnSession(id);
+            console.log('Next session generated:', nextSession);
             setQuestions(nextSession.questions);
             setLoading(false);
         } catch (error) {
@@ -168,7 +188,7 @@ export default function Learn() {
         <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
             <Navbar />
             <div className="flex flex-col items-center justify-center h-full w-screen">
-            <div className="flex flex-col items-center justify-center h-full p-4 w-1/3">
+            <form className="flex flex-col items-center justify-center bg-gray-700 rounded-lg p-4 w-1/3" onSubmit={handleAnswerSubmit}>
                 {questions[currentQuestionIndex].questionType === 'trueFalse' && (
                     <TrueFalse
                         flashcard={questions[currentQuestionIndex].flashcard}
@@ -177,17 +197,46 @@ export default function Learn() {
                         onAnswerSelected={handleAnswerChange}
                     />
                 )}
-                <div className="flex flex-row justify-between w-full p-2 rounded-lg bg-gray-700">
+                {questions[currentQuestionIndex].questionType === 'multipleChoice' && (
+                    <MultipleChoice
+                        flashcard={questions[currentQuestionIndex].flashcard}
+                        questionOrder={questions[currentQuestionIndex].order}
+                        otherAnswers={otherAnswers}
+                        onAnswerSelected={handleAnswerChange}
+                    />
+                )}
+                {questions[currentQuestionIndex].questionType === 'written' && (
+                    <Written
+                        flashcard={questions[currentQuestionIndex].flashcard}
+                        questionOrder={questions[currentQuestionIndex].order}
+                        onAnswerSelected={handleAnswerChange}
+                    />
+                )}
+                {isWrong && (
+                    <p className="text-red-500 mb-4">
+                        Incorrect! The correct answer was: <strong>{correctAnswer}</strong>
+                    </p>
+                )}
+                <div className="flex flex-row justify-between w-full p-2 rounded-lg">
+                    {isWrong ? (
+                        <button
+                            type="button"
+                            className="bg-blue-500 hover:bg-blue-600 rounded-lg py-2 px-4 w-1/2 mr-2"
+                            onClick={handleNextQuestion}
+                        >Next</button>
+                    ) : (
+                        <button
+                            type="submit"
+                            className="bg-blue-500 hover:bg-blue-600 rounded-lg py-2 px-4 w-1/2 mr-2"
+                        >Submit</button>
+                    )}
                     <button
-                        className="bg-blue-500 hover:bg-blue-600 rounded-lg py-2 px-4 w-1/2 mr-2"
-                        onClick={handleAnswerSubmit}
-                    >Submit</button>
-                    <button
+                        type="button"
                         className="bg-red-500 hover:bg-red-600 rounded-lg py-2 px-4 w-1/2 ml-2"
                         onClick={handleReset}
                     >Reset</button>
                 </div>
-            </div>
+            </form>
             </div>
         </div>
     )
