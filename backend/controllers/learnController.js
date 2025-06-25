@@ -132,9 +132,11 @@ export const generateLearnSession = async (req, res) => {
         const settings = learnSession.settings;
         const questions = [...learnSession.questions].sort((a, b) => a.order - b.order);
         const populatedQuestions = questions.splice(0, settings.amountPerSession).map((question) => {
-            question.flashcard = learnSession.flashcardSet.flashCards.find(flashcard => flashcard._id.toString() === question.flashcard.toString());
-            return question;
+            const newQuestion = {order: question.order, questionType: question.questionType};
+            newQuestion.flashcard = learnSession.flashcardSet.flashCards.find(flashcard => flashcard._id.toString() === question.flashcard.toString());
+            return newQuestion;
         })
+        console.log(populatedQuestions[0]);
         res.status(200).json({
             questions: populatedQuestions
         })
