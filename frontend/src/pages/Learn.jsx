@@ -78,13 +78,11 @@ export default function Learn() {
 
     const handleAnswerSubmit = async (e) => {
         e.preventDefault();
-        if (!currentAnswer.trim()) {
-            return;
-        }
         try {
             const question = questions[currentQuestionIndex];
+            console.log(id, question.order, currentAnswer);
             const response = await submitAnswer(id, question.order, currentAnswer);
-            if (response.correct) {
+            if (response.isCorrect) {
                 console.log('Correct answer!');
             } else {
                 console.log('Incorrect answer. Correct answer was:', question.flashcard.answer);
@@ -115,6 +113,22 @@ export default function Learn() {
         }
     }
 
+    const handleNextSession = async () => {
+        setQuestions([]);
+        setCurrentQuestionIndex(0);
+        setCurrentAnswer('');
+        setCurrentQuestionOrder(null);
+        setLoading(true);
+        setFinished(false);
+        try {
+            const nextSession = await generateLearnSession(id);
+            setQuestions(nextSession.questions);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error generating next session:', error);
+        }
+    }
+
     if (loading) {
         return (
             <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
@@ -137,8 +151,8 @@ export default function Learn() {
                         <div className="flex flex-row w-full justify-between">
                             <button
                                 className="bg-blue-500 hover:bg-blue-600 rounded-lg py-2 px-4 w-1/2 mr-2"
-                                onClick={handleReset}
-                            >Start Over</button>
+                                onClick={handleNextSession}
+                            >Next Session</button>
                             <button
                                 className="bg-gray-500 hover:bg-gray-600 rounded-lg py-2 px-4 w-1/2"
                                 onClick={() => window.location.href = `/set/${flashcardSetId}`}

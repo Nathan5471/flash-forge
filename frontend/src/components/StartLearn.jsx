@@ -45,7 +45,7 @@ export default function StartLearn({ flashcardSetId, onStart, setId }) {
             console.log('Learn session ID:', learnSessionId.learnSessionId);
             if (learnSessionId.learnSessionId) {
                 setId(learnSessionId.learnSessionId);
-                onStart();
+                onStart(learnSessionId.learnSessionId);
                 closeOverlay();
                 return;
             }

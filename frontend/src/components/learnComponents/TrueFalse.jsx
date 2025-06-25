@@ -15,7 +15,11 @@ export default function TrueFalse({ flashcard, questionOrder, otherAnswer, onAns
         e.preventDefault();
         if (answer === true) {
             setSelectedAnswer(true);
-            onAnswerSelected(questionOrder, givenAnswer);
+            if (typeof givenAnswer === 'string') {
+                onAnswerSelected(questionOrder, givenAnswer);
+            } else if (Array.isArray(givenAnswer) && givenAnswer.length > 0) {
+                onAnswerSelected(questionOrder, givenAnswer[0]);
+            }
         } else {
             setSelectedAnswer(false);
             onAnswerSelected(questionOrder, givenAnswer === flashcard.answer ? otherAnswer : flashcard.answer);
