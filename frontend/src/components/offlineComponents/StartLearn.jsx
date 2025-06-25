@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useOverlayContext } from '../contexts/OverlayContext';
-import { createLearnSession } from '../utils/LearnAPIHandler';
+import { useOverlayContext } from '../../contexts/OverlayContext';
+import { createLearnSession } from '../../utils/OfflineLearnManager';
 
 export default function StartLearn({ flashcardSetId, onStart, setId }) {
     const { closeOverlay } = useOverlayContext();
@@ -22,17 +22,17 @@ export default function StartLearn({ flashcardSetId, onStart, setId }) {
                 setSettings(prev => ({ ...prev, trueFalseAmount: value }));
                 break;
             case 'multipleChoiceAmount':
-                setSettings(prev => ({ ...prev, multipleChoiceAmount: value }));
+                setSettings(prev => ({ ...prev, mutlipleChoiceAmount: value }));
                 break;
             case 'writtenAmount':
                 setSettings(prev => ({ ...prev, writtenAmount: value }));
                 break;
-            default:
+            default: 
                 break;
-        } 
+        }
     }
 
-    const handleStart = async (e) => {
+    const handleStart = (e) => {
         e.preventDefault();
         if (settings.trueFalseAmount === 0 && settings.multipleChoiceAmount === 0 && settings.writtenAmount === 0) {
             setError('At least one question type must be selected.');
@@ -40,31 +40,31 @@ export default function StartLearn({ flashcardSetId, onStart, setId }) {
         }
         setError('');
         try {
-            const learnSessionId = await createLearnSession(flashcardSetId, settings);
-            if (learnSessionId.learnSessionId) {
-                setId(learnSessionId.learnSessionId);
-                onStart(learnSessionId.learnSessionId);
+            const learnSessionId = createLearnSession(flashcardSetId, settings);
+            if (learnSessionId) {
+                setId(learnSessionId);
+                onStart(learnSessionId);
                 closeOverlay();
                 return;
             }
             setError('Failed to create learn session. Please try again.');
         } catch (error) {
             console.error('Error creating learn session:', error);
-            setError(error.message || 'An error occurred while starting the learn session.');
+            setError(error || 'An error occurred while starting the learn session.');
         }
     }
 
     const handleCancel = (e) => {
         e.preventDefault();
         closeOverlay();
-        window.location.href = `/set/${flashcardSetId}`;
+        window.location.href = `/downloads/set/${flashcardSetId}`;
     }
 
     return (
         <div className="flex flex-col w-70">
             <h1 className="text-3xl mb-2 text-center">Start Learn</h1>
             <form className="flex flex-col" onSubmit={handleStart}>
-                <label className="text-lg mb-2">Amount Per Session:</label>
+                <label className="text-lg mb-2">Amount per session:</label>
                 <input
                     type="number"
                     value={settings.amountPerSession}
@@ -91,10 +91,10 @@ export default function StartLearn({ flashcardSetId, onStart, setId }) {
                     required
                     className="p-2 rounded bg-gray-600 mb-4"
                 />
-                <label className="text-lg mb-2">Written Rounds:</label>
+                <label className="text-lg mb-2">Written Roundes:</label>
                 <input
                     type="number"
-                    value={settings.writtenAmount}
+                    value={settings.multipleChoiceAmount}
                     onChange={(e) => handleChange(e, 'writtenAmount')}
                     min={0}
                     required
@@ -113,7 +113,6 @@ export default function StartLearn({ flashcardSetId, onStart, setId }) {
                     >Cancel</button>
                 </div>
             </form>
-            
         </div>
     )
 }

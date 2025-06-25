@@ -6,7 +6,7 @@ export const checkIfLearnSessionExists = (flashcardSetId) => {
         if (!flashcardSet) {
             throw new Error('Flashcard set not found');
         }
-        const learnSession = localStorage.getItem(`learn-${flashcardSetId}`);
+        const learnSession = JSON.parse(localStorage.getItem(`learn-${flashcardSetId}`));
         if (!learnSession) {
             return false;
         }
@@ -83,12 +83,12 @@ export const createLearnSession = (flashcardSetId, settings) => {
     }
 }
 
-export const getLearnSession = (flashcardSetId) => {
+export const getLearnSession = (id) => {
     try {
-        if (!flashcardSetId) {
-            throw new Error('Flashcard set ID is required');
+        if (!id) {
+            throw new Error('ID is required');
         }
-        const learnSession = localStorage.getItem(`learn-${flashcardSetId}`);
+        const learnSession = localStorage.getItem(id);
         if (!learnSession) {
             throw new Error('Learn session not found for this flashcard set');
         }
@@ -99,15 +99,12 @@ export const getLearnSession = (flashcardSetId) => {
     }
 }
 
-export const deleteLearnSession = (flashcardSetId) => {
+export const deleteLearnSession = (id) => {
     try {
-        if (!flashcardSetId) {
-            throw new Error('Flashcard set ID is required');
+        if (!id) {
+            throw new Error('ID is required');
         }
-        if (!checkIfLearnSessionExists(flashcardSetId)) {
-            throw new Error('Learn session does not exist for this flashcard set');
-        }
-        localStorage.removeItem(`learn-${flashcardSetId}`);
+        localStorage.removeItem(id);
         return true;
     }  catch (error) {
         console.error('Error deleting learn session:', error);
@@ -115,22 +112,22 @@ export const deleteLearnSession = (flashcardSetId) => {
     }
 }
 
-export const generateLearnSession = (flashcardSetId) => {
+export const generateLearnSession = (id) => {
     try {
-        if (!flashcardSetId) {
-            throw new Error('Flashcard set ID is required');
+        if (!id) {
+            throw new Error('ID is required');
         }
-        const learnSession = getLearnSession(flashcardSetId);
+        const learnSession = getLearnSession(id);
         if (!learnSession) {
             throw new Error('Learn session not found for this flashcard set');
         }
         const settings = learnSession.settings;
-        const flashcardSet = getDownloadedFlashcardSet(flashcardSetId);
+        const flashcardSet = getDownloadedFlashcardSet(learnSession.flashcardSet);
         if (!flashcardSet) {
             throw new Error('Flashcard set not found');
         }
         const questions = [...learnSession.questions].sort((a, b) => a.order - b.order);
-        const populatedQuestions = questions[0, [settings.amountPerSession]].map(question => {
+        const populatedQuestions = questions.splice(0, settings.amountPerSession).map(question => {
             const flashcard = flashcardSet.flashCards.find(flashcard => flashcard._id === question.flashcard);
             if (!flashcard) {
                 throw new Error('Flashcard not found in flashcard set');
@@ -151,14 +148,15 @@ export const generateLearnSession = (flashcardSetId) => {
 
 export const checkAnswer = (id, order, answer) => {
     try {
-        if (!id || !order || !answer) {
+        console.log('Checking answer:', { id, order, answer });
+        if (!id || order === undefined || !answer) {
             throw new Error('ID, order, and answer are required');
         }
         const learnSession = getLearnSession(id);
         if (!learnSession) {
             throw new Error('Learn session not found');
         }
-        const question = learnSession.questions.find(question => question.order.toString() === order);
+        const question = learnSession.questions.find(question => question.order === order);
         if (!question) {
             throw new Error('Question not found in learn session');
         }
@@ -178,6 +176,6 @@ export const checkAnswer = (id, order, answer) => {
         return { isCorrect, flashcard };
     } catch (error) {
         console.error('Error checking answer:', error);
-        return { isCorrect: false, flashcard: null };
+        throw error;
     }
 }

@@ -4,7 +4,7 @@ import { useOverlayContext } from '../../contexts/OverlayContext';
 import { checkIfLearnSessionExists, generateLearnSession, checkAnswer, deleteLearnSession } from '../../utils/OfflineLearnManager';
 import { getRandomFlashcards } from '../../utils/DownloadManager';
 import Navbar from '../../components/offlineComponents/Navbar';
-import StartLearn from '../../components/StartLearn';
+import StartLearn from '../../components/offlineComponents/StartLearn';
 import TrueFalse from '../../components/learnComponents/TrueFalse';
 import MultipleChoice from '../../components/learnComponents/MultipleChoice';
 import Written from '../../components/learnComponents/Written';
@@ -44,12 +44,12 @@ export default function Learn() {
             try {
                 if (!id && !isPopupOpen) {
                     const exists = checkIfLearnSessionExists(flashcardSetId);
-                    if (!exists.learnSessionId) {
+                    if (!exists) {
                         setIsPopupOpen(true);
                         openOverlay(<StartLearn flashcardSetId={flashcardSetId} onStart={handleGetQuestions} setId={setId} />);
                     } else {
-                        setId(exists.learnSessionId);
-                        handleGetQuestions(exists.learnSessionId);
+                        setId(exists);
+                        handleGetQuestions(exists);
                     }
                 }
             } catch (error) {
@@ -61,10 +61,10 @@ export default function Learn() {
 
     useEffect(() => {
         if (questions.length === 0) return;
-        const fetchOtherAnswer = async (amount) => {
+        const fetchOtherAnswer = (amount) => {
             try {
-                const flashcards = await getRandomFlashcards(flashcardSetId, amount);
-                setOtherAnswers(flashcards.map(flashcard => flashcard.question));
+                const flashcards = getRandomFlashcards(flashcardSetId, amount);
+                setOtherAnswers(flashcards.map(flashcard => flashcard.answer));
             } catch (error) {
                 console.error('Error fetching other answers:', error);
             }
@@ -81,6 +81,7 @@ export default function Learn() {
     }
 
     const handleAnswerSubmit = (e) => {
+        console.log(e);
         e.preventDefault();
         try {
             const question = questions[currentQuestionIndex];
@@ -97,13 +98,12 @@ export default function Learn() {
     }
 
     const handleNextQuestion = () => {
+        setIsWrong(false);
         if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
-            setIsWrong(false);
             setCurrentAnswer('');
         } else {
             setFinished(true);
-            setIsWrong(false);
             setCurrentAnswer('');
         }
     }
@@ -177,7 +177,7 @@ export default function Learn() {
         <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
             <Navbar />
             <div className="flex flex-col items-center justify-center h-full w-screen">
-                <form className="flex flex-col items-center justify-center h-full w-screen" onSubmit={handleAnswerSubmit}>
+                <form className="flex flex-col items-center justify-center bg-gray-700 rounded-lg p-4 w-1/3" onSubmit={handleAnswerSubmit}>
                     {questions[currentQuestionIndex].questionType === 'trueFalse' && (
                         <TrueFalse
                             flashcard={questions[currentQuestionIndex].flashcard}
