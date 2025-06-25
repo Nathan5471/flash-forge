@@ -1,5 +1,5 @@
 import express from 'express';
-import { createLearnSession, checkIfLearnSessionExists, getLearnSession, deleteLearnSession, generateLearnSession } from '../controllers/learnController.js';
+import { createLearnSession, checkIfLearnSessionExists, getLearnSession, deleteLearnSession, generateLearnSession, checkAnswer } from '../controllers/learnController.js';
 import authenticate from '../middleware/authenticate.js';
 
 const router = express.Router();
@@ -37,7 +37,7 @@ router.get('/check/:id/:order', authenticate, async (req, res) => {
         if (!id || !order || !answer) {
             return res.status(400).json({ message: 'Flashcard set ID, order, and answer are required' });
         }
-        // TODO: Implement logic to check if the question is correct
+        await checkAnswer(req, res);
     } catch (error) {
         console.error('Error in check learn session route:', error);
         return res.status(500).json({ message: 'Internal server error' });

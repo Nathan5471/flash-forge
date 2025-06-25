@@ -17,6 +17,7 @@ export default function Learn() {
     const [currentAnswer, setCurrentAnswer] = useState('');
     const [currentQuestionOrder, setCurrentQuestionOrder] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [finished, setFinished] = useState(false);
 
     const handleGetQuestions = useCallback(async (id) => {
         try {
@@ -88,8 +89,29 @@ export default function Learn() {
             } else {
                 console.log('Incorrect answer. Correct answer was:', question.flashcard.answer);
             }
+            setCurrentAnswer('');
+            if ( currentQuestionIndex < questions.length - 1) {
+                setCurrentQuestionIndex(currentQuestionIndex + 1);
+            } else {
+                setFinished(true);
+            }
         } catch (error) {
             console.error('Error submitting answer:', error);
+        }
+    }
+
+    const handleReset = async () => {
+        try {
+            await deleteLearnSession(id);
+            setQuestions([]);
+            setCurrentQuestionIndex(0);
+            setCurrentAnswer('');
+            setCurrentQuestionOrder(null);
+            setLoading(true);
+            setId(null);
+            openOverlay(<StartLearn flashcardSetId={flashcardSetId} onStart={handleGetQuestions} setId={setId} />);
+        } catch (error) {
+            console.error('Error resetting learn session:', error);
         }
     }
 
@@ -104,10 +126,35 @@ export default function Learn() {
         )
     }
 
+    if (finished) {
+        return (
+            <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
+                <Navbar />
+                <div className="flex items-center justify-center h-full">
+                    <div className="flex flex-col items-center justify-center p-4 w-1/3 bg-gray-700 rounded-lg">
+                        <h2 className="text-2xl mb-4">Congratulations!</h2>
+                        <p className="mb-4">You have completed the learning session.</p>
+                        <div className="flex flex-row w-full justify-between">
+                            <button
+                                className="bg-blue-500 hover:bg-blue-600 rounded-lg py-2 px-4 w-1/2 mr-2"
+                                onClick={handleReset}
+                            >Start Over</button>
+                            <button
+                                className="bg-gray-500 hover:bg-gray-600 rounded-lg py-2 px-4 w-1/2"
+                                onClick={() => window.location.href = `/set/${flashcardSetId}`}
+                            >Return to set</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
             <Navbar />
-            <div className="flex flex-col items-center justify-center h-full p-4">
+            <div className="flex flex-col items-center justify-center h-full w-screen">
+            <div className="flex flex-col items-center justify-center h-full p-4 w-1/3">
                 {questions[currentQuestionIndex].questionType === 'trueFalse' && (
                     <TrueFalse
                         flashcard={questions[currentQuestionIndex].flashcard}
@@ -116,6 +163,17 @@ export default function Learn() {
                         onAnswerSelected={handleAnswerChange}
                     />
                 )}
+                <div className="flex flex-row justify-between w-full p-2 rounded-lg bg-gray-700">
+                    <button
+                        className="bg-blue-500 hover:bg-blue-600 rounded-lg py-2 px-4 w-1/2 mr-2"
+                        onClick={handleAnswerSubmit}
+                    >Submit</button>
+                    <button
+                        className="bg-red-500 hover:bg-red-600 rounded-lg py-2 px-4 w-1/2 ml-2"
+                        onClick={handleReset}
+                    >Reset</button>
+                </div>
+            </div>
             </div>
         </div>
     )

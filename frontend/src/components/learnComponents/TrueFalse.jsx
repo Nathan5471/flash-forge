@@ -5,6 +5,8 @@ export default function TrueFalse({ flashcard, questionOrder, otherAnswer, onAns
     const [givenAnswer, setGivenAnswer] = useState(null);
 
     useEffect(() => {
+        setSelectedAnswer(null);
+        setGivenAnswer(null);
         const shuffledAnswers = [flashcard.answer, otherAnswer].sort(() => Math.random() - 0.5);
         setGivenAnswer(shuffledAnswers[0]);
     }, [flashcard, otherAnswer]);
@@ -21,7 +23,7 @@ export default function TrueFalse({ flashcard, questionOrder, otherAnswer, onAns
     }
 
     return (
-        <div className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg mb-4">
+        <div className="flex flex-col items-center justify-center p-4 bg-gray-700 w-full rounded-lg mb-4">
             <h2 className="text-2xl mb-4">{flashcard.question}</h2>
             <p className="mb-4 text-lg">Answer: {givenAnswer} (Is this true or false?)</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 w-full">

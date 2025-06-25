@@ -136,7 +136,6 @@ export const generateLearnSession = async (req, res) => {
             newQuestion.flashcard = learnSession.flashcardSet.flashCards.find(flashcard => flashcard._id.toString() === question.flashcard.toString());
             return newQuestion;
         })
-        console.log(populatedQuestions[0]);
         res.status(200).json({
             questions: populatedQuestions
         })
@@ -157,17 +156,21 @@ export const checkAnswer = async (req, res) => {
         if (learnSession.user.toString() !== req.user._id.toString()) {
             return res.status(403).json({ message: 'You do not have permission to check this answer' });
         }
+        const flashcardSet = await FlashcardSet.findById(learnSession.flashcardSet);
+        if (!flashcardSet) {
+            return res.status(404).json({ message: 'Flashcard set not found' });
+        }
         const question = learnSession.questions.find(question => question.order.toString() === order);
         if (!question) {
             return res.status(404).json({ message: 'Question not found in learn session' });
         }
-        const flashcard = await question.flashcard.populate('flashcard', ['question', 'answer']);
+        const flashcard = flashcardSet.flashCards.find(flashcard => flashcard._id.toString() === question.flashcard.toString());
         if (!flashcard) {
             return res.status(404).json({ message: 'Flashcard not found' });
         }
         const isCorrect = flashcard.answer.toLowerCase() === answer.toLowerCase();
         if (isCorrect) {
-            learnSession.questions.findByIdAndDelete(question._id);
+            learnSession.questions = learnSession.questions.filter(question => question.order.toString() !== order);
             await learnSession.save();
             return res.status(200).json({ isCorrect: true });
         }
