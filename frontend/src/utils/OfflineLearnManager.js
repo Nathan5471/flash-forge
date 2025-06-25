@@ -90,7 +90,7 @@ export const getLearnSession = (id) => {
         }
         const learnSession = localStorage.getItem(id);
         if (!learnSession) {
-            throw new Error('Learn session not found for this flashcard set');
+            throw new Error('Learn session not found');
         }
         return JSON.parse(learnSession);
     } catch (error) {
@@ -134,9 +134,7 @@ export const generateLearnSession = (id) => {
             }
             return {
                 ...question,
-                flashcard: {
-                    question: flashcard.question,
-                }
+                flashcard: flashcard
             }
         })
         return { questions: populatedQuestions };
@@ -148,7 +146,6 @@ export const generateLearnSession = (id) => {
 
 export const checkAnswer = (id, order, answer) => {
     try {
-        console.log('Checking answer:', { id, order, answer });
         if (!id || order === undefined || !answer) {
             throw new Error('ID, order, and answer are required');
         }

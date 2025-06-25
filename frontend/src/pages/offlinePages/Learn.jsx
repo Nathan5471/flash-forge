@@ -63,7 +63,7 @@ export default function Learn() {
         if (questions.length === 0) return;
         const fetchOtherAnswer = (amount) => {
             try {
-                const flashcards = getRandomFlashcards(flashcardSetId, amount);
+                const flashcards = getRandomFlashcards(flashcardSetId, amount, questions[currentQuestionIndex].flashcard._id);
                 setOtherAnswers(flashcards.map(flashcard => flashcard.answer));
             } catch (error) {
                 console.error('Error fetching other answers:', error);
@@ -81,7 +81,6 @@ export default function Learn() {
     }
 
     const handleAnswerSubmit = (e) => {
-        console.log(e);
         e.preventDefault();
         try {
             const question = questions[currentQuestionIndex];

@@ -22,7 +22,7 @@ export default function StartLearn({ flashcardSetId, onStart, setId }) {
                 setSettings(prev => ({ ...prev, trueFalseAmount: value }));
                 break;
             case 'multipleChoiceAmount':
-                setSettings(prev => ({ ...prev, mutlipleChoiceAmount: value }));
+                setSettings(prev => ({ ...prev, multipleChoiceAmount: value }));
                 break;
             case 'writtenAmount':
                 setSettings(prev => ({ ...prev, writtenAmount: value }));
@@ -41,9 +41,9 @@ export default function StartLearn({ flashcardSetId, onStart, setId }) {
         setError('');
         try {
             const learnSessionId = createLearnSession(flashcardSetId, settings);
-            if (learnSessionId) {
-                setId(learnSessionId);
-                onStart(learnSessionId);
+            if (learnSessionId._id) {
+                setId(learnSessionId._id);
+                onStart(learnSessionId._id);
                 closeOverlay();
                 return;
             }
@@ -94,7 +94,7 @@ export default function StartLearn({ flashcardSetId, onStart, setId }) {
                 <label className="text-lg mb-2">Written Roundes:</label>
                 <input
                     type="number"
-                    value={settings.multipleChoiceAmount}
+                    value={settings.writtenAmount}
                     onChange={(e) => handleChange(e, 'writtenAmount')}
                     min={0}
                     required
