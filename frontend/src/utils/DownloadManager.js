@@ -158,16 +158,16 @@ const getCurrentLocalIndex = async () => {
 
 export const createOfflineFlashcardSet = async (flashcardSetData) => {
     try {
-        const { title, description, flashCards } = flashcardSetData;
+        const { title, description, flashcards } = flashcardSetData;
         const currentIndex = await getCurrentLocalIndex();
-        if (!title || !description || !flashCards || flashCards.length === 0) {
+        if (!title || !description || !flashcards || flashcards.length === 0) {
             return Promise.reject({ message: 'All fields are required to create a flashcard set' });
         }
         const newFlashcardSet = {
             _id: `local-${currentIndex}`,
             title,
             description,
-            flashCards: flashCards.map((card, index) => ({ ...card, _id: `${currentIndex}-${index}` })),
+            flashCards: flashcards.map((card, index) => ({ ...card, _id: `${currentIndex}-${index}` })),
             userId: {
                 _id: 'local-user',
                 username: 'Local User'
@@ -205,20 +205,20 @@ export const createOfflineClone = async (id, newTitle) => {
 
 export const editOfflineFlashcardSet = async (id, updatedData) => {
     try {
-        const { newTitle, newDescription, newFlashCards } = updatedData;
-        if (!newTitle || !newDescription || !newFlashCards || newFlashCards.length === 0) {
+        const { title, description, flashcards } = updatedData;
+        if (!title || !description || !flashcards || flashcards.length === 0) {
             return Promise.reject({ message: 'All fields are required to edit a flashcard set' });
         }
-        const newFlashcardSet = getDownloadedFlashcardSet(id);
+        const newFlashcardSet = await getDownloadedFlashcardSet(id);
         if (!newFlashcardSet) {
             return Promise.reject({ message: 'Flashcard set not found' });
         }
         if (!newFlashcardSet._id.startsWith('local-')) {
             return Promise.reject({ message: 'Flashcards need to be local-only to be edited' });
         }
-        newFlashcardSet.title = newTitle;
-        newFlashcardSet.description = newDescription;
-        newFlashcardSet.flashCards = newFlashCards.map(card => ({ ...card }));
+        newFlashcardSet.title = title;
+        newFlashcardSet.description = description;
+        newFlashcardSet.flashCards = flashcards.map(card => ({ ...card }));
         newFlashcardSet.lastEdited = new Date();
         localStorage.setItem(`flashcardSet-${id}`, JSON.stringify(newFlashcardSet));
         return newFlashcardSet;

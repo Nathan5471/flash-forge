@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { useOverlayContext } from '../contexts/OverlayContext';
 import { createFlashcardSet } from '../utils/FlashcardAPIHandler';
+import { createOfflineFlashcardSet } from '../utils/DownloadManager';
 import Navbar from '../components/Navbar'
 import { FaRegTrashAlt } from "react-icons/fa";
 import ImportFlashcards from '../components/ImportFlashcards';
 import OfflineImport from '../components/OfflineImport';
 
-export default function Create() {
+export default function Create({ isOffline = false }) {
     const { openOverlay } = useOverlayContext();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -41,7 +42,11 @@ export default function Create() {
             flashcards: flashcards.filter(flashcard => flashcard.question && flashcard.answer)
         }
         try {
-            await createFlashcardSet(flashcardSetData);
+            if (isOffline) {
+                await createOfflineFlashcardSet(flashcardSetData);
+            } else {
+                await createFlashcardSet(flashcardSetData);
+            }
             setTitle('');
             setDescription('');
             setFlashcards([{ question: '', answer: '' }]);
@@ -57,6 +62,9 @@ export default function Create() {
             <div className="flex flex-col items-center justify-center mt-6">
                 <h1 className="text-4xl font-bold mb-4">Create Flashcard Set</h1>
                 <form className="w-1/2 bg-gray-700 p-6 rounded-lg shadow-lg" onSubmit={handleSubmit}>
+                    {isOffline && (
+                        <p className="text-lg mb-4">This set will be local only and not accessible on the online part of the website. You can make a new flashcard set in the online mode and import ones you make offline.</p>
+                    )}
                     <div className="mb-4">
                         <label className="block text-2xl">Title</label>
                         <input
@@ -84,11 +92,13 @@ export default function Create() {
                                 onClick={handleOpenImport}
                                 className="mt-2 bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded-lg"
                             >Import Flashcards</button>
-                            <button
-                                type="button"
-                                onClick={handleOpenOfflineImport}
-                                className="mt-2 ml-2 bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded-lg"
-                            >Import Offline Flashcards</button>
+                            {!isOffline && (
+                                <button
+                                    type="button"
+                                    onClick={handleOpenOfflineImport}
+                                    className="mt-2 ml-2 bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded-lg"
+                                >Import Offline Flashcards</button>
+                            )}
                         </div>
                         
                         <div className="flex flex-row justify-around mt-2">

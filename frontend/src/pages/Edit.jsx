@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getUser } from '../utils/AuthAPIHandler';
 import { getFlashcardSet, updateFlashcardSet } from '../utils/FlashcardAPIHandler';
+import { getDownloadedFlashcardSet, editOfflineFlashcardSet } from '../utils/DownloadManager';
 import Navbar from '../components/Navbar';
 import { FaRegTrashAlt } from "react-icons/fa";
 
-export default function Edit() {
+export default function Edit({ isOffline }) {
     const { id } = useParams();
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
@@ -17,11 +18,20 @@ export default function Edit() {
     useEffect(() => {
         const fetchFlashcardSet = async () => {
             try {
-                const userData = await getUser();
-                const data = await getFlashcardSet(id);
-                if (data.userId._id !== userData.user._id) {
-                    navigate('/');
-                    return;
+                let data;
+                if (isOffline) {
+                    data = await getDownloadedFlashcardSet(id);
+                    if (!data._id.startsWith('local-')) {
+                        navigate('/downloads');
+                        return;
+                    }
+                } else {
+                    const userData = await getUser();
+                    data = await getFlashcardSet(id);
+                    if (data.userId._id !== userData.user._id) {
+                        navigate('/');
+                        return;
+                    }
                 }
                 setTitle(data.title);
                 setDescription(data.description);
@@ -33,7 +43,7 @@ export default function Edit() {
             }
         }
         fetchFlashcardSet();
-    }, [id, navigate]);
+    }, [id, navigate, isOffline]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -43,8 +53,13 @@ export default function Edit() {
             flashcards: flashcards.filter(flashcard => flashcard.question && flashcard.answer)
         };
         try {
-            await updateFlashcardSet(id, flashcardSetData);
-            navigate(`/set/${id}`);
+            if (isOffline) {
+                await editOfflineFlashcardSet(id,flashcardSetData);
+                navigate(`/downloads/set/${id}`);
+            } else {
+                await updateFlashcardSet(id, flashcardSetData);
+                navigate(`/set/${id}`);
+            }
         } catch (error) {
             console.error('Error updating flashcard set:', error);
             setError(error ? error.message : 'An error occurred while updating the flashcard set.');
@@ -53,13 +68,13 @@ export default function Edit() {
 
     const handleCancel = (e) => {
         e.preventDefault();
-        navigate(`/set/${id}`);
+        navigate(`${isOffline ? '/downloads' : ''}/set/${id}`);
     }
 
     if (loading) {
         return (
             <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
-                <Navbar />
+                <Navbar isOffline={isOffline} />
                 <div className="flex items-center justify-center">
                     <p className="text-2xl">Loading...</p>
                 </div>
@@ -69,9 +84,9 @@ export default function Edit() {
 
     return (
         <div className="flex flex-col min-h-screen w-screen bg-gray-600 text-white">
-            <Navbar />
+            <Navbar isOffline={isOffline} />
             <div className="flex flex-col items-center justify-center mt-6">
-                <h1 className="text-4xl font-bold mb-4">Edit Flashcard Set</h1>
+                <h1 className="text-4xl font-bold mb-4">Edit {`${isOffline ? 'Offline ' : ''}`}Flashcard Set</h1>
                 <form className="w-1/2 bg-gray-700 p-6 rounded-lg shadow-lg" onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label className="block text-2xl mb-2">Title</label>

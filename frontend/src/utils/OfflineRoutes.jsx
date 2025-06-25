@@ -7,8 +7,8 @@ import Test from '../pages/Test.jsx';
 import Learn from '../pages/offlinePages/Learn.jsx';
 import User from '../pages/User.jsx';
 import Search from '../pages/offlinePages/Search.jsx';
-import Create from '../pages/offlinePages/Create.jsx';
-import Edit from '../pages/offlinePages/Edit.jsx';
+import Create from '../pages/Create.jsx';
+import Edit from '../pages/Edit.jsx';
 
 export const OfflineRoutes = (
         <>
@@ -19,7 +19,7 @@ export const OfflineRoutes = (
             <Route path="/downloads/learn/:flashcardSetId" element={<Learn />} />
             <Route path="/downloads/user/:userId" element={<User isOffline={true} />} />
             <Route path="/downloads/search/:searchTerm" element={<Search />} />
-            <Route path="/downloads/create" element={<Create />} />
-            <Route path="/downloads/edit/:id" element={<Edit />} />
+            <Route path="/downloads/create" element={<Create isOffline={true}/>} />
+            <Route path="/downloads/edit/:id" element={<Edit isOffline={true}/>} />
         </>
 );

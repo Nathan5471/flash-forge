@@ -10,7 +10,7 @@ export default function Downloads() {
     useEffect(() => {
         const fetchDownloadedFlashcards = async () => {
             try {
-                const downloadedSets = getDownloadedFlashcardSets();
+                const downloadedSets = await getDownloadedFlashcardSets();
                 setFlashcards(downloadedSets);
             } catch (error) {
                 console.error('Error fetching downloaded flashcards:', error);

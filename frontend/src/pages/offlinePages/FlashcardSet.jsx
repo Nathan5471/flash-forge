@@ -17,7 +17,7 @@ export default function FlashcardSet() {
     useEffect(() => {
         const fetchFlashcardSet = async () => {
             try {
-                const downloadedSet = getDownloadedFlashcardSet(id);
+                const downloadedSet = await getDownloadedFlashcardSet(id);
                 if (downloadedSet) {
                     setFlashcardSet(downloadedSet);
                 } else {
