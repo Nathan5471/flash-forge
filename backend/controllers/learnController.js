@@ -1,7 +1,5 @@
 import Learn from '../models/learn.js';
 import FlashcardSet from '../models/flashcardSet.js';
-import User from '../models/user.js';
-import { populate } from 'dotenv';
 
 export const createLearnSession = async (req, res) => {
     const { flashcardSetId, settings } = req.body;
@@ -14,10 +12,10 @@ export const createLearnSession = async (req, res) => {
         if (alreadyExists) {
             return res.status(400).json({ message: 'Learn settings already exists for this flashcard set' });
         }
-        let questions = [];
-        let trueFalseAmount = settings.trueFalseAmount;
-        let multipleChoiceAmount = settings.multipleChoiceAmount;
-        let writtenAmount = settings.writtenAmount;
+        const questions = [];
+        let trueFalseAmount = Number(settings.trueFalseAmount);
+        let multipleChoiceAmount = Number(settings.multipleChoiceAmount);
+        let writtenAmount = Number(settings.writtenAmount);
         for (let i = 0; i < Math.max(trueFalseAmount, multipleChoiceAmount, writtenAmount); i++) {
             if (trueFalseAmount > 0) {
                 const shuffledFlashcards = [...flashcardSet.flashCards].sort(() => Math.random() - 0.5);
@@ -57,6 +55,7 @@ export const createLearnSession = async (req, res) => {
             flashcardSet: flashcardSetId,
             user: req.user._id,
             settings: settings,
+            questions: questions
         })
         await learnSettings.save();
         res.status(201).json({
@@ -125,6 +124,7 @@ export const deleteLearnSession = async (req, res) => {
 
 export const generateLearnSession = async (req, res) => {
     const { id } = req.params;
+    console.log('Generating learn session for ID:', id);
     try {
         const learnSession = await Learn.findById(id).populate('flashcardSet').populate('user', ['username', '_id']);
         if (!learnSession) {
@@ -132,7 +132,7 @@ export const generateLearnSession = async (req, res) => {
         }
         const settings = learnSession.settings;
         const questions = [...learnSession.questions].sort((a, b) => a.order - b.order);
-        const populatedQuestions = questions[0, settings.amountPerSession].map(async (question) => (await question.flashcard.populate('flashcard', 'question')))
+        const populatedQuestions = questions.splice(0, settings.amountPerSession).map(question => question.flashcard = learnSession.flashcardSet.flashCards.find(flashcard => flashcard._id.toString() === question.flashcard.toString()));
         res.status(200).json({
             questions: populatedQuestions
         })

@@ -14,8 +14,9 @@ export default function Learn() {
     const [currentAnswer, setCurrentAnswer] = useState('');
     const [loading, setLoading] = useState(true);
 
-    const handleGetQuestions = useCallback(async () => {
+    const handleGetQuestions = useCallback(async (id) => {
         try {
+            console.log(id);
             const session = await generateLearnSession(id);
             setQuestions(session.questions);
         } catch (error) {
@@ -23,24 +24,30 @@ export default function Learn() {
         } finally {
             setLoading(false);
         }
-    }, [id]);
+    }, []);
     
 
     useEffect(() => { 
         const initializeLearnSession = async () => {
             try {
-                const exists = await checkIfLearnSessionExists(flashcardSetId);
-                if (!exists) {
-                    openOverlay(<StartLearn flashcardSetId={flashcardSetId} onStart={handleGetQuestions} setId={setId} />);
-                } else {
-                    handleGetQuestions();
+                if (!id) {
+                    console.log(id);
+                    const exists = await checkIfLearnSessionExists(flashcardSetId);
+                    console.log('Learn session exists:', exists);
+                    if (!exists.learnSessionId) {
+                        openOverlay(<StartLearn flashcardSetId={flashcardSetId} onStart={handleGetQuestions} setId={setId} />);
+                    } else {
+                        console.log('Learn session ID found:', exists.learnSessionId);
+                        setId(exists.learnSessionId);
+                        handleGetQuestions(exists.learnSessionId);
+                    }
                 }
             } catch (error) {
                 console.error('Error checking learn session:', error);
             }
         }
         initializeLearnSession();
-    }, [flashcardSetId, handleGetQuestions, openOverlay]);
+    }, [flashcardSetId, handleGetQuestions, openOverlay, id]);
 
     if (loading) {
         return (
