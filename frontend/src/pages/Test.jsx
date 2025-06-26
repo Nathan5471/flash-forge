@@ -18,8 +18,6 @@ export default function Test({ isOffline = false }) {
     const { openOverlay } = useOverlayContext();
     const [flashcardSet, setFlashcardSet] = useState(null);
     const [questionTypes, setQuestionTypes] = useState(['multipleChoice']);
-    const [amountPerType, setAmountPerType] = useState({}); // Format: [startIndex, amount]
-    const [possibleAnswers, setPossibleAnswers] = useState([]);
     const [questions, setQuestions] = useState([]);
     const [selectedAnswers, setSelectedAnswers] = useState({});
     const [loading, setLoading] = useState(true);
@@ -38,10 +36,6 @@ export default function Test({ isOffline = false }) {
                     flashcardData = await getFlashcardSet(id);
                 }
                 setFlashcardSet(flashcardData);
-                if (flashcardData && flashcardData.flashCards) {
-                    const answers = flashcardData.flashCards.map(card => card.answer);
-                    setPossibleAnswers(answers);
-                }
             } catch (error) {
                 console.error('Error fetching flashcard set:', error);
                 setFlashcardSet(null);
@@ -57,13 +51,52 @@ export default function Test({ isOffline = false }) {
             const handleAddTestInfo = (amount, types) => {
                 setQuestionTypes(types);
                 const amountPerType = CalcAmountPerType(types, amount);
-                setAmountPerType(amountPerType);
                 const shuffledQuestions = [...flashcardSet.flashCards].sort(() => Math.random() - 0.5);
                 const selectedQuestions = shuffledQuestions.slice(0, amount);
-                const filledQuestions = selectedQuestions.map((question, index) => {
-                    const questionType = 
+                const questions = selectedQuestions.map((question, index) => {
+                    const questionType = amountPerType[index];
+                    if (questionType === 'multipleChoice') {
+                        const answerChoices = flashcardSet.flashCards.map(flashcard => flashcard.answer)
+                        .filter(answer => answer !== question.answer)
+                        .sort(() => Math.random() - 0.5)
+                        .slice(0, 3)
+                        .push(question.answer);
+                        return {
+                            question: question.question,
+                            answer: question.answer,
+                            type: questionType,
+                            possibleAnswers: answerChoices.sort(() => Math.random() - 0.5),
+                            questionNumber: index + 1
+                        };
+                    } else if (questionType === 'written') {
+                        return {
+                            question: question.question,
+                            answer: question.answer,
+                            type: questionType,
+                            questionNumber: index + 1
+                        };
+                    } else if (questionType === 'trueFalse') {
+                        const answerChoices = flashcardSet.flashCards.map(flashcard => flashcard.answer)
+                        .filter(answer => answer !== question.answer)
+                        .sort(() => Math.random() - 0.5)
+                        .slice(0, 1)
+                        .push(question.answer);
+                        return {
+                            question: question.question,
+                            answer: question.answer,
+                            type: questionType,
+                            answerChoice: answerChoices.sort(() => Math.random() - 0.5)[0],
+                            questionNumber: index + 1
+                        };
+                    } else if (questionType === 'matching') {
+                        return {
+                            question: question.question,
+                            answer: question.answer,
+                            type: questionType
+                        };
+                    }
                 })
-                setQuestions(selectedQuestions);
+                setQuestions(questions);
                 setIsPopupOpen(false);
                 setReadyForTest(true);
             }
@@ -143,12 +176,10 @@ export default function Test({ isOffline = false }) {
                 <div className="w-[calc(50%)]">
                     {questionTypes.includes('multipleChoice') && (
                         <>
-                            {questions.slice(amountPerType.multipleChoice[0], amountPerType.multipleChoice[0] + amountPerType.multipleChoice[1]).map((flashcard, index) => (
+                            {questions.filter(question => question.type === 'multipleChoice').map((question, index) => (
                                 <MultipleChoice
                                     key={index}
-                                    flashcard={flashcard}
-                                    questionNumber={amountPerType.multipleChoice[0] + index + 1}
-                                    possibleAnswers={possibleAnswers}
+                                    question={question}
                                     onAnswerSelected={handleAnswerChange}
                                 />
                             ))}
@@ -156,11 +187,10 @@ export default function Test({ isOffline = false }) {
                     )}
                     {questionTypes.includes('written') && (
                         <>
-                            {questions.slice(amountPerType.written[0], amountPerType.written[0] + amountPerType.written[1]).map((flashcard, index) => (
+                            {questions.filter(question => question.type === 'written').map((question, index) => (
                                 <Written
                                     key={index}
-                                    flashcard={flashcard}
-                                    questionNumber={amountPerType.written[0] + index + 1}
+                                    question={question}
                                     onAnswerSelected={handleAnswerChange}
                                 />
                             ))}
@@ -168,12 +198,10 @@ export default function Test({ isOffline = false }) {
                     )}
                     {questionTypes.includes('trueFalse') && (
                         <>
-                            {questions.slice(amountPerType.trueFalse[0], amountPerType.trueFalse[0] + amountPerType.trueFalse[1]).map((flashcard, index) => (
+                            {questions.filter(question => question.type === 'trueFalse').map((question, index) => (
                                 <TrueFalse
                                     key={index}
-                                    flashcard={flashcard}
-                                    questionNumber={amountPerType.trueFalse[0] + index + 1}
-                                    answerChoices={possibleAnswers}
+                                    question={question}
                                     onAnswerSelected={handleAnswerChange}
                                 />
                             ))}
@@ -181,8 +209,7 @@ export default function Test({ isOffline = false }) {
                     )}
                     {questionTypes.includes('matching') && (
                         <Matching
-                            flashcards={questions.slice(amountPerType.matching[0], amountPerType.matching[0] + amountPerType.matching[1])}
-                            startQuestionNumber={amountPerType.matching[0] + 1}
+                            questions={questions.filter(question => question.type === 'matching')}
                             onAnswerSelected={handleAnswerChange}
                         />
                     )}
