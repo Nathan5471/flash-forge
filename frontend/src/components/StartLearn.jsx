@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useOverlayContext } from '../contexts/OverlayContext';
 import { createLearnSession } from '../utils/LearnAPIHandler';
+import { createOfflineLearnSession } from '../utils/OfflineLearnManager';
 
-export default function StartLearn({ flashcardSetId, onStart, setId }) {
+export default function StartLearn({ flashcardSetId, onStart, setId, isOffline = false }) {
     const { closeOverlay } = useOverlayContext();
     const [settings, setSettings] = useState({
         amountPerSession: 10,
@@ -34,13 +35,20 @@ export default function StartLearn({ flashcardSetId, onStart, setId }) {
 
     const handleStart = async (e) => {
         e.preventDefault();
+        console.log('Starting learn session with settings')
         if (settings.trueFalseAmount === 0 && settings.multipleChoiceAmount === 0 && settings.writtenAmount === 0) {
             setError('At least one question type must be selected.');
             return;
         }
         setError('');
         try {
-            const learnSessionId = await createLearnSession(flashcardSetId, settings);
+            let learnSessionId;
+            if (isOffline) {
+                learnSessionId = await createOfflineLearnSession(flashcardSetId, settings);
+            } else {
+                learnSessionId = await createLearnSession(flashcardSetId, settings);
+            }
+            console.log('Learn session created:', learnSessionId);
             if (learnSessionId.learnSessionId) {
                 setId(learnSessionId.learnSessionId);
                 onStart(learnSessionId.learnSessionId);
@@ -57,7 +65,7 @@ export default function StartLearn({ flashcardSetId, onStart, setId }) {
     const handleCancel = (e) => {
         e.preventDefault();
         closeOverlay();
-        window.location.href = `/set/${flashcardSetId}`;
+        window.location.href = `${isOffline ? '/downloads' : ''}/set/${flashcardSetId}`;
     }
 
     return (

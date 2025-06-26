@@ -2,14 +2,16 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useOverlayContext } from '../contexts/OverlayContext';
 import { checkIfLearnSessionExists, generateLearnSession, submitAnswer, deleteLearnSession } from '../utils/LearnAPIHandler';
+import { checkIfOfflineLearnSessionExists, generateOfflineLearnSession, checkAnswer, deleteOfflineLearnSession } from '../utils/OfflineLearnManager';
 import { getRandomFlashcards } from '../utils/FlashcardAPIHandler';
+import { getRandomOfflineFlashcards } from '../utils/DownloadManager';
 import Navbar from '../components/Navbar';
 import StartLearn from '../components/StartLearn';
 import TrueFalse from '../components/learnComponents/TrueFalse';
 import MultipleChoice from '../components/learnComponents/MultipleChoice';
 import Written from '../components/learnComponents/Written';
 
-export default function Learn() {
+export default function Learn({ isOffline = false }) {
     const { openOverlay } = useOverlayContext();
     const { flashcardSetId } = useParams();
     const [id, setId] = useState(null);
@@ -25,9 +27,18 @@ export default function Learn() {
 
     const handleGetQuestions = useCallback(async (id) => {
         try {
-            const session = await generateLearnSession(id);
+            let session;
+            if (isOffline) {
+                session = await generateOfflineLearnSession(id);
+            } else {
+                session = await generateLearnSession(id);
+            }
             if (session.questions.length === 0) {
-                await deleteLearnSession(id);
+                if (isOffline) {
+                    await deleteOfflineLearnSession(id);
+                } else {
+                    await deleteLearnSession(id);
+                }
                 setId(null);
                 return;
             }
@@ -37,17 +48,22 @@ export default function Learn() {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [isOffline]);
     
 
     useEffect(() => { 
         const initializeLearnSession = async () => {
             try {
                 if (!id && !isPopupOpen) {
-                    const exists = await checkIfLearnSessionExists(flashcardSetId);
+                    let exists;
+                    if (isOffline) {
+                        exists = await checkIfOfflineLearnSessionExists(flashcardSetId);
+                    } else {
+                        exists = await checkIfLearnSessionExists(flashcardSetId);
+                    }
                     if (!exists.learnSessionId) {
                         setIsPopupOpen(true);
-                        openOverlay(<StartLearn flashcardSetId={flashcardSetId} onStart={handleGetQuestions} setId={setId} />);
+                        openOverlay(<StartLearn flashcardSetId={flashcardSetId} onStart={handleGetQuestions} setId={setId} isOffline={isOffline} />);
                     } else {
                         setId(exists.learnSessionId);
                         handleGetQuestions(exists.learnSessionId);
@@ -58,13 +74,18 @@ export default function Learn() {
             }
         }
         initializeLearnSession();
-    }, [flashcardSetId, handleGetQuestions, openOverlay, id, isPopupOpen]);
+    }, [flashcardSetId, handleGetQuestions, openOverlay, id, isPopupOpen, isOffline]);
 
     useEffect(() => {
         if (questions.length === 0) return;
         const fetchOtherAnswer = async (amount) => {
             try {
-                const flashcards = await getRandomFlashcards(flashcardSetId, amount, questions[currentQuestionIndex].flashcard._id);
+                let flashcards;
+                if (isOffline) {
+                    flashcards = await getRandomOfflineFlashcards(flashcardSetId, amount, questions[currentQuestionIndex].flashcard._id);
+                } else {
+                    flashcards = await getRandomFlashcards(flashcardSetId, amount, questions[currentQuestionIndex].flashcard._id);
+                }
                 setOtherAnswers(flashcards.map(flashcard => flashcard.answer));
             } catch (error) {
                 console.error('Error fetching other answers:', error);
@@ -75,7 +96,7 @@ export default function Learn() {
         } else if (questions[currentQuestionIndex].questionType === 'multipleChoice') {
             fetchOtherAnswer(3);
         }
-    }, [flashcardSetId, questions, currentQuestionIndex]);
+    }, [flashcardSetId, questions, currentQuestionIndex, isOffline]);
 
     const handleAnswerChange = (answer) => {
         setCurrentAnswer(answer);
@@ -85,7 +106,12 @@ export default function Learn() {
         e.preventDefault();
         try {
             const question = questions[currentQuestionIndex];
-            const response = await submitAnswer(id, question.order, currentAnswer);
+            let response;
+            if (isOffline) {
+                response = await checkAnswer(id, question.order, currentAnswer);
+            } else {
+                response = await submitAnswer(id, question.order, currentAnswer);
+            }
             if (!response.isCorrect) {
                 setIsWrong(true);
                 setCorrectAnswer(response.correctAnswer);
@@ -111,14 +137,18 @@ export default function Learn() {
 
     const handleReset = async () => {
         try {
-            await deleteLearnSession(id);
+            if (isOffline) {
+                await deleteOfflineLearnSession(id);
+            } else {
+                await deleteLearnSession(id);
+            }
             setQuestions([]);
             setCurrentQuestionIndex(0);
             setCurrentAnswer('');
             setLoading(true);
             setId(null);
             setIsPopupOpen(true);
-            openOverlay(<StartLearn flashcardSetId={flashcardSetId} onStart={handleGetQuestions} setId={setId} />);
+            openOverlay(<StartLearn flashcardSetId={flashcardSetId} onStart={handleGetQuestions} setId={setId} isOffline={isOffline} />);
         } catch (error) {
             console.error('Error resetting learn session:', error);
         }
@@ -131,7 +161,12 @@ export default function Learn() {
         setCurrentQuestionIndex(0);
         setCurrentAnswer('');
         try {
-            const nextSession = await generateLearnSession(id);
+            let nextSession;
+            if (isOffline) {
+                nextSession = await generateOfflineLearnSession(id);
+            } else {
+                nextSession = await generateLearnSession(id);
+            }
             setQuestions(nextSession.questions);
             setLoading(false);
         } catch (error) {
@@ -142,7 +177,7 @@ export default function Learn() {
     if (loading) {
         return (
             <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
-                <Navbar />
+                <Navbar isOffline={isOffline} />
                 <div className="flex items-center justify-center h-full">
                     <p className="text-lg">Loading...</p>
                 </div>
@@ -153,7 +188,7 @@ export default function Learn() {
     if (finished) {
         return (
             <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
-                <Navbar />
+                <Navbar isOffline={isOffline} />
                 <div className="flex items-center justify-center h-full">
                     <div className="flex flex-col items-center justify-center p-4 w-1/3 bg-gray-700 rounded-lg">
                         <h2 className="text-2xl mb-4">Congratulations!</h2>
@@ -165,7 +200,7 @@ export default function Learn() {
                             >Next Session</button>
                             <button
                                 className="bg-gray-500 hover:bg-gray-600 rounded-lg py-2 px-4 w-1/2"
-                                onClick={() => window.location.href = `/set/${flashcardSetId}`}
+                                onClick={() => window.location.href = `${isOffline ? '/downloads' : ''}/set/${flashcardSetId}`}
                             >Return to set</button>
                         </div>
                     </div>
@@ -176,7 +211,7 @@ export default function Learn() {
 
     return (
         <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
-            <Navbar />
+            <Navbar isOffline={isOffline} />
             <div className="flex flex-col items-center justify-center h-full w-screen">
                 <form className="flex flex-col items-center justify-center bg-gray-700 rounded-lg p-4 w-1/3" onSubmit={handleAnswerSubmit}>
                     {questions[currentQuestionIndex].questionType === 'trueFalse' && (

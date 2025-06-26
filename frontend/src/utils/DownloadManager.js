@@ -241,7 +241,7 @@ export const editOfflineFlashcardSet = async (id, updatedData) => {
     }
 }
 
-export const getRandomFlashcards = async (id, amount, exludedId) => {
+export const getRandomOfflineFlashcards = async (id, amount, exludedId) => {
     try {
         const flashcardSet = internalGetFlashcardSet(id);
         if (!flashcardSet || !flashcardSet.flashCards || flashcardSet.flashCards.length === 0) {

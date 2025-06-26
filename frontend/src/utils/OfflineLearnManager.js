@@ -14,7 +14,7 @@ const internalGetLearnSession = (id) => {
     return JSON.parse(learnSessionData);
 }
 
-export const checkIfLearnSessionExists = async (flashcardSetId) => {
+export const checkIfOfflineLearnSessionExists = async (flashcardSetId) => {
     try {
         const flashcardSet = JSON.parse(localStorage.getItem(`flashcardSet-${flashcardSetId}`));
         if (!flashcardSet) {
@@ -31,7 +31,8 @@ export const checkIfLearnSessionExists = async (flashcardSetId) => {
     }
 }
 
-export const createLearnSession = async (flashcardSetId, settings) => {
+export const createOfflineLearnSession = async (flashcardSetId, settings) => {
+    console.log('Creating offline learn session for flashcard set:', flashcardSetId, 'with settings:', settings);
     try {
         if (!flashcardSetId || !settings) {
             return Promise.reject({ message: 'Flashcard set ID and settings are required' });
@@ -40,7 +41,8 @@ export const createLearnSession = async (flashcardSetId, settings) => {
         if (!flashcardSet) {
             return Promise.reject({ message: 'Flashcard set not found' });
         }
-        if (await checkIfLearnSessionExists(flashcardSetId)) {
+        const exists = await checkIfOfflineLearnSessionExists(flashcardSetId);
+        if (exists.learnSessionId) {
             return Promise.reject({ message: 'Learn session already exists for this flashcard set' });
         }
         let questions = [];
@@ -113,7 +115,7 @@ export const getLearnSession = async (id) => {
     }
 }
 
-export const deleteLearnSession = async (id) => {
+export const deleteOfflineLearnSession = async (id) => {
     try {
         if (!id) {
             return Promise.reject({ message: 'ID is required' });
@@ -126,7 +128,7 @@ export const deleteLearnSession = async (id) => {
     }
 }
 
-export const generateLearnSession = async (id) => {
+export const generateOfflineLearnSession = async (id) => {
     try {
         if (!id) {
             return Promise.reject({ message: 'ID is required' });

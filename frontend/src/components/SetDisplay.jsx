@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useOverlayContext } from '../contexts/OverlayContext';
-import DeleteFlashcardSet from './offlineComponents/DeleteFlashcardSet';
+import DeleteFlashcardSet from './DeleteFlashcardSet';
 
 export default function SetDisplay({ flashcardSet, isOffline = false }) {
     const { openOverlay } = useOverlayContext();
 
     const handleDelete = (e) => {
         e.preventDefault();
-        openOverlay(<DeleteFlashcardSet id={flashcardSet._id} />);
+        openOverlay(<DeleteFlashcardSet id={flashcardSet._id} isOffline={isOffline} />);
     }
 
     return (
