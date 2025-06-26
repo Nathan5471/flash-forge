@@ -12,6 +12,8 @@ import TrueFalse from '../components/testComponents/TrueFalse';
 import Matching from '../components/testComponents/Matching';
 import UnansweredQuestionsPopup from '../components/testComponents/UnansweredQuestionsPopup';
 import GradeChart from '../components/testComponents/GradeChart';
+import GradedMultipleChoice from '../components/testComponents/gradedComponents/GradedMultipleChoice';
+import GradedWritten from '../components/testComponents/gradedComponents/GradedWritten'
 
 export default function Test({ isOffline = false }) {
     const { id } = useParams();
@@ -119,7 +121,6 @@ export default function Test({ isOffline = false }) {
     }
 
     const gradeTest = () => {
-        console.log(selectedAnswers);
         const correctAnswers = Object.values(selectedAnswers).filter(answer => answer.isCorrect).length;
         const totalQuestions = questions.length;
         const score = (correctAnswers / totalQuestions) * 100;
@@ -158,12 +159,32 @@ export default function Test({ isOffline = false }) {
                 <Navbar isOffline={isOffline} />
                 <div className="flex flex-col items-center justify-center p-4">
                     <h1 className="text-3xl mb-4 text-center">Test: {flashcardSet.title}</h1>
-                    <div className="bg-gray-700 p-6 rounded-lg w-[calc(50%)] text-center">
+                    <div className="bg-gray-700 p-6 rounded-lg w-[calc(50%)] text-center mb-4">
                         <h2 className="text-2xl mb-4">Test Completed!</h2>
                         <p className="text-lg mb-4">You answered {Object.values(selectedAnswers).filter(answer => answer.isCorrect).length} out of {questions.length} questions correctly!</p>
-                        <div className="flex flex-col items-center mb-4">
+                        <div className="flex flex-col items-center">
                             <GradeChart grade={grade} />
                         </div>
+                    </div>
+                    <div className="w-[calc(50%)]">
+                        {questionTypes.includes('multipleChoice') && (
+                            questions.filter(question => question.type === 'multipleChoice').map((question, index) => (
+                                <GradedMultipleChoice
+                                    key={index}
+                                    question={question}
+                                    selectedAnswer={selectedAnswers[question.questionNumber] || {questionNumber: question.questionNumber, selectedAnswer: null, isCorrect: false}}
+                                />
+                            ))
+                        )}
+                        {questionTypes.includes('written') && (
+                            questions.filter(question => question.type === 'written').map((question, index) => (
+                                <GradedWritten
+                                    key={index}
+                                    question={question}
+                                    selectedAnswer={selectedAnswers[question.questionNumber] || {questionNumber: question.questionNumber, selectedAnswer: '', isCorrect: false}}
+                                />
+                            ))
+                        )}
                     </div>
                 </div>
             </div>
