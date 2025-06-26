@@ -44,3 +44,8 @@ export const deleteLearnSession = async (id) => {
     const response = await api.delete(`/${id}`);
     return response.data;
 }
+
+export const isNewSessionPossible = async (id) => {
+    const response = await api.get(`/isNewSessionPossible/${id}`);
+    return response.data;
+}

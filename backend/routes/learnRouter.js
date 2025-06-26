@@ -1,5 +1,5 @@
 import express from 'express';
-import { createLearnSession, checkIfLearnSessionExists, getLearnSession, deleteLearnSession, generateLearnSession, checkAnswer } from '../controllers/learnController.js';
+import { createLearnSession, checkIfLearnSessionExists, getLearnSession, deleteLearnSession, generateLearnSession, checkAnswer, isNewSessionPossible } from '../controllers/learnController.js';
 import authenticate from '../middleware/authenticate.js';
 
 const router = express.Router();
@@ -40,6 +40,19 @@ router.get('/check/:id/:order', authenticate, async (req, res) => {
         await checkAnswer(req, res);
     } catch (error) {
         console.error('Error in check learn session route:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+})
+
+router.get('/isNewSessionPossible/:id', authenticate, async (req, res) => {
+    const { id } = req.params;
+    try {
+        if (!id) {
+            return res.status(400).json({ message: 'Flashcard set ID is required' });
+        }
+        await isNewSessionPossible(req, res);
+    } catch (error) {
+        console.error('Error in is new session possible route:', error);
         return res.status(500).json({ message: 'Internal server error' });
     }
 })

@@ -97,6 +97,9 @@ export const getLearnSession = async (req, res) => {
         if (!learnSession) {
             return res.status(404).json({ message: 'Learn session not found' });
         }
+        if (learnSession.user.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'You do not have permission to access this learn session' });
+        }
         res.status(200).json(learnSession);
     } catch (error) {
         console.error('Error retrieving learn session:', error);
@@ -128,6 +131,9 @@ export const generateLearnSession = async (req, res) => {
         const learnSession = await Learn.findById(id).populate('flashcardSet').populate('user', ['username', '_id']);
         if (!learnSession) {
             return res.status(404).json({ message: 'Learn session not found' });
+        }
+        if (learnSession.user.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'You do not have permission to generate this learn session' });
         }
         const settings = learnSession.settings;
         const questions = [...learnSession.questions].sort((a, b) => a.order - b.order);
@@ -177,6 +183,28 @@ export const checkAnswer = async (req, res) => {
         res.status(200).json({ isCorrect: false, correctAnswer: flashcard.answer });
     } catch (error) {
         console.error('Error checking answer:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+export const isNewSessionPossible = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const learnSession = await Learn.findById(id);
+        if (!learnSession) {
+            return res.status(404).json({ message: 'Learn session not found' });
+        }
+        if (learnSession.user.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'You do not have permission to check this' });
+        }
+        const questions = learnSession.questions;
+        if (questions.length === 0) {
+            await Learn.findByIdAndDelete(id);
+            return res.status(200).json({ isNewSessionPossible: false });
+        }
+        return res.status(200).json({ isNewSessionPossible: true });
+    } catch (error) {
+        console.error('Error checking if new session is possible:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }

@@ -190,6 +190,23 @@ export const checkAnswer = (id, order, answer) => {
     }
 }
 
-// TODO: Implement a function to check if the learn session can be continued for another session
-// If not, it should delete the learn session and return false
-// IMPORTANT: Add this to the backend api as well
+export const isNewSessionPossible = async (id) => {
+    try {
+        if (id === undefined) {
+            return Promise.reject({ message: 'ID is required' });
+        }
+        const learnSession = internalGetLearnSession(id);
+        if (!learnSession) {
+            return Promise.reject({ message: 'Learn session not found' });
+        }
+        const questions = learnSession.questions;
+        if (questions.length === 0) {
+            localStorage.removeItem(`learn-${id}`);
+            return { isPossible: false };
+        }
+        return { isPossible: true };
+    } catch (error) {
+        console.error('Error checking if new session is possible:', error);
+        return Promise.reject({ message: 'Internal server error' });
+    }
+}
