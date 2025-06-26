@@ -190,7 +190,7 @@ export const checkAnswer = (id, order, answer) => {
     }
 }
 
-export const isNewSessionPossible = async (id) => {
+export const isNewOfflineSessionPossible = async (id) => {
     try {
         if (id === undefined) {
             return Promise.reject({ message: 'ID is required' });

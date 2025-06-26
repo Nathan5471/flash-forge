@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useOverlayContext } from '../contexts/OverlayContext';
-import { checkIfLearnSessionExists, generateLearnSession, submitAnswer, deleteLearnSession } from '../utils/LearnAPIHandler';
-import { checkIfOfflineLearnSessionExists, generateOfflineLearnSession, checkAnswer, deleteOfflineLearnSession } from '../utils/OfflineLearnManager';
+import { checkIfLearnSessionExists, generateLearnSession, submitAnswer, deleteLearnSession, isNewSessionPossible } from '../utils/LearnAPIHandler';
+import { checkIfOfflineLearnSessionExists, generateOfflineLearnSession, checkAnswer, deleteOfflineLearnSession, isNewOfflineSessionPossible } from '../utils/OfflineLearnManager';
 import { getRandomFlashcards } from '../utils/FlashcardAPIHandler';
 import { getRandomOfflineFlashcards } from '../utils/DownloadManager';
 import Navbar from '../components/Navbar';
@@ -161,6 +161,20 @@ export default function Learn({ isOffline = false }) {
         setCurrentQuestionIndex(0);
         setCurrentAnswer('');
         try {
+            let newSessionPossible;
+            if (isOffline) {
+                newSessionPossible = await isNewOfflineSessionPossible(id);
+            } else {
+                newSessionPossible = await isNewSessionPossible(id);
+            }
+            if (!newSessionPossible.isPossible) {
+                setIsPopupOpen(true);
+                setFinished(false);
+                setLoading(true);
+                setId(null);
+                openOverlay(<StartLearn flashcardSetId={flashcardSetId} onStart={handleGetQuestions} setId={setId} isOffline={isOffline} />);
+                return;
+            }
             let nextSession;
             if (isOffline) {
                 nextSession = await generateOfflineLearnSession(id);
