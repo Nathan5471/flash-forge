@@ -132,7 +132,7 @@ export const generateLearnSession = async (req, res) => {
         if (!learnSession) {
             return res.status(404).json({ message: 'Learn session not found' });
         }
-        if (learnSession.user.toString() !== req.user._id.toString()) {
+        if (learnSession.user._id.toString() !== req.user._id.toString()) {
             return res.status(403).json({ message: 'You do not have permission to generate this learn session' });
         }
         const settings = learnSession.settings;
