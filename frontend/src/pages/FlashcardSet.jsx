@@ -61,7 +61,7 @@ export default function FlashcardSet({ isOffline = false }) {
 
     const handleCloneFlashcardSet = (e) => {
         e.preventDefault();
-        openOverlay(<CloneSet flashcardSet={flashcardSet} />);
+        openOverlay(<CloneSet flashcardSet={flashcardSet} isOffline={isOffline} />);
     }
 
     if (loading) {
@@ -81,23 +81,24 @@ export default function FlashcardSet({ isOffline = false }) {
             <div className="flex flex-col items-center justify-center mt-6 w-screen">
                 <h1 className="text-4xl font-bold mb-4">{flashcardSet.title}</h1>
                 <div className="flex flex-row mb-4">
-                    <Link to={`${isOffline ? '/downloads' : ''}/set/${flashcardSet._id}/flashcard`} className="bg-blue-500 hover:bg-blue-600 p-2 rounded-lg mr-4">Flashcards</Link>
-                    <Link to={`${isOffline ? '/downloads' : ''}/test/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 p-2 rounded-lg mr-4">Take Test</Link>
-                    <Link to={`${isOffline ? '/downloads' : ''}/learn/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 p-2 rounded-lg mr-4">Start Learn</Link>
-                    { isDownloaded ? (
+                    <Link to={`${isOffline ? '/downloads' : ''}/set/${flashcardSet._id}/flashcard`} className="bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded mr-2">Flashcards</Link>
+                    <Link to={`${isOffline ? '/downloads' : ''}/test/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded mr-2">Take Test</Link>
+                    <Link to={`${isOffline ? '/downloads' : ''}/learn/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded mr-2">Start Learn</Link>
+                    {!isOffline && (
+                    isDownloaded ? (
                         <button
-                            className="bg-blue-500 p-2 rounded-lg hover:bg-blue-600"
+                            className="bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded mr-2"
                             onClick={() => syncFlashcardSet(flashcardSet._id)}
                         >Sync Set</button>
                     ) : (
                         <button
-                            className="bg-blue-500 p-2 rounded-lg hover:bg-blue-600"
+                            className="bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded mr-2"
                             onClick={() => {
                                 downloadFlashcardSet(flashcardSet._id)
                                 setIsDownloaded(true);
                             }}
                         >Download Set</button>
-                    )}
+                    ))}
                 </div>
                 <div className='w-1/2 mb-4'>
                     <Flashcard flashcardData={flashcardSet.flashCards[currentFlashcardIndex]} />
@@ -124,17 +125,21 @@ export default function FlashcardSet({ isOffline = false }) {
                     >Export Flashcards</button>
                     
                     { isOffline ? (
-                        <div className="flex flex-row">
+                        <>
+                            <button
+                                className="mt-4 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 ml-4"
+                                onClick={handleCloneFlashcardSet}
+                            >Clone Flashcard Set</button>
                             {flashcardSet.userId._id === 'local-user' && (
-                                <Link to={`/downloads/edit/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 p-2 rounded-lg ml-4">
+                                <Link to={`/downloads/edit/${flashcardSet._id}`} className="mt-4 bg-blue-500 hover:bg-blue-600 p-2 rounded-lg ml-4">
                                     Edit Flashcard Set
                                 </Link>
                             )}
                             <button
-                                className="bg-red-500 hover:bg-red-600 p-2 rounded-lg ml-4"
+                                className="mt-4 bg-red-500 hover:bg-red-600 p-2 rounded-lg ml-4"
                                 onClick={handleDeleteFlashcardSet}
                             >Delete</button>
-                        </div>
+                        </>
                     ) : (
                         <>
                             {user && (

@@ -1,21 +1,27 @@
 import React, { useState } from 'react';
 import { useOverlayContext } from '../contexts/OverlayContext';
 import { cloneFlashcardSet } from '../utils/FlashcardAPIHandler';
+import { createOfflineClone } from '../utils/DownloadManager';
 import { getUser } from '../utils/AuthAPIHandler';
 
-export default function CloneSet({ flashcardSet }) {
+export default function CloneSet({ flashcardSet, isOffline = false }) {
     const { closeOverlay } = useOverlayContext();
     const [newTitle, setNewTitle] = useState('clone of ' + flashcardSet.title);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const user = await getUser();
-            if (!user) {
-                throw new Error('User not authenticated');
+            let newFlashcardSet;
+            if (isOffline) {
+                newFlashcardSet = await createOfflineClone(flashcardSet._id, newTitle);
+            } else {
+                const user = await getUser();
+                if (!user) {
+                    throw new Error('User not authenticated');
+                }
+                newFlashcardSet = await cloneFlashcardSet(flashcardSet._id, newTitle);
             }
-            const newFlashcardSet = await cloneFlashcardSet(flashcardSet._id, newTitle);
-            window.location.href = `/set/${newFlashcardSet.flashcardSet._id}`;
+            window.location.href = `${isOffline ? '/downloads' : ''}/set/${newFlashcardSet.flashcardSet._id}`;
             closeOverlay();
         } catch (error) {
             console.error('Error cloning flashcard set:', error);
