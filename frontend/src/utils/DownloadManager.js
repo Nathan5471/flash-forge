@@ -119,9 +119,13 @@ export const getUserDownloadedFlashcardSets = async (userId) => {
     }
 }
 
-export const searchDownloadedFlashcardSets = async (query) => {
+export const searchDownloadedFlashcardSets = async (query, page, limit) => {
     try {
-        const flashcardSets = await getDownloadedFlashcardSets().map(set => set.data);
+        if (!query || query.trim() === '' || page === undefined || limit === undefined) {
+            return Promise.reject({ message: 'Query, page, and limit are required for search' });
+        }
+        const data = await getDownloadedFlashcardSets();
+        const flashcardSets = data.map(set => set.data);
         if (!flashcardSets || flashcardSets.length === 0) {
             return Promise.reject({ message: 'No downloaded flashcard sets available' });
         }
@@ -136,10 +140,8 @@ export const searchDownloadedFlashcardSets = async (query) => {
             return Promise.reject({ message: 'No flashcard sets found for the given query' });
         }
         const sortedResults = results.sort((a, b) => b.score - a.score);
-        return sortedResults.map(result => ({
-            id: result.item._id,
-            data: result.item
-        }));
+        const filteredResults = sortedResults.slice(page * limit, (page + 1) * limit).map(result => result.item);
+        return {searchResults: filteredResults, totalResults: results.length};
     } catch (error) {
         console.error('Error searching downloaded flashcard sets:', error);
         return Promise.reject({ message: 'Error searching flashcard sets' });

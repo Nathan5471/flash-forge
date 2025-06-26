@@ -3,14 +3,14 @@ import { useParams, Link } from 'react-router-dom';
 import { useOverlayContext } from '../contexts/OverlayContext';
 import { getFlashcardSet } from '../utils/FlashcardAPIHandler';
 import { getUser } from '../utils/AuthAPIHandler';
-import { isFlashcardSetDownloaded, downloadFlashcardSet, syncFlashcardSet } from '../utils/DownloadManager';
+import { getDownloadedFlashcardSet, isFlashcardSetDownloaded, downloadFlashcardSet, syncFlashcardSet } from '../utils/DownloadManager';
 import Navbar from '../components/Navbar';
 import Flashcard from '../components/Flashcard';
 import ExportFlashcards from '../components/ExportFlashcards';
 import CloneSet from '../components/CloneSet';
 import DeleteFlashcardSet from '../components/DeleteFlashcardSet';
 
-export default function FlashcardSet() {
+export default function FlashcardSet({ isOffline = false }) {
     const { openOverlay } = useOverlayContext();
     const { id } = useParams();
     const [flashcardSet, setFlashcardSet] = useState(null);
@@ -22,8 +22,16 @@ export default function FlashcardSet() {
     useEffect(() => {
         const fetchFlashcardSet = async () => {
             try {
-                const flashcardData = await getFlashcardSet(id);
+                let flashcardData;
+                if (isOffline) {
+                    flashcardData = await getDownloadedFlashcardSet(id);
+                } else {
+                    flashcardData = await getFlashcardSet(id);
+                }
                 setFlashcardSet(flashcardData);
+                if (isOffline) {
+                    return;
+                }
                 setIsDownloaded(isFlashcardSetDownloaded(id));
                 const userData = await getUser();
                 if (userData) {
@@ -39,7 +47,7 @@ export default function FlashcardSet() {
             }
         }
         fetchFlashcardSet();
-    }, [id]);
+    }, [id, isOffline]);
 
     const handleExportFlashcards = (e) => {
         e.preventDefault();
@@ -48,13 +56,18 @@ export default function FlashcardSet() {
 
     const handleDeleteFlashcardSet = (e) => {
         e.preventDefault();
-        openOverlay(<DeleteFlashcardSet id={id} />);
+        openOverlay(<DeleteFlashcardSet id={id} isOffline={isOffline} />);
+    }
+
+    const handleCloneFlashcardSet = (e) => {
+        e.preventDefault();
+        openOverlay(<CloneSet flashcardSet={flashcardSet} />);
     }
 
     if (loading) {
         return (
             <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
-                <Navbar />
+                <Navbar isOffline={isOffline} />
                 <div className="flex items-center justify-center">
                     <p className="text-2xl">Loading...</p>
                 </div>
@@ -64,13 +77,13 @@ export default function FlashcardSet() {
 
     return (
         <div className="flex flex-col min-h-screen w-screen bg-gray-600 text-white">
-            <Navbar />
+            <Navbar isOffline={isOffline} />
             <div className="flex flex-col items-center justify-center mt-6 w-screen">
                 <h1 className="text-4xl font-bold mb-4">{flashcardSet.title}</h1>
                 <div className="flex flex-row mb-4">
-                    <Link to={`/set/${flashcardSet._id}/flashcard`} className="bg-blue-500 hover:bg-blue-600 p-2 rounded-lg mr-4">Flashcards</Link>
-                    <Link to={`/test/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 p-2 rounded-lg mr-4">Take Test</Link>
-                    <Link to={`/learn/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 p-2 rounded-lg mr-4">Start Learn</Link>
+                    <Link to={`${isOffline ? '/downloads' : ''}/set/${flashcardSet._id}/flashcard`} className="bg-blue-500 hover:bg-blue-600 p-2 rounded-lg mr-4">Flashcards</Link>
+                    <Link to={`${isOffline ? '/downloads' : ''}/test/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 p-2 rounded-lg mr-4">Take Test</Link>
+                    <Link to={`${isOffline ? '/downloads' : ''}/learn/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 p-2 rounded-lg mr-4">Start Learn</Link>
                     { isDownloaded ? (
                         <button
                             className="bg-blue-500 p-2 rounded-lg hover:bg-blue-600"
@@ -102,28 +115,45 @@ export default function FlashcardSet() {
                         disabled={currentFlashcardIndex >= flashcardSet.flashCards.length - 1}
                     >Next</button>
                 </div>
-                <p className="text-lg text-gray-300 text-left w-1/2">Created By: <Link to={`/user/${flashcardSet.userId._id}`} className="hover:underline">{flashcardSet.userId.username}</Link></p>
+                <p className="text-lg text-gray-300 text-left w-1/2">Created By: <Link to={`${isOffline ? '/downloads' : ''}/user/${flashcardSet.userId._id}`} className="hover:underline">{flashcardSet.userId.username}</Link></p>
                 <p className="text-lg text-gray-300 text-left w-1/2">Description: {flashcardSet.description}</p>
                 <div className="flex flex-row">
                     <button
                         className="mt-4 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600"
                         onClick={handleExportFlashcards}
                     >Export Flashcards</button>
-                    {user && (
-                        <button
-                            className="mt-4 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 ml-4"
-                            onClick={() => openOverlay(<CloneSet flashcardSet={flashcardSet} />)}
-                        >Clone Flashcard Set</button>
-                    )}
-                    {flashcardSet.userId._id === user?._id && (
-                        <>
-                            <Link to={`/edit/${flashcardSet._id}`} className="mt-4 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 ml-4">
-                                Edit Flashcard Set
-                            </Link>
+                    
+                    { isOffline ? (
+                        <div className="flex flex-row">
+                            {flashcardSet.userId._id === 'local-user' && (
+                                <Link to={`/downloads/edit/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 p-2 rounded-lg ml-4">
+                                    Edit Flashcard Set
+                                </Link>
+                            )}
                             <button
-                                className="mt-4 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 ml-4"
+                                className="bg-red-500 hover:bg-red-600 p-2 rounded-lg ml-4"
                                 onClick={handleDeleteFlashcardSet}
                             >Delete</button>
+                        </div>
+                    ) : (
+                        <>
+                            {user && (
+                                <button
+                                    className="mt-4 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 ml-4"
+                                    onClick={handleCloneFlashcardSet}
+                                >Clone Flashcard Set</button>
+                            )}
+                            {flashcardSet.userId._id === user?._id && (
+                            <>
+                                <Link to={`/edit/${flashcardSet._id}`} className="mt-4 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 ml-4">
+                                    Edit Flashcard Set
+                                </Link>
+                                <button
+                                    className="mt-4 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 ml-4"
+                                    onClick={handleDeleteFlashcardSet}
+                                >Delete</button>
+                            </>
+                            )}
                         </>
                     )}
                 </div>

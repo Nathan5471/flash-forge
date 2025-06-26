@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { deleteFlashcardSet, getFlashcardSet } from '../utils/FlashcardAPIHandler';
+import { deleteDownloadedFlashcardSet, getDownloadedFlashcardSet } from '../utils/DownloadManager'
 import { getUser } from '../utils/AuthAPIHandler';
 import { useOverlayContext } from '../contexts/OverlayContext';
 
-export default function DeleteFlashcardSet({ id }) {
+export default function DeleteFlashcardSet({ id, isOffline = false }) {
     const { closeOverlay } = useOverlayContext();
     const [title, setTitle] = useState('');
     const [loading, setLoading] = useState(true);
@@ -12,11 +13,16 @@ export default function DeleteFlashcardSet({ id }) {
     useEffect(() => {
         const fetchFlashcardSet = async () => {
             try {
-                const userData = await getUser();
-                const data = await getFlashcardSet(id);
-                if (data.userId._id !== userData.user._id) {
-                    closeOverlay();
-                    return;
+                let data;
+                if (isOffline) {
+                    data = await getDownloadedFlashcardSet(id);
+                } else {
+                    data = await getFlashcardSet(id);
+                    const userData = await getUser();
+                    if (data.userId._id !== userData.user._id) {
+                        closeOverlay();
+                        return;
+                    }
                 }
                 setTitle(data.title);
             } catch (error) {
@@ -27,13 +33,17 @@ export default function DeleteFlashcardSet({ id }) {
             }
         }
         fetchFlashcardSet();
-    }, [id, closeOverlay]);
+    }, [id, closeOverlay, isOffline]);
 
     const handleDelete = async () => {
         try {
-            await deleteFlashcardSet(id);
+            if (isOffline) {
+                await deleteDownloadedFlashcardSet(id);
+            } else {
+                await deleteFlashcardSet(id);
+            }
             closeOverlay();
-            window.location.href = '/';
+            window.location.href = isOffline ? '/downloads' : '/';
         } catch (error) {
             console.error('Error deleting flashcard set:', error);
             setError(error.message || 'Failed to delete flashcard set');
@@ -54,8 +64,12 @@ export default function DeleteFlashcardSet({ id }) {
 
     return (
         <div className="flex flex-col w-80">
-            <h1 className="text-3xl mb-4 text-center">Delete Flashcard Set</h1>
-            <p className="text-red-500 mb-4 text-center">This action can not be undone, are you sure you would like to delete {title}?</p>
+            <h1 className="text-3xl mb-4 text-center">Delete {isOffline ? 'Offline ' : ''}Flashcard Set</h1>
+            { isOffline ? (
+                <p className="text-red-500 mb-4 text-center">This action can't be undone and you can only reinstall when you are online. Are you sure you would like to delete {title}?</p>
+            ) : (
+                <p className="text-red-500 mb-4 text-center">This action can not be undone, are you sure you would like to delete {title}?</p>
+            )}
             <p className="text-red-500 mb-4 text-center">{error}</p>
             <div className="flex flex-row w-full">
                 <button onClick={handleDelete} className="bg-red-500 hover:bg-red-600 py-2 px-6 rounded-lg text-white mr-2 w-[calc(50%)]">Delete</button>

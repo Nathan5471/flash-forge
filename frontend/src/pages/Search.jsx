@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { searchFlashcardSets } from '../utils/FlashcardAPIHandler';
+import { searchDownloadedFlashcardSets } from '../utils/DownloadManager';
 import Navbar from '../components/Navbar';
 import SetDisplay from '../components/SetDisplay';
 
-export default function Search() {
+export default function Search({ isOffline = false }) {
     const { searchTerm } = useParams();
     const [flashcardSets, setFlashcardSets] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0);
@@ -16,7 +17,12 @@ export default function Search() {
         const fetchFlashcardSets = async () => {
             setFlashcardSets([]);
             try {
-                const flashcardData = await searchFlashcardSets(searchTerm, page, limit);
+                let flashcardData;
+                if (isOffline) {
+                    flashcardData = await searchDownloadedFlashcardSets(searchTerm, page, limit);
+                } else {
+                    flashcardData = await searchFlashcardSets(searchTerm, page, limit);
+                }
                 setFlashcardSets(flashcardData.searchResults);
                 setTotalAmount(flashcardData.totalResults);
             } catch (error) {
@@ -26,19 +32,19 @@ export default function Search() {
             }
         }
         fetchFlashcardSets();
-    }, [searchTerm, page, limit]);
+    }, [searchTerm, page, limit, isOffline]);
 
     if (loading) {
         return (
             <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
-                <Navbar />
+                <Navbar isOffline={isOffline} />
             </div>
         )
     }
 
     return (
         <div className="flex flex-col min-h-screen w-screen bg-gray-600 text-white">
-            <Navbar />
+            <Navbar isOffline={isOffline} />
             <div className="flex flex-col justify-center mt-4">
                 <h1 className="text-2xl font-bold text-center mb-4">Search Results for "{searchTerm}"</h1>
                 { flashcardSets.length > 0 ? (
@@ -54,7 +60,7 @@ export default function Search() {
                         </div>
                         <div className="grid gird-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
                             {flashcardSets.map((set) => (
-                                <SetDisplay key={set._id} flashcardSet={set} />
+                                <SetDisplay key={set._id} flashcardSet={set} isOffline={true}/>
                             ))}
                         </div>
                         { totalAmount > limit && (

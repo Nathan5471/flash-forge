@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getFlashcardSet } from '../utils/FlashcardAPIHandler';
+import { getDownloadedFlashcardSet } from '../utils/DownloadManager';
 import Navbar from '../components/Navbar';
 import Flashcard from '../components/Flashcard';
 import { IoIosArrowBack } from "react-icons/io";
 
 
-export default function FlashcardPage() {
+export default function FlashcardPage({ isOffline = false }) {
     const { id } = useParams();
     const [flashcardSet, setFlashcardSet] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -15,7 +16,12 @@ export default function FlashcardPage() {
     useEffect(() => {
         const fetchFlashcardSet = async () => {
             try {
-                const flashcardData = await getFlashcardSet(id);
+                let flashcardData;
+                if (isOffline) {
+                    flashcardData = await getDownloadedFlashcardSet(id);
+                } else {
+                    flashcardData = await getFlashcardSet(id);
+                }
                 setFlashcardSet(flashcardData);
             } catch (error) {
                 console.error('Error fetching flashcard set:', error);
@@ -25,12 +31,12 @@ export default function FlashcardPage() {
             }
         }
         fetchFlashcardSet();
-    }, [id]);
+    }, [id, isOffline]);
 
     if (loading) {
         return (
             <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
-                <Navbar />
+                <Navbar isOffline={true} />
                 <div className="flex items-center justify-center">
                     <p className="text-2xl">Loading...</p>
                 </div>
@@ -40,7 +46,7 @@ export default function FlashcardPage() {
 
     return (
         <div className="flex flex-col min-h-screen w-screen bg-gray-600 text-white">
-            <Navbar />
+            <Navbar isOffline={true} />
             <div className="flex flex-col items-center justify-center">
                 <div className="w-[calc(60%)] mt-4">
                     <Flashcard flashcardData={flashcardSet.flashCards[currentFlashcardIndex]} />
@@ -59,7 +65,7 @@ export default function FlashcardPage() {
                     >Next</button>
                 </div>
                 <div className="flex flex-row mt-2 w-[calc(60%)]">
-                    <Link to={`/set/${id}`} className="bg-gray-700 hover:bg-gray-800 p-2 rounded-lg flex text-center items-center"><IoIosArrowBack /> Back to Set</Link>
+                    <Link to={`${isOffline ? '/downloads' : ''}/set/${id}`} className="bg-gray-700 hover:bg-gray-800 p-2 rounded-lg flex text-center items-center"><IoIosArrowBack /> Back to Set</Link>
                 </div>
             </div>
         </div>
