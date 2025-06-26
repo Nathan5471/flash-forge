@@ -1,6 +1,14 @@
 import fuse from 'fuse.js';
 import { getFlashcardSet, getLastEditTime } from './FlashcardAPIHandler';
 
+const internalGetFlashcardSet = (id) => {
+    const flashcardSetData = localStorage.getItem(`flashcardSet-${id}`);
+    if (!flashcardSetData) {
+        return null;
+    }
+    return JSON.parse(flashcardSetData);
+}
+
 export const isFlashcardSetDownloaded = (id) => {
     try {
         const flashcardSet = localStorage.getItem(`flashcardSet-${id}`);
@@ -51,6 +59,9 @@ export const getDownloadedFlashcardSet = async (id) => {
             return Promise.reject({ message: 'Flashcard set not downloaded' });
         }
         const flashcardSet = localStorage.getItem(`flashcardSet-${id}`);
+        if (!flashcardSet) {
+            return Promise.reject({ message: 'Flashcard set not found' });
+        }
         return JSON.parse(flashcardSet);
     } catch (error) {
         console.error('Error getting downloaded flashcard set:', error);
@@ -188,7 +199,7 @@ export const createOfflineFlashcardSet = async (flashcardSetData) => {
 
 export const createOfflineClone = async (id, newTitle) => {
     try {
-        const flashcardSet = await getDownloadedFlashcardSet(id);
+        const flashcardSet = internalGetFlashcardSet(id);
         if (!flashcardSet) {
             return Promise.reject({ message: 'Flashcard set not found' });
         }
@@ -232,7 +243,7 @@ export const editOfflineFlashcardSet = async (id, updatedData) => {
 
 export const getRandomFlashcards = async (id, amount, exludedId) => {
     try {
-        const flashcardSet = await getDownloadedFlashcardSet(id);
+        const flashcardSet = internalGetFlashcardSet(id);
         if (!flashcardSet || !flashcardSet.flashCards || flashcardSet.flashCards.length === 0) {
             return Promise.reject({ message: 'No flashcards available in this set' });
         }
