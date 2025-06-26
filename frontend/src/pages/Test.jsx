@@ -60,12 +60,12 @@ export default function Test({ isOffline = false }) {
                         .filter(answer => answer !== question.answer)
                         .sort(() => Math.random() - 0.5)
                         .slice(0, 3)
-                        .push(question.answer);
+                        .concat(question.answer);
                         return {
                             question: question.question,
                             answer: question.answer,
                             type: questionType,
-                            possibleAnswers: answerChoices.sort(() => Math.random() - 0.5),
+                            answerChoices: answerChoices.sort(() => Math.random() - 0.5),
                             questionNumber: index + 1
                         };
                     } else if (questionType === 'written') {
@@ -80,19 +80,20 @@ export default function Test({ isOffline = false }) {
                         .filter(answer => answer !== question.answer)
                         .sort(() => Math.random() - 0.5)
                         .slice(0, 1)
-                        .push(question.answer);
+                        .concat(question.answer);
                         return {
                             question: question.question,
                             answer: question.answer,
                             type: questionType,
-                            answerChoice: answerChoices.sort(() => Math.random() - 0.5)[0],
+                            answerChoice: [...answerChoices].sort(() => Math.random() - 0.5)[0],
                             questionNumber: index + 1
                         };
                     } else if (questionType === 'matching') {
                         return {
                             question: question.question,
                             answer: question.answer,
-                            type: questionType
+                            type: questionType,
+                            questionNumber: index + 1
                         };
                     }
                 })

@@ -1,21 +1,19 @@
 import React, { useEffect, useState } from 'react';
 
-export default function Matching({ flashcards, startQuestionNumber, onAnswerSelected }) {
-    const [questions, setQuestions] = useState([]);
+export default function Matching({ questions, onAnswerSelected }) {
     const [possibleAnswers, setPossibleAnswers] = useState([]);
     const [selectedAnswers, setSelectedAnswers] = useState({});
 
     useEffect(() => {
-        setQuestions(flashcards);
-        const reshuffledFlashcards = [...flashcards].sort(() => Math.random() - 0.5);
-        setPossibleAnswers(reshuffledFlashcards.map(card => card.answer));
-    }, [flashcards]);
+        const shuffledAnswers = questions.map(question => question.answer).sort(() => Math.random() - 0.5);
+        setPossibleAnswers(shuffledAnswers);
+    }, [questions]);
 
     const handleAnswerChange = (questionNumber, answer) => {
         const answerData = {
             questionNumber: questionNumber,
             selectedAnswer: answer,
-            isCorrect: questions[questionNumber - startQuestionNumber].answer === answer
+            isCorrect: questions.filter(question => question.questionNumber === questionNumber)[0] === answer
         }
         setSelectedAnswers(prev => ({ ...prev, [questionNumber]: answer }));
         onAnswerSelected(answerData);
@@ -25,24 +23,21 @@ export default function Matching({ flashcards, startQuestionNumber, onAnswerSele
         <div className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg mb-4">
             <h2 className="text-2xl mb-4">Matching Questions</h2>
             <div className="flex flex-col mb-4 w-full">
-                {questions.map((flashcard, index) => {
-                    const questionNumber = startQuestionNumber + index;
-                    return (
-                        <div key={index} className="flex flex-row items-center justify-between p-4 bg-gray-800 rounded-lg mb-2">
-                            <span className="text-lg">{questionNumber}. {flashcard.question}</span>
-                            <select
-                                value={selectedAnswers[questionNumber] || ''}
-                                onChange={(e) => handleAnswerChange(questionNumber, e.target.value)}
-                                className="p-2 rounded-lg bg-gray-600"
-                            >
-                                <option value="" disabled>Select an answer</option>
-                                {possibleAnswers.map((answer, answerIndex) => (
-                                    <option key={answerIndex} value={answer}>{answer}</option>
-                                ))}
-                            </select>
-                        </div>
-                    )
-                })}
+                {questions.map((question, index) => (
+                    <div key={index} className="flex flex-row items-center justify-between p-4 bg-gray-800 rounded-lg mb-2">
+                        <span className="text-lg">{question.questionNumber}. {question.question}</span>
+                        <select
+                            value={selectedAnswers[question.questionNumber] || ''}
+                            onChange={(e) => handleAnswerChange(question.questionNumber, e.target.value)}
+                            className="p-2 rounded-lg bg-gray-600"
+                        >
+                            <option value="" disabled>Select an answer</option>
+                            {possibleAnswers.map((answer, answerIndex) => (
+                                <option key={answerIndex} value={answer}>{answer}</option>
+                            ))}
+                        </select>
+                    </div>
+                ))}
             </div>
         </div>
     )
