@@ -7,7 +7,7 @@ const internalGetFlashcardSet = (flashcardSetId) => {
 }
 
 const internalGetLearnSession = (id) => {
-    const learnSessionData = localStorage.getItem(id);
+    const learnSessionData = localStorage.getItem(`learn-${id}`);
     if (!learnSessionData) {
         return null;
     }
@@ -32,7 +32,6 @@ export const checkIfOfflineLearnSessionExists = async (flashcardSetId) => {
 }
 
 export const createOfflineLearnSession = async (flashcardSetId, settings) => {
-    console.log('Creating offline learn session for flashcard set:', flashcardSetId, 'with settings:', settings);
     try {
         if (!flashcardSetId || !settings) {
             return Promise.reject({ message: 'Flashcard set ID and settings are required' });
@@ -85,7 +84,7 @@ export const createOfflineLearnSession = async (flashcardSetId, settings) => {
             }
         }
         const learnSession = {
-            _id: `learn-${flashcardSetId}`,
+            _id: `${flashcardSetId}`,
             flashcardSet: flashcardSetId,
             settings: settings,
             questions: questions,
@@ -104,7 +103,7 @@ export const getLearnSession = async (id) => {
         if (!id) {
             return Promise.reject({ message: 'ID is required' });
         }
-        const learnSession = localStorage.getItem(id);
+        const learnSession = localStorage.getItem(`learn-${id}`);
         if (!learnSession) {
             return Promise.reject({ message: 'Learn session not found' });
         }
@@ -120,7 +119,7 @@ export const deleteOfflineLearnSession = async (id) => {
         if (!id) {
             return Promise.reject({ message: 'ID is required' });
         }
-        localStorage.removeItem(id);
+        localStorage.removeItem(`learn-${id}`);
         return true;
     }  catch (error) {
         console.error('Error deleting learn session:', error);
@@ -180,8 +179,9 @@ export const checkAnswer = (id, order, answer) => {
         }
         const isCorrect = flashcard.answer.toLowerCase() === answer.toLowerCase()
         if (isCorrect) {
-            learnSession.questions = learnSession.questions.filter(question => question.order.toString() !== order);
-            localStorage.setItem(`learn-${id}`, JSON.stringify(learnSession));
+            const newLearnSession = { ...learnSession };
+            newLearnSession.questions = learnSession.questions.filter(question => question.order !== order);
+            localStorage.setItem(`learn-${id}`, JSON.stringify(newLearnSession));
         }
         return { isCorrect, correctAnswer: flashcard.answer };
     } catch (error) {
@@ -189,3 +189,7 @@ export const checkAnswer = (id, order, answer) => {
         return Promise.reject({ message: 'Internal server error' });
     }
 }
+
+// TODO: Implement a function to check if the learn session can be continued for another session
+// If not, it should delete the learn session and return false
+// IMPORTANT: Add this to the backend api as well
