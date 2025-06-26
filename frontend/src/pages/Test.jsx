@@ -119,6 +119,7 @@ export default function Test({ isOffline = false }) {
     }
 
     const gradeTest = () => {
+        console.log(selectedAnswers);
         const correctAnswers = Object.values(selectedAnswers).filter(answer => answer.isCorrect).length;
         const totalQuestions = questions.length;
         const score = (correctAnswers / totalQuestions) * 100;
@@ -153,7 +154,7 @@ export default function Test({ isOffline = false }) {
 
     if (isFinished) {
         return (
-            <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
+            <div className="flex flex-col min-h-screen w-screen bg-gray-600 text-white">
                 <Navbar isOffline={isOffline} />
                 <div className="flex flex-col items-center justify-center p-4">
                     <h1 className="text-3xl mb-4 text-center">Test: {flashcardSet.title}</h1>

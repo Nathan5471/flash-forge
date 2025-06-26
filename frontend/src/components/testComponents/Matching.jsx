@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
 
 export default function Matching({ questions, onAnswerSelected }) {
-    const [possibleAnswers, setPossibleAnswers] = useState([]);
+    const [shuffledAnswers, setShuffledAnswers] = useState([]);
     const [selectedAnswers, setSelectedAnswers] = useState({});
 
     useEffect(() => {
-        const shuffledAnswers = questions.map(question => question.answer).sort(() => Math.random() - 0.5);
-        setPossibleAnswers(shuffledAnswers);
-    }, [questions]);
+        if (shuffledAnswers.length > 0) return;
+        const answers = questions.map(question => question.answer);
+        const shuffled = answers.sort(() => Math.random() - 0.5);
+        setShuffledAnswers(shuffled);
+    }, [questions, shuffledAnswers]);
 
     const handleAnswerChange = (questionNumber, answer) => {
         const answerData = {
             questionNumber: questionNumber,
             selectedAnswer: answer,
-            isCorrect: questions.filter(question => question.questionNumber === questionNumber)[0] === answer
+            isCorrect: questions.filter(question => question.questionNumber === questionNumber)[0].answer === answer
         }
         setSelectedAnswers(prev => ({ ...prev, [questionNumber]: answer }));
         onAnswerSelected(answerData);
@@ -32,7 +34,7 @@ export default function Matching({ questions, onAnswerSelected }) {
                             className="p-2 rounded-lg bg-gray-600"
                         >
                             <option value="" disabled>Select an answer</option>
-                            {possibleAnswers.map((answer, answerIndex) => (
+                            {shuffledAnswers.map((answer, answerIndex) => (
                                 <option key={answerIndex} value={answer}>{answer}</option>
                             ))}
                         </select>
