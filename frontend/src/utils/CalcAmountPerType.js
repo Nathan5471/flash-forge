@@ -1,14 +1,12 @@
 export default function CalcAmountPerType(questionTypes, questionCount) {
-    const amountPerType = {};
+    const amountPerType = [];
+    const sortOrder = ["multipleChoice", "written", "trueFalse", "matching"];
 
-    const average = Math.floor(questionCount / questionTypes.length);
-    const remainder = questionCount % questionTypes.length;
+    for (let i = 0; i < questionCount; i++) {
+        const typeIndex = i % questionTypes.length;
+        amountPerType.push(questionTypes[typeIndex]);
+    }
 
-    let total = 0;
-    questionTypes.forEach((type, index) => {
-        amountPerType[type] = [total, average + (index < remainder ? 1 : 0)]; // Format: [startIndex, amount]
-        total += amountPerType[type][1];
-    })
-
-    return amountPerType;
+    const sortedAmountPerType = amountPerType.sort((a, b) => sortOrder.indexOf(a) - sortOrder.indexOf(b));
+    return sortedAmountPerType;
 }

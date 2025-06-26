@@ -11,7 +11,7 @@ import Written from '../components/testComponents/Written';
 import TrueFalse from '../components/testComponents/TrueFalse';
 import Matching from '../components/testComponents/Matching';
 import UnansweredQuestionsPopup from '../components/testComponents/UnansweredQuestionsPopup';
-import GradePopup from '../components/testComponents/GradePopup';
+import GradeChart from '../components/testComponents/GradeChart';
 
 export default function Test({ isOffline = false }) {
     const { id } = useParams();
@@ -25,6 +25,8 @@ export default function Test({ isOffline = false }) {
     const [loading, setLoading] = useState(true);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [readyForTest, setReadyForTest] = useState(false);
+    const [isFinished, setIsFinished] = useState(false);
+    const [grade, setGrade] = useState(0);
 
     useEffect(() => {
         const fetchFlashcardSet = async () => {
@@ -54,11 +56,14 @@ export default function Test({ isOffline = false }) {
         if (flashcardSet && loading === false && readyForTest === false && !isPopupOpen) {
             const handleAddTestInfo = (amount, types) => {
                 setQuestionTypes(types);
-                setAmountPerType(CalcAmountPerType(types, amount));
+                const amountPerType = CalcAmountPerType(types, amount);
+                setAmountPerType(amountPerType);
                 const shuffledQuestions = [...flashcardSet.flashCards].sort(() => Math.random() - 0.5);
                 const selectedQuestions = shuffledQuestions.slice(0, amount);
+                const filledQuestions = selectedQuestions.map((question, index) => {
+                    const questionType = 
+                })
                 setQuestions(selectedQuestions);
-                setReadyForTest(true);
                 setIsPopupOpen(false);
                 setReadyForTest(true);
             }
@@ -83,14 +88,8 @@ export default function Test({ isOffline = false }) {
         const correctAnswers = Object.values(selectedAnswers).filter(answer => answer.isCorrect).length;
         const totalQuestions = questions.length;
         const score = (correctAnswers / totalQuestions) * 100;
-        openOverlay(
-            <GradePopup
-                id={flashcardSet._id}
-                grade={Math.round(score)}
-                questionCount={totalQuestions}
-                correctAnswerCount={correctAnswers}
-            />
-        );
+        setGrade(score);
+        setIsFinished(true);
     }
 
     const handleSubmitTest = () => {
@@ -110,7 +109,7 @@ export default function Test({ isOffline = false }) {
     if (loading || !readyForTest) {
         return (
             <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
-                <Navbar isOffline={isOffline}/>
+                <Navbar isOffline={isOffline} />
                 <div className="flex items-center justify-center h-full">
                     <p className="text-lg">Loading...</p>
                 </div>
@@ -118,9 +117,27 @@ export default function Test({ isOffline = false }) {
         )
     }
 
+    if (isFinished) {
+        return (
+            <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
+                <Navbar isOffline={isOffline} />
+                <div className="flex flex-col items-center justify-center p-4">
+                    <h1 className="text-3xl mb-4 text-center">Test: {flashcardSet.title}</h1>
+                    <div className="bg-gray-700 p-6 rounded-lg w-[calc(50%)] text-center">
+                        <h2 className="text-2xl mb-4">Test Completed!</h2>
+                        <p className="text-lg mb-4">You answered {Object.values(selectedAnswers).filter(answer => answer.isCorrect).length} out of {questions.length} questions correctly!</p>
+                        <div className="flex flex-col items-center mb-4">
+                            <GradeChart grade={grade} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="flex flex-col min-h-screen w-screen bg-gray-600 text-white">
-            <Navbar isOffline={isOffline}/>
+            <Navbar isOffline={isOffline} />
             <div className="flex flex-col items-center justify-center p-4">
                 <h1 className="text-3xl mb-4 text-center">Test: {flashcardSet.title}</h1>
                 <div className="w-[calc(50%)]">
