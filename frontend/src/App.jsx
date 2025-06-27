@@ -9,6 +9,7 @@ import FlashcardSet from './pages/FlashcardSet.jsx'
 import FlashcardPage from './pages/FlashcardPage.jsx'
 import Test from './pages/Test.jsx'
 import Learn from './pages/Learn.jsx'
+import Match from './pages/Match.jsx'
 import Search from './pages/Search.jsx'
 import User from './pages/User.jsx'
 import Settings from './pages/Settings.jsx'
@@ -29,6 +30,7 @@ function App() {
           <Route path="/set/:id/flashcard" element={<FlashcardPage />} />
           <Route path="/test/:id" element={<Test />} />
           <Route path="/learn/:flashcardSetId" element={<Learn />} />
+          <Route path="/match/:id" element={<Match />} />
           <Route path="/search/:searchTerm" element={<Search />} />
           <Route path="/user/:userId" element={<User />} />
           {OfflineRoutes}

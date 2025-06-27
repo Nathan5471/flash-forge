@@ -1,5 +1,5 @@
-import LeaderBoard from "../models/leaderBoard";
-import FlashcardSet from "../models/flashcardSet";
+import LeaderBoard from "../models/leaderBoard.js";
+import FlashcardSet from "../models/flashcardSet.js";
 
 export const getLeaderBoard = async (req, res) => {
     const { id } = req.params;
@@ -23,7 +23,7 @@ export const getMatch = async (req, res) => {
             return res.status(404).json({ message: 'Flashcard Set not found' });
         }
         const sortedFlashcards = flashcardSet.flashCards.sort(() => Math.random() - 0.5);
-        return res.status(200).json({ flashcards: sortedFlashcards.splice(0, 12) });
+        return res.status(200).json({ flashcards: sortedFlashcards.splice(0, 6) });
     } catch (error) {
         console.error('Error fetching match:', error);
         return res.status(500).json({ message: 'Internal server error' });

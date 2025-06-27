@@ -24,7 +24,7 @@ export const getOfflineMatch = async (id) => {
             return Promise.reject({ message: 'Flashcard set not found' });
         }
         const sortedFlashcards = flashcardSet.flashCards.sort(() => Math.random() - 0.5);
-        return { flashcards: sortedFlashcards.splice(0, 12) };
+        return { flashcards: sortedFlashcards.splice(0, 6) };
     } catch (error) {
         console.error('Error fetching match:', error);
         return Promise.reject({ message: 'Internal server error' });

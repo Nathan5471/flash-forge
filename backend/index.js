@@ -7,7 +7,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 import authRouter from './routes/authRouter.js';
 import flashcardRouter from './routes/flashcardRouter.js';
 import learnRouter from './routes/learnRouter.js';
-import matchRouter from './routes/matchRoute.js';
+import matchRouter from './routes/matchRouter.js';
 
 dotenv.config();
 
