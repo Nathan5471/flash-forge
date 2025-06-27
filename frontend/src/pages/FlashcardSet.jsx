@@ -9,6 +9,7 @@ import Flashcard from '../components/Flashcard';
 import ExportFlashcards from '../components/ExportFlashcards';
 import CloneSet from '../components/CloneSet';
 import DeleteFlashcardSet from '../components/DeleteFlashcardSet';
+import { PiCardsDuotone, PiNotePencil, PiBookDuotone, PiShuffleDuotone, PiArrowsClockwise, PiDownloadSimpleDuotone } from "react-icons/pi";
 
 export default function FlashcardSet({ isOffline = false }) {
     const { openOverlay } = useOverlayContext();
@@ -66,7 +67,7 @@ export default function FlashcardSet({ isOffline = false }) {
 
     if (loading) {
         return (
-            <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
+            <div className="flex flex-col h-screen w-screen bg-[#251d24] text-white">
                 <Navbar isOffline={isOffline} />
                 <div className="flex items-center justify-center">
                     <p className="text-2xl">Loading...</p>
@@ -76,63 +77,95 @@ export default function FlashcardSet({ isOffline = false }) {
     }
 
     return (
-        <div className="flex flex-col min-h-screen w-screen bg-gray-600 text-white">
+        <div className="flex flex-col min-h-screen w-screen bg-[#251d24] text-white">
             <Navbar isOffline={isOffline} />
             <div className="flex flex-col items-center justify-center mt-6 w-screen">
-                <h1 className="text-4xl font-bold mb-4">{flashcardSet.title}</h1>
-                <div className="flex flex-row mb-4">
-                    <Link to={`${isOffline ? '/downloads' : ''}/set/${flashcardSet._id}/flashcard`} className="bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded mr-2">Flashcards</Link>
-                    <Link to={`${isOffline ? '/downloads' : ''}/test/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded mr-2">Take Test</Link>
-                    <Link to={`${isOffline ? '/downloads' : ''}/learn/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded mr-2">Start Learn</Link>
-                    <Link to={`${isOffline ? '/downloads' : ''}/match/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded mr-2">Matching</Link>
+                <h1 className="text-4xl text-[#f081e7] font-bold mb-4">{flashcardSet.title}</h1>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-4 w-[calc(95%)] sm:w-[calc(80%)] md:w-3/4 lg:w-1/2">
+                    <Link to={`${isOffline ? '/downloads' : ''}/set/${flashcardSet._id}/flashcard`} className="w-full bg-[#f081e7] hover:bg-[#f390ea] text-center font-bold p-2 rounded mr-2">
+                        <div className="flex flex-col items-center justify-center mb-2">
+                            <PiCardsDuotone className="text-4xl sm:text-5xl md:text-6xl text-[#fbc9f5]" />
+                            Flashcards
+                        </div>
+                    </Link>
+                    <Link to={`${isOffline ? '/downloads' : ''}/test/${flashcardSet._id}`} className="w-full bg-[#f081e7] hover:bg-[#f390ea] text-center font-bold p-2 rounded mr-2">
+                        <div className="flex flex-col items-center justify-center mb-2">
+                            <PiNotePencil className="text-4xl sm:text-5xl md:text-6xl text-[#fbc9f5]" />
+                            Take Test
+                        </div>
+                        
+                    </Link>
+                    <Link to={`${isOffline ? '/downloads' : ''}/learn/${flashcardSet._id}`} className="w-full bg-[#f081e7] hover:bg-[#f390ea] text-center font-bold p-2 rounded mr-2">
+                        <div className="flex flex-col items-center justify-center mb-2">
+                            <PiBookDuotone className="text-4xl sm:text-5xl md:text-6xl text-[#fbc9f5]" />
+                            Learn
+                        </div>
+                    </Link>
+                    <Link to={`${isOffline ? '/downloads' : ''}/match/${flashcardSet._id}`} className="w-full bg-[#f081e7] hover:bg-[#f390ea] text-center font-bold p-2 rounded mr-2">
+                        <div className="flex flex-col items-center justify-center mb-2">
+                            <PiShuffleDuotone className="text-4xl sm:text-5xl md:text-6xl text-[#fbc9f5]" />
+                            Matching
+                        </div>
+                    </Link>
                     {!isOffline && (
                     isDownloaded ? (
                         <button
-                            className="bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded mr-2"
+                            className="w-full bg-[#f081e7] text-center hover:bg-[#f390ea] font-bold p-2 rounded mr-2"
                             onClick={() => syncFlashcardSet(flashcardSet._id)}
-                        >Sync Set</button>
+                        >
+                            <div className="flex flex-col items-center justify-center mb-2">
+                                <PiArrowsClockwise className="text-4xl sm:text-5xl md:text-6xl text-[#fbc9f5]" />
+                                Sync Set
+                            </div>
+                        </button>
                     ) : (
                         <button
-                            className="bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded mr-2"
+                            className="w-full bg-[#f081e7] text-center hover:bg-[#f390ea] font-bold p-2 rounded mr-2"
                             onClick={() => {
                                 downloadFlashcardSet(flashcardSet._id)
                                 setIsDownloaded(true);
                             }}
-                        >Download Set</button>
+                        >
+                            <div className="flex flex-col items-center justify-center mb-2">
+                                <PiDownloadSimpleDuotone className="text-4xl sm:text-5xl md:text-6xl text-[#fbc9f5]" />
+                                Download Set
+                            </div>
+                            
+                        </button>
                     ))}
                 </div>
-                <div className='w-1/2 mb-4'>
+                <div className='w-[calc(95%)] sm:w-[calc(80%)] md:w-3/4 lg:w-1/2 mb-4'>
                     <Flashcard flashcardData={flashcardSet.flashCards[currentFlashcardIndex]} />
                 </div>
-                <div className="flex flex-row justify-between w-1/2 mb-4 gap-4">
+                <div className="flex flex-row justify-between w-[calc(95%)] sm:w-[calc(80%)] md:w-3/4 lg:w-1/2 mb-4 gap-4">
                     <button
-                        className={`${currentFlashcardIndex > 0 ? 'text-white' : 'text-gray-400'} bg-gray-700 p-2 rounded-lg hover:bg-gray-800 w-[calc(25%)]`}
+                        className={`${currentFlashcardIndex > 0 ? 'text-white' : 'text-[#4f484e]'} bg-[#282828] p-2 rounded-lg hover:bg-[#3f3f3f] w-[calc(25%)]`}
                         onClick={() => setCurrentFlashcardIndex(prev => prev - 1)}
                         disabled={currentFlashcardIndex === 0}
                     >Previous</button>
                     <p className="text-2xl">{currentFlashcardIndex + 1}/{flashcardSet.flashCards.length}</p>
                     <button
-                        className={`${currentFlashcardIndex < flashcardSet.flashCards.length - 1 ? 'text-white' : 'text-gray-400'} bg-gray-700 p-2 rounded-lg hover:bg-gray-800 w-[calc(25%)]`}
+                        className={`${currentFlashcardIndex < flashcardSet.flashCards.length - 1 ? 'text-white' : 'text-[#4f484e]'} bg-[#282828] p-2 rounded-lg hover:bg-[#3f3f3f] w-[calc(25%)]`}
                         onClick={() => setCurrentFlashcardIndex(prev => prev + 1)}
                         disabled={currentFlashcardIndex >= flashcardSet.flashCards.length - 1}
                     >Next</button>
                 </div>
-                <p className="text-lg text-gray-300 text-left w-1/2">Created By: <Link to={`${isOffline ? '/downloads' : ''}/user/${flashcardSet.userId._id}`} className="hover:underline">{flashcardSet.userId.username}</Link></p>
-                <p className="text-lg text-gray-300 text-left w-1/2">Description: {flashcardSet.description}</p>
+                <p className="text-lg text-[#969295] text-left w-[calc(95%)] sm:w-[calc(80%)] md:w-3/4 lg:w-1/2">Created By: <Link to={`${isOffline ? '/downloads' : ''}/user/${flashcardSet.userId._id}`} className="hover:underline">{flashcardSet.userId.username}</Link></p>
+                <p className="text-lg text-[#969295] text-left w-[calc(95%)] sm:w-[calc(80%)] md:w-3/4 lg:w-1/2">Description: {flashcardSet.description}</p>
                 <div className="flex flex-row">
                     <button
-                        className="mt-4 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600"
+                        className="mt-4 bg-[#f081e7] hover:bg-[#f390ea] p-2 rounded-lg"
                         onClick={handleExportFlashcards}
                     >Export Flashcards</button>
                     
                     { isOffline ? (
                         <>
                             <button
-                                className="mt-4 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 ml-4"
+                                className="mt-4 bg-[#f081e7] hover:bg-[#f390ea] p-2 rounded-lg ml-4"
                                 onClick={handleCloneFlashcardSet}
                             >Clone Flashcard Set</button>
                             {flashcardSet.userId._id === 'local-user' && (
-                                <Link to={`/downloads/edit/${flashcardSet._id}`} className="mt-4 bg-blue-500 hover:bg-blue-600 p-2 rounded-lg ml-4">
+                                <Link to={`/downloads/edit/${flashcardSet._id}`} className="mt-4 bg-[#f081e7] hover:bg-[#f390ea] p-2 rounded-lg ml-4">
                                     Edit Flashcard Set
                                 </Link>
                             )}
@@ -145,17 +178,17 @@ export default function FlashcardSet({ isOffline = false }) {
                         <>
                             {user && (
                                 <button
-                                    className="mt-4 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 ml-4"
+                                    className="mt-4 bg-[#f081e7] hover:bg-[#f390ea] p-2 rounded-lg ml-4"
                                     onClick={handleCloneFlashcardSet}
                                 >Clone Flashcard Set</button>
                             )}
                             {flashcardSet.userId._id === user?._id && (
                             <>
-                                <Link to={`/edit/${flashcardSet._id}`} className="mt-4 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 ml-4">
+                                <Link to={`/edit/${flashcardSet._id}`} className="mt-4 bg-[#f081e7] hover:bg-[#f390ea] p-2 rounded-lg ml-4">
                                     Edit Flashcard Set
                                 </Link>
                                 <button
-                                    className="mt-4 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 ml-4"
+                                    className="mt-4 bg-red-500 hover:bg-red-600 p-2 rounded-lg ml-4"
                                     onClick={handleDeleteFlashcardSet}
                                 >Delete</button>
                             </>
