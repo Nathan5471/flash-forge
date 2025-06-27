@@ -9,24 +9,6 @@ export default defineConfig({
     registerType: 'autoUpdate',
     navigateFallback: '/index.html',
     globPatterns: ['**/*.{js, css, html}'],
-    workbox: {
-      runtimeCaching: [
-        {
-          urlPattern: /\/downloads(\/.*)?/,
-          handler: 'StaleWhileRevalidate',
-          options: {
-            cacheName: 'downloads-pages',
-            expiration: {
-              maxEntries: 30,
-              maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
-            },
-            cacheableResponse: {
-              statuses: [0, 200],
-            },
-          },
-        },
-      ],
-    },
     manifest: {
       name: 'Flash Forge',
       short_name: 'Flash Forge',
