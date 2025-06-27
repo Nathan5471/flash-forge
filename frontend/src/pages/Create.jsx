@@ -61,7 +61,7 @@ export default function Create({ isOffline = false }) {
             <Navbar />
             <div className="flex flex-col items-center justify-center mt-6">
                 <h1 className="text-4xl text-primary-a0 font-bold mb-4">Create Flashcard Set</h1>
-                <form className="w-1/2 bg-surface-a1 p-6 rounded-lg shadow-lg" onSubmit={handleSubmit}>
+                <form className="w-[calc(95%)] sm:w-[calc(80%)] md:w-[calc(65%)] lg:w-1/2 bg-surface-a1 p-6 rounded-lg shadow-lg" onSubmit={handleSubmit}>
                     {isOffline && (
                         <p className="text-lg mb-4">This set will be local only and not accessible on the online part of the website. You can make a new flashcard set in the online mode and import ones you make offline.</p>
                     )}

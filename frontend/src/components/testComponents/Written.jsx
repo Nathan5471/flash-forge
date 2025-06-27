@@ -14,13 +14,13 @@ export default function Written({ question, onAnswerSelected }) {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg mb-4">
+        <div className="flex flex-col items-center justify-center p-4 bg-surface-a1 rounded-lg mb-4">
             <h2 className="text-2xl mb-4">{question.questionNumber}. {question.question}</h2>
             <input
                 type="text"
                 value={userAnswer}
                 onChange={(e) => handleAnswerChange(e)}
-                className="w-full p-2 rounded-lg bg-gray-800"
+                className="w-full p-2 rounded-lg bg-surface-a2"
                 placeholder="Type your answer here..."
             />
         </div>

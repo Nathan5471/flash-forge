@@ -156,7 +156,7 @@ export default function Test({ isOffline = false }) {
 
     if (loading || !readyForTest) {
         return (
-            <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
+            <div className="flex flex-col h-screen w-screen bg-tonal-a0 text-white">
                 <Navbar isOffline={isOffline} />
                 <div className="flex items-center justify-center h-full">
                     <p className="text-lg">Loading...</p>
@@ -167,18 +167,18 @@ export default function Test({ isOffline = false }) {
 
     if (isFinished) {
         return (
-            <div className="flex flex-col min-h-screen w-screen bg-gray-600 text-white">
+            <div className="flex flex-col min-h-screen w-screen bg-tonal-a0 text-white">
                 <Navbar isOffline={isOffline} />
                 <div className="flex flex-col items-center justify-center p-4">
-                    <h1 className="text-3xl mb-4 text-center">Test: {flashcardSet.title}</h1>
-                    <div className="bg-gray-700 p-6 rounded-lg w-[calc(50%)] text-center mb-4">
-                        <h2 className="text-2xl mb-4">Test Completed!</h2>
-                        <p className="text-lg mb-4">You answered {Object.values(selectedAnswers).filter(answer => answer.isCorrect).length} out of {questions.length} questions correctly!</p>
+                    <h1 className="text-3xl text-primary-a0 font-bold mb-4 text-center">Test: {flashcardSet.title}</h1>
+                    <div className="bg-surface-a1 p-6 rounded-lg w-[calc(95%)] sm:w-[calc(80%)] md:w-[calc(60%)] lg:w-1/2 text-center mb-4">
+                        <h2 className="text-2xl font-bold mb-4">Test Completed!</h2>
+                        <p className="text-lg mb-4">You answered <span className="text-xl text-primary-a0 font-bold">{Object.values(selectedAnswers).filter(answer => answer.isCorrect).length}</span> out of <span className="text-xl text-primary-a0 font-bold">{questions.length}</span> questions correctly!</p>
                         <div className="flex flex-col items-center">
                             <GradeChart grade={grade} />
                         </div>
                     </div>
-                    <div className="w-[calc(50%)]">
+                    <div className="w-[calc(95%)] sm:w-[calc(80%)] md:w-[calc(60%)] lg:w-1/2">
                         {questionTypes.includes('multipleChoice') && (
                             questions.filter(question => question.type === 'multipleChoice').map((question, index) => (
                                 <GradedMultipleChoice
@@ -226,11 +226,11 @@ export default function Test({ isOffline = false }) {
                         <div className="flex flex-row justify-between mt-4">
                             <button
                                 onClick={handleRetakeTest}
-                                className="bg-blue-500 hover:bg-blue-600 py-2 px-6 rounded-lg w-[calc(50%)] mr-2"
+                                className="bg-primary-a0 hover:bg-primary-a1 p-2 rounded-lg w-1/2 mr-2"
                             >Retake Test</button>
                             <button
                                 onClick={() => window.location.href = `${isOffline ? '/downloads' : ''}/set/${flashcardSet._id}`}
-                                className="bg-gray-500 hover:bg-gray-700 py-2 px-6 rounded-lg w-[calc(50%)]"
+                                className="bg-surface-a2 hover:bg-surface-a3 p-2 rounded-lg w-1/2"
                             >Back to Set</button>
                         </div>
                     </div>
@@ -240,11 +240,11 @@ export default function Test({ isOffline = false }) {
     }
 
     return (
-        <div className="flex flex-col min-h-screen w-screen bg-gray-600 text-white">
+        <div className="flex flex-col min-h-screen w-screen bg-tonal-a0 text-white">
             <Navbar isOffline={isOffline} />
             <div className="flex flex-col items-center justify-center p-4">
-                <h1 className="text-3xl mb-4 text-center">Test: {flashcardSet.title}</h1>
-                <div className="w-[calc(50%)]">
+                <h1 className="text-3xl text-primary-a0 font-bold mb-4 text-center">Test: {flashcardSet.title}</h1>
+                <div className="w-[calc(95%)] sm:w-[calc(80%)] md:w-[calc(60%)] lg:w-1/2">
                     {questionTypes.includes('multipleChoice') && (
                         <>
                             {questions.filter(question => question.type === 'multipleChoice').map((question, index) => (
@@ -287,11 +287,11 @@ export default function Test({ isOffline = false }) {
                     <div className="flex flex-row justify-between mt-4">
                         <button
                             onClick={handleSubmitTest}
-                            className="bg-blue-500 hover:bg-blue-600 py-2 px-6 rounded-lg w-[calc(50%)] mr-2"
+                            className="bg-primary-a0 hover:bg-primary-a1 p-2 rounded-lg w-1/2 mr-2"
                         >Submit Test</button>
                         <button
                             onClick={() => window.location.href = `${isOffline ? '/downloads' : ''}/set/${flashcardSet._id}`}
-                            className="bg-gray-500 hover:bg-gray-700 py-2 px-6 rounded-lg w-[calc(50%)]"
+                            className="bg-surface-a2 hover:bg-surface-a3 p-2 rounded-lg w-1/2"
                         >Cancel</button>
                     </div>
                 </div>

@@ -15,13 +15,13 @@ export default function MultipleChoice({ question, onAnswerSelected }) {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg mb-4">
+        <div className="flex flex-col items-center justify-center p-4 bg-surface-a1 rounded-lg mb-4">
             <h2 className="text-2xl mb-4">{question.questionNumber}. {question.question}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 w-full">
                 {question.answerChoices.map((answer, index) => (
                     <button
                         key={index}
-                        className={`w-full p-2 rounded-lg text-left ${selectedAnswer === answer ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-800 hover:bg-gray-900'} text-white`}
+                        className={`w-full p-2 rounded-lg text-left ${selectedAnswer === answer ? 'bg-primary-a0 hover:bg-primary-a1' : 'bg-surface-a2 hover:bg-surface-a3'} text-white`}
                         onClick={(e) => handleAnswerChange(e, answer)}
                     >{answer}</button>
                 ))}
