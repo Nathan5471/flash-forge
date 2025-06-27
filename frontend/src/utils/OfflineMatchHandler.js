@@ -65,7 +65,7 @@ export const postOfflineMatch = async (id, startTime, endTime) => {
             const newLeaderBoard = {
                 flashcardSet: id,
                 leaderBoard: [{
-                    user: 'local-user',
+                    user: { username: 'Local User', _id: 'local-user' },
                     time: timeTaken,
                     date: new Date(),
                     rank: 0
@@ -75,7 +75,7 @@ export const postOfflineMatch = async (id, startTime, endTime) => {
             return newLeaderBoard;
         }
         leaderBoard.leaderBoard.push({
-            user: 'local-user',
+            user: { username: 'Local User', _id: 'local-user' },
             time: timeTaken,
             date: new Date(),
             rank: undefined

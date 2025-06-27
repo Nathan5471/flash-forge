@@ -84,6 +84,7 @@ export default function FlashcardSet({ isOffline = false }) {
                     <Link to={`${isOffline ? '/downloads' : ''}/set/${flashcardSet._id}/flashcard`} className="bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded mr-2">Flashcards</Link>
                     <Link to={`${isOffline ? '/downloads' : ''}/test/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded mr-2">Take Test</Link>
                     <Link to={`${isOffline ? '/downloads' : ''}/learn/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded mr-2">Start Learn</Link>
+                    <Link to={`${isOffline ? '/downloads' : ''}/match/${flashcardSet._id}`} className="bg-blue-500 hover:bg-blue-600 font-bold py-2 px-4 rounded mr-2">Matching</Link>
                     {!isOffline && (
                     isDownloaded ? (
                         <button

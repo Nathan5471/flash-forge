@@ -53,7 +53,8 @@ export const postMatch = async (req, res) => {
                 }]
             });
             await newLeaderBoard.save();
-            return res.status(201).json(newLeaderBoard);
+            const populatedNewLeaderBoard = await newLeaderBoard.populate('leaderBoard.user', 'username _id');
+            return res.status(201).json(populatedNewLeaderBoard);
         }
         const existingEntry = leaderBoard.leaderBoard.find(entry => entry.user.toString() === req.user._id.toString());
         if (existingEntry) {
@@ -76,8 +77,8 @@ export const postMatch = async (req, res) => {
             entry.rank = index;
         })
         await leaderBoard.save();
-        await leaderBoard.populate('leaderBoard.user', 'username _id');
-        return res.status(200).json(leaderBoard);
+        const populatedLeaderboard = await leaderBoard.populate('leaderBoard.user', 'username _id');
+        return res.status(200).json(populatedLeaderboard);
     } catch (error) {
         console.error('Error posting match:', error);
         return res.status(500).json({ message: 'Internal server error' });

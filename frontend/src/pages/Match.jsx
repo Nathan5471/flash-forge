@@ -54,10 +54,11 @@ export default function Match({ isOffline = false }) {
         let flashcard;
         flashcard = flashcards.find(card => card.question === value1);
         if (flashcard && flashcard.answer === value2) {
-            setRandomizedCards(prevCards => prevCards.map(card => (card === value1 || card === value2 ? null : card)));
+            const newCards = randomizedCards.map(card => (card === value1 || card === value2) ? null : card);
+            setRandomizedCards(newCards);
             setSelected1(null);
             setSelected2(null);
-            if (randomizedCards.length <= 2) {
+            if ([...newCards].filter(card => card !== null).length < 2) {
                 setFinished(true);
                 const endTime = new Date();
                 setEndTime(endTime);
@@ -80,10 +81,11 @@ export default function Match({ isOffline = false }) {
         }
         flashcard = flashcards.find(card => card.answer === value1);
         if (flashcard && flashcard.question === value2) {
-            setRandomizedCards(prevCards => prevCards.map(card => (card === value1 || card === value2 ? null : card)));
+            const newCards = randomizedCards.map(card => (card === value1 || card === value2) ? null : card);
+            setRandomizedCards(newCards);
             setSelected1(null);
             setSelected2(null);
-            if (randomizedCards.length <= 2) {
+            if ([...newCards].filter(card => card !== null).length < 2) {
                 setFinished(true);
                 const endTime = new Date();
                 setEndTime(endTime);
@@ -202,9 +204,9 @@ export default function Match({ isOffline = false }) {
         <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
             <Navbar isOffline={isOffline} />
             <div className="flex items-center justify-center h-full">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 w-[calc(80%)] h-full">
                     {randomizedCards.map((card, index) => {
-                        if (card === null) return <div key={index} className="hidden"></div>;
+                        if (card === null) return <div key={index}></div>;
                         return (
                             <button
                                 key={index}
