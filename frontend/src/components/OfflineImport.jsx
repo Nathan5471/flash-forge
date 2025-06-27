@@ -10,7 +10,7 @@ export default function OfflineImport({ onImport }) {
     useEffect(() => {
         const fetchDownloadedSets = async () => {
             try {
-                const sets = getUserDownloadedFlashcardSets('local-user')
+                const sets = await getUserDownloadedFlashcardSets('local-user')
                 setFlashcardSets(sets.map(set => set.data));
             } catch (error) {
                 console.error('Error fetching downloaded flashcard sets:', error);
@@ -48,10 +48,10 @@ export default function OfflineImport({ onImport }) {
             <p className="text-lg text-center mb-4">These are flashcards you made in offline mode</p>
             { flashcardSets.length > 0 ? (
                 flashcardSets.map((set, index) => (
-                    <div key={index} className="flex flex-row mb-3 p-4 bg-gray-600 rounded">
+                    <div key={index} className="flex flex-row mb-3 p-4 bg-surface-a2 rounded-lg">
                         <div className="flex flex-col">
-                            <h2 className="text-lg">{set.title}</h2>
-                            <p className="text-sm text-gray-400">{set.flashCards.length} Flashcards</p>
+                            <h2 className="text-lg font-bold">{set.title}</h2>
+                            <p className="text-sm text-tonal-a4">{set.flashCards.length} Flashcards</p>
                         </div>
                         <button
                             onClick={(e) => handleImport(e, index)}

@@ -21,7 +21,7 @@ export default function User({ isOffline = false }) {
         const fetchUserFlashcardSets = async () => {
             try {
                 if (isOffline) {
-                    const sets = getUserDownloadedFlashcardSets(userId);
+                    const sets = await getUserDownloadedFlashcardSets(userId);
                     if (sets.length > 0) {
                         setUsername(sets[0].data.userId.username);
                     }

@@ -108,18 +108,18 @@ export const getUserDownloadedFlashcardSets = async (userId) => {
         const keys = Object.keys(localStorage);
         const flashcardSets = keys
             .filter(key => key.startsWith('flashcardSet-'))
+            .filter(key => {
+                const flashcardSet = JSON.parse(localStorage.getItem(key));
+                return flashcardSet && flashcardSet.userId && flashcardSet.userId._id === userId;
+            })
             .map(key => {
                 const id = key.split('flashcardSet-')[1];
-                const flashcardSet = JSON.parse(localStorage.getItem(key));
-                if (flashcardSet.userId && flashcardSet.userId._id === userId) {
-                    return {
-                        id,
-                        data: flashcardSet
-                    }
-                } else {
-                    return null;
+                return {
+                    id,
+                    data: JSON.parse(localStorage.getItem(key))
                 }
             })
+        console.log('User downloaded flashcard sets:', flashcardSets);
         if (!flashcardSets || flashcardSets.length === 0) {
             return Promise.reject({ message: 'No downloaded flashcard sets found for this user' });
         }
