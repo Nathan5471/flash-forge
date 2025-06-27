@@ -14,6 +14,8 @@ import UnansweredQuestionsPopup from '../components/testComponents/UnansweredQue
 import GradeChart from '../components/testComponents/GradeChart';
 import GradedMultipleChoice from '../components/testComponents/gradedComponents/GradedMultipleChoice';
 import GradedWritten from '../components/testComponents/gradedComponents/GradedWritten'
+import GradedTrueFalse from '../components/testComponents/gradedComponents/GradedTrueFalse';
+import GradedMatching from '../components/testComponents/gradedComponents/GradedMatching';
 
 export default function Test({ isOffline = false }) {
     const { id } = useParams();
@@ -184,6 +186,32 @@ export default function Test({ isOffline = false }) {
                                     selectedAnswer={selectedAnswers[question.questionNumber] || {questionNumber: question.questionNumber, selectedAnswer: '', isCorrect: false}}
                                 />
                             ))
+                        )}
+                        {questionTypes.includes('trueFalse') && (
+                            questions.filter(question => question.type === 'trueFalse').map((question, index) => (
+                                <GradedTrueFalse
+                                    key={index}
+                                    question={question}
+                                    selectedAnswer={selectedAnswers[question.questionNumber] || {questionNumber: question.questionNumber, selectedAnswer: null, isCorrect: false}}
+                                />
+                            ))
+                        )}
+                        {questionTypes.includes('matching') && (
+                            <GradedMatching
+                                questions={questions.filter(question => question.type === 'matching')}
+                                selectedAnswers={(() => {
+                                    const answers = {};
+                                    questions.filter(question => question.type === 'matching').forEach(question => {
+                                        if (selectedAnswers[question.questionNumber]) {
+                                            answers[question.questionNumber] = selectedAnswers[question.questionNumber];
+                                        } else {
+                                            answers[question.questionNumber] = { questionNumber: question.questionNumber, selectedAnswer: null, isCorrect: false };
+                                        }
+                                    });
+                                    console.log(answers);
+                                    return answers;})()
+                                }
+                            />
                         )}
                     </div>
                 </div>

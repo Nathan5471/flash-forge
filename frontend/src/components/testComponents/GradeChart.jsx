@@ -24,7 +24,7 @@ export default function GradeChart({ grade }) {
         <div className="relative w-64 h-64">
             <Doughnut data={data} options={options} />
             <div className="absolute inset-0 flex items-center justify-center">
-                {grade}%
+                {grade.toFixed(2)}%
             </div>
         </div>
     )
