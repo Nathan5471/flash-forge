@@ -35,7 +35,7 @@ export default function FlashcardPage({ isOffline = false }) {
 
     if (loading) {
         return (
-            <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
+            <div className="flex flex-col h-screen w-screen bg-tonal-a0 text-white">
                 <Navbar isOffline={true} />
                 <div className="flex items-center justify-center">
                     <p className="text-2xl">Loading...</p>

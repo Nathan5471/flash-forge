@@ -23,7 +23,7 @@ export default function MultipleChoice({ flashcard, otherAnswers, onAnswerSelect
                 {answerChoices.map((answer, index) => (
                     <button
                         key={index}
-                        className={`w-full p-2 rounded-lg text-left ${selectedAnswer === answer ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-800 hover:bg-gray-900'}`}
+                        className={`w-full p-2 rounded-lg text-left ${selectedAnswer === answer ? 'bg-primary-a0 hover:bg-primary-a1' : 'bg-surface-a2 hover:bg-surface-a3'}`}
                         onClick={(e) => handleAnswerChange(e, answer)}
                     >{answer}</button>
                 ))}

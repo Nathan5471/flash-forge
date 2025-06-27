@@ -20,7 +20,7 @@ export default function Written({ flashcard, onAnswerSelected }) {
                 type="text"
                 value={userAnswer}
                 onChange={handleAnswerChange}
-                className="w-full p-2 rounded-lg bg-gray-800 text-white"
+                className="w-full p-2 rounded-lg bg-surface-a2 text-white"
                 placeholder="Type your answer here..."
             />
         </div>

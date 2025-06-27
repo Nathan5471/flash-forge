@@ -190,7 +190,7 @@ export default function Learn({ isOffline = false }) {
 
     if (loading) {
         return (
-            <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
+            <div className="flex flex-col h-screen w-screen bg-tonal-a0 text-white">
                 <Navbar isOffline={isOffline} />
                 <div className="flex items-center justify-center h-full">
                     <p className="text-lg">Loading...</p>
@@ -201,19 +201,19 @@ export default function Learn({ isOffline = false }) {
 
     if (finished) {
         return (
-            <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
+            <div className="flex flex-col h-screen w-screen bg-tonal-a0 text-white">
                 <Navbar isOffline={isOffline} />
                 <div className="flex items-center justify-center h-full">
-                    <div className="flex flex-col items-center justify-center p-4 w-1/3 bg-gray-700 rounded-lg">
-                        <h2 className="text-2xl mb-4">Congratulations!</h2>
+                    <div className="flex flex-col items-center justify-center p-4 w-1/3 bg-surface-a1 rounded-lg">
+                        <h2 className="text-4xl text-primary-a0 font-bold mb-4">Congratulations!</h2>
                         <p className="mb-4">You have completed the learning session.</p>
                         <div className="flex flex-row w-full justify-between">
                             <button
-                                className="bg-blue-500 hover:bg-blue-600 rounded-lg py-2 px-4 w-1/2 mr-2"
+                                className="bg-primary-a0 hover:bg-primary-a1 rounded-lg p-2 w-1/2 mr-2"
                                 onClick={handleNextSession}
                             >Next Session</button>
                             <button
-                                className="bg-gray-500 hover:bg-gray-600 rounded-lg py-2 px-4 w-1/2"
+                                className="bg-surface-a2 hover:bg-surface-a3 rounded-lg p-2 w-1/2"
                                 onClick={() => window.location.href = `${isOffline ? '/downloads' : ''}/set/${flashcardSetId}`}
                             >Return to set</button>
                         </div>
@@ -224,10 +224,10 @@ export default function Learn({ isOffline = false }) {
     }
 
     return (
-        <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
+        <div className="flex flex-col h-screen w-screen bg-tonal-a0 text-white">
             <Navbar isOffline={isOffline} />
             <div className="flex flex-col items-center justify-center h-full w-screen">
-                <form className="flex flex-col items-center justify-center bg-gray-700 rounded-lg p-4 w-1/3" onSubmit={handleAnswerSubmit}>
+                <form className="flex flex-col items-center justify-center bg-surface-a1 rounded-lg p-4 w-1/3" onSubmit={handleAnswerSubmit}>
                     {questions[currentQuestionIndex].questionType === 'trueFalse' && (
                         <TrueFalse
                             flashcard={questions[currentQuestionIndex].flashcard}
@@ -257,18 +257,18 @@ export default function Learn({ isOffline = false }) {
                         {isWrong ? (
                             <button
                                 type="button"
-                                className="bg-blue-500 hover:bg-blue-600 rounded-lg py-2 w-1/2 mr-2"
+                                className="bg-primary-a0 hover:bg-primary-a1 rounded-lg p-2 w-1/2 mr-2"
                                 onClick={handleNextQuestion}
                             >Next</button>
                         ) : (
                             <button
                                 type="submit"
-                                className="bg-blue-500 hover:bg-blue-600 rounded-lg py-2 w-1/2 mr-2"
+                                className="bg-primary-a0 hover:bg-primary-a1 rounded-lg p-2 w-1/2 mr-2"
                             >Submit</button>
                         )}
                         <button
                             type="button"
-                            className="bg-red-500 hover:bg-red-600 rounded-lg py-2 w-1/2 ml-2"
+                            className="bg-red-500 hover:bg-red-600 rounded-lg p-2 w-1/2 ml-2"
                             onClick={handleReset}
                         >Reset</button>
                     </div>
