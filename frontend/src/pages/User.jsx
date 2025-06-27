@@ -78,7 +78,7 @@ export default function User({ isOffline = false }) {
     }
 
     return (
-        <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
+        <div className="flex flex-col min-h-screen w-screen bg-gray-600 text-white">
             <Navbar isOffline={isOffline} />
             <h1 className="text-4xl font-bold text-center mt-6">{username}'s Flashcard Sets</h1>
             <div className="flex flex-row justify-center mt-4">
