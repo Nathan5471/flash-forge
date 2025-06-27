@@ -25,17 +25,17 @@ export default function ImportFlashcards({ importFlashcards }) {
 
     return (
         <div className="flex flex-col">
-            <h1 className="text-3xl mb-4 text-center">Import Flashcards</h1>
+            <h1 className="text-3xl text-primary-a0 font-bold mb-4 text-center">Import Flashcards</h1>
             <form onSubmit={handleImportText} className="flex flex-col items-center">
                 <textarea
                     value={importText}
                     onChange={(e) => setImportText(e.target.value)}
                     placeholder={"Question1" + importBetween.replace(/\\n/g, '\n').replace(/\\t/g, '\t') + "Answer1" + importBetweenRows.replace(/\\n/g, '\n').replace(/\\t/g, '\t') + "Question2" + importBetween.replace(/\\n/g, '\n').replace(/\\t/g, '\t') + "Answer2"}
-                    className="mb-4 p-2 bg-gray-600 rounded w-144 h-48"
+                    className="mb-4 p-2 bg-surface-a2 rounded w-144 h-48"
                     required
                 />
                 <div className="flex flex-row justify-between w-full">
-                    <div className="flex flex-col w-[calc(50%)]">
+                    <div className="flex flex-col w-[calc(50%)] mr-2">
                         <h2 className="text-lg">Between questions and answsers:</h2>
                         <label className="text-pretty">
                             <input
@@ -46,7 +46,7 @@ export default function ImportFlashcards({ importFlashcards }) {
                                     setImportBetweenSelected(e.target.value);
                                     setImportBetween(e.target.value);
                                 }}
-                                className="mr-2"
+                                className="mr-2 accent-primary-a0"
                             />
                             Tab
                         </label>
@@ -59,7 +59,7 @@ export default function ImportFlashcards({ importFlashcards }) {
                                     setImportBetweenSelected(e.target.value);
                                     setImportBetween(e.target.value);
                                 }}
-                                className="mr-2"
+                                className="mr-2 accent-primary-a0"
                             />
                             Comma
                         </label>
@@ -72,7 +72,7 @@ export default function ImportFlashcards({ importFlashcards }) {
                                     setImportBetweenSelected(e.target.value);
                                     setImportBetween('-');
                                 }}
-                                className="mr-2"
+                                className="mr-2 accent-primary-a0"
                             />
                             Other:
                         </label>
@@ -82,7 +82,7 @@ export default function ImportFlashcards({ importFlashcards }) {
                                 value={importBetween}
                                 onChange={(e) => setImportBetween(e.target.value)}
                                 placeholder="Enter custom separator"
-                                className="mt-2 p-1 bg-gray-600 rounded w-full"
+                                className="mt-2 p-1 bg-surface-a2 rounded w-full"
                             />
                         )}
                     </div>
@@ -97,7 +97,7 @@ export default function ImportFlashcards({ importFlashcards }) {
                                     setImportBetweenRowsSelected(e.target.value);
                                     setImportBetweenRows(e.target.value);
                                 }}
-                                className="mr-2"
+                                className="mr-2 accent-primary-a0"
                             />
                             Newline
                         </label>
@@ -110,7 +110,7 @@ export default function ImportFlashcards({ importFlashcards }) {
                                     setImportBetweenRowsSelected(e.target.value);
                                     setImportBetweenRows(e.target.value);
                                 }}
-                                className="mr-2"
+                                className="mr-2 accent-primary-a0"
                             />
                             Semicolon
                         </label>
@@ -123,7 +123,7 @@ export default function ImportFlashcards({ importFlashcards }) {
                                     setImportBetweenRowsSelected(e.target.value);
                                     setImportBetweenRows('\\n\\n');
                                 }}
-                                className="mr-2"
+                                className="mr-2 accent-primary-a0"
                             />
                             Other:
                         </label>
@@ -133,7 +133,7 @@ export default function ImportFlashcards({ importFlashcards }) {
                                 value={importBetweenRows}
                                 onChange={(e) => setImportBetweenRows(e.target.value)}
                                 placeholder="Enter custom row separator"
-                                className="mt-2 p-1 bg-gray-600 rounded w-full"
+                                className="mt-2 p-1 bg-surface-a2 rounded w-full"
                             />
                         )}
                     </div>
@@ -141,14 +141,14 @@ export default function ImportFlashcards({ importFlashcards }) {
                 <div className="flex flex-row mt-4 w-full">
                     <button
                         type="submit"
-                        className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg mr-2 w-[calc(50%)]"
+                        className="bg-primary-a0 hover:bg-primary-a1 text-white py-2 px-4 rounded-lg mr-2 w-[calc(50%)]"
                     >
                         Import
                     </button>
                     <button
                         type="button"
                         onClick={closeOverlay}
-                        className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg w-[calc(50%)]"
+                        className="bg-surface-a2 hover:bg-surface-a3 text-white py-2 px-4 rounded-lg w-[calc(50%)]"
                     >
                         Cancel
                     </button>

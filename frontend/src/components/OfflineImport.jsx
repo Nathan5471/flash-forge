@@ -44,7 +44,7 @@ export default function OfflineImport({ onImport }) {
 
     return (
         <div className="flex flex-col">
-            <h1 className="text-3xl mb-2 text-center">Import Offline Flashcards</h1>
+            <h1 className="text-3xl text-primary-a0 font-bold mb-2 text-center">Import Offline Flashcards</h1>
             <p className="text-lg text-center mb-4">These are flashcards you made in offline mode</p>
             { flashcardSets.length > 0 ? (
                 flashcardSets.map((set, index) => (
@@ -55,18 +55,18 @@ export default function OfflineImport({ onImport }) {
                         </div>
                         <button
                             onClick={(e) => handleImport(e, index)}
-                            className="ml-auto bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg"
+                            className="ml-auto bg-primary-a0 hover:bg-primary-a1 px-4 py-2 rounded-lg"
                         >Import</button>
                     </div>
                 ))
             ) : (
                 <div className="text-center">
-                    <p className="text-lg">No downloaded flashcard sets found.</p>
+                    <p className="text-lg">No offline flashcard sets found.</p>
                 </div>
             )}
             <button
                 onClick={handleClose}
-                className="mt-4 bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded-lg"
+                className="mt-4 bg-surface-a2 hover:bg-surface-a3 px-4 py-2 rounded-lg"
             >Close</button>
         </div>
     )

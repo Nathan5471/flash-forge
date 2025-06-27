@@ -35,7 +35,7 @@ export default function ExportFlashcards({ flashcardSetData }) {
                 className="mb-4 p-2 bg-surface-a2 rounded w-144 h-48"
             />
             <div className="flex flex-row justify-between w-full">
-                <div className="flex flex-col w-[calc(50%)]">
+                <div className="flex flex-col w-[calc(50%)] mr-2">
                     <h2 className="text-lg">Between questions and answers:</h2>
                     <label className="text-pretty">
                         <input
@@ -81,7 +81,7 @@ export default function ExportFlashcards({ flashcardSetData }) {
                             type="text"
                             value={exportBetween}
                             onChange={(e) => setExportBetween(e.target.value)}
-                            className="mt-2 p-1 bg-surface-a2 rounded mr-1"
+                            className="mt-2 p-1 bg-surface-a2 rounded"
                             placeholder="Enter custom separator"
                         />
                     )}

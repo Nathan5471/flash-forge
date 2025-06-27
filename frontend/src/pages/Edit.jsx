@@ -73,7 +73,7 @@ export default function Edit({ isOffline }) {
 
     if (loading) {
         return (
-            <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
+            <div className="flex flex-col h-screen w-screen bg-tonal-a0 text-white">
                 <Navbar isOffline={isOffline} />
                 <div className="flex items-center justify-center">
                     <p className="text-2xl">Loading...</p>
@@ -83,35 +83,35 @@ export default function Edit({ isOffline }) {
     }
 
     return (
-        <div className="flex flex-col min-h-screen w-screen bg-gray-600 text-white">
+        <div className="flex flex-col min-h-screen w-screen bg-tonal-a0 text-white">
             <Navbar isOffline={isOffline} />
             <div className="flex flex-col items-center justify-center mt-6">
-                <h1 className="text-4xl font-bold mb-4">Edit {`${isOffline ? 'Offline ' : ''}`}Flashcard Set</h1>
-                <form className="w-1/2 bg-gray-700 p-6 rounded-lg shadow-lg" onSubmit={handleSubmit}>
+                <h1 className="text-4xl text-primary-a0 font-bold mb-4">Edit {`${isOffline ? 'Offline ' : ''}`}Flashcard Set</h1>
+                <form className="w-[calc(95%)] sm:w-[calc(80%)] md:w-[calc(65%)] lg:w-1/2 bg-surface-a1 p-6 rounded-lg shadow-lg mb-4" onSubmit={handleSubmit}>
                     <div className="mb-4">
-                        <label className="block text-2xl mb-2">Title</label>
+                        <label className="block text-2xl font-bold mb-2">Title</label>
                         <input
                             type="text"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder="Enter title"
-                            className="w-full p-2 mt-2 bg-gray-600 rounded-lg"
+                            className="w-full p-2 mt-2 bg-surface-a2 rounded-lg"
                         />
                     </div>
                     <div className="mb-4">
-                        <label className="block text-2xl mb-2">Description</label>
+                        <label className="block text-2xl font-bold mb-2">Description</label>
                         <textarea
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             placeholder="Enter description"
-                            className="w-full p-2 mt-2 bg-gray-600 rounded-lg"
+                            className="w-full p-2 mt-2 bg-surface-a2 rounded-lg"
                         />
                     </div>
                     <div className="mb-4">
-                        <label className="block text-2xl mb-2">Questions</label>
+                        <label className="block text-2xl font-bold mb-2">Questions</label>
                         <div className="flex flex-row justify-around mb-2">
-                            <p className="text-lg">Question</p>
-                            <p className="text-lg">Answer</p>
+                            <p className="text-lg font-bold">Question</p>
+                            <p className="text-lg font-bold">Answer</p>
                         </div>
                         {flashcards.map((flashcard, index) => (
                             <div key={index} className="flex flex-row items-center justify-center mb-2">
@@ -125,7 +125,7 @@ export default function Edit({ isOffline }) {
                                         setFlashcards(newFlashcards);
                                     }}
                                     placeholder="Enter question"
-                                    className="w-1/2 p-2 mt-2 mr-1 bg-gray-600 rounded-lg"
+                                    className="w-1/2 p-2 mt-2 mr-1 bg-surface-a2 rounded-lg"
                                 />
                                 <input
                                     type="text"
@@ -136,7 +136,7 @@ export default function Edit({ isOffline }) {
                                         setFlashcards(newFlashcards);
                                     }}
                                     placeholder="Enter answer"
-                                    className="w-1/2 p-2 mt-2 ml-1 bg-gray-600 rounded-lg"
+                                    className="w-1/2 p-2 mt-2 ml-1 bg-surface-a2 rounded-lg"
                                 />
                                 <button
                                     type="button"
@@ -144,25 +144,25 @@ export default function Edit({ isOffline }) {
                                         const newFlashcards = flashcards.filter((_, i) => i !== index);
                                         setFlashcards(newFlashcards);
                                     }}
-                                    className="ml-2 hover:text-gray-300"
+                                    className="ml-2 hover:text-tonal-a4"
                                 ><FaRegTrashAlt /></button>
                             </div>
                         ))}
                         <button
                             type="button"
                             onClick={() => setFlashcards([...flashcards, { question: '', answer: '' }])}
-                            className="mt-2 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600"
+                            className="mt-2 bg-primary-a0 hover:bg-primary-a1 p-2 rounded-lg"
                         >Add question</button>
                     </div>
-                    <p className="text-red-500 mb-4">{error}</p>
+                    {error && <p className="text-red-500 mb-4">{error}</p>}
                     <div className="flex flex-row w-full">
                         <button
                             type="submit"
-                            className="mt-4 bg-green-500 text-white p-2 rounded-lg hover:bg-green-600 mr-4 w-[calc(50%)]"
+                            className="mt-4 bg-primary-a0 hover:bg-primary-a1 p-2 rounded-lg mr-4 w-1/2"
                         >Update Flashcard Set</button>
                         <button
                             onClick={handleCancel}
-                            className="mt-4 bg-gray-500 text-white p-2 rounded-lg hover:bg-gray-600 w-[calc(50%)]"
+                            className="mt-4 bg-surface-a2 hover:bg-surface-a3 p-2 rounded-lg w-1/2"
                         >Cancel</button>
                     </div>
                 </form>
