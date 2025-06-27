@@ -144,6 +144,16 @@ export default function Test({ isOffline = false }) {
         }
     }
 
+    const handleRetakeTest = (e) => {
+        e.preventDefault();
+        setSelectedAnswers({});
+        setIsFinished(false);
+        setReadyForTest(false);
+        setGrade(0);
+        setQuestions([]);
+        setIsPopupOpen(false);
+    }
+
     if (loading || !readyForTest) {
         return (
             <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
@@ -213,6 +223,16 @@ export default function Test({ isOffline = false }) {
                                 }
                             />
                         )}
+                        <div className="flex flex-row justify-between mt-4">
+                            <button
+                                onClick={handleRetakeTest}
+                                className="bg-blue-500 hover:bg-blue-600 py-2 px-6 rounded-lg w-[calc(50%)] mr-2"
+                            >Retake Test</button>
+                            <button
+                                onClick={() => window.location.href = `${isOffline ? '/downloads' : ''}/set/${flashcardSet._id}`}
+                                className="bg-gray-500 hover:bg-gray-700 py-2 px-6 rounded-lg w-[calc(50%)]"
+                            >Back to Set</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -270,7 +290,7 @@ export default function Test({ isOffline = false }) {
                             className="bg-blue-500 hover:bg-blue-600 py-2 px-6 rounded-lg w-[calc(50%)] mr-2"
                         >Submit Test</button>
                         <button
-                            onClick={() => window.location.href = `/set/${flashcardSet._id}`}
+                            onClick={() => window.location.href = `${isOffline ? '/downloads' : ''}/set/${flashcardSet._id}`}
                             className="bg-gray-500 hover:bg-gray-700 py-2 px-6 rounded-lg w-[calc(50%)]"
                         >Cancel</button>
                     </div>
