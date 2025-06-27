@@ -136,7 +136,7 @@ export default function Match({ isOffline = false }) {
 
     if (loading) {
         return (
-            <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
+            <div className="flex flex-col h-screen w-screen bg-tonal-a0 text-white">
                 <Navbar isOffline={isOffline} />
                 <div className="flex items-center justify-center h-full">
                     <p className="text-lg">Loading...</p>
@@ -147,15 +147,15 @@ export default function Match({ isOffline = false }) {
 
     if (preGame) {
         return (
-            <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
+            <div className="flex flex-col h-screen w-screen bg-tonal-a0 text-white">
                 <Navbar isOffline={isOffline} />
                 <div className="flex items-center justify-center h-full">
-                    <div className="flex flex-col items-center p-4 rounded-lg bg-gray-700">
-                        <h1 className="text-2xl mb-4">Match Game</h1>
-                        <p className="mb-4">You will be given questions and answers, match them to win!</p>
+                    <div className="flex flex-col w-75 items-center p-4 rounded-lg bg-surface-a1">
+                        <h1 className="text-4xl text-primary-a0 font-bold mb-4">Match Game</h1>
+                        <p className="text-lg mb-4">You will be given questions and answers, match them to win!</p>
                         <button
                             onClick={handleStart}
-                            className="bg-blue-500 hover:bg-blue-600 p-2 w-full rounded-lg"
+                            className="bg-primary-a0 hover:bg-primary-a1 p-2 w-full rounded-lg"
                         >Start</button>
                     </div>
                 </div>
@@ -165,12 +165,12 @@ export default function Match({ isOffline = false }) {
 
     if (finished) {
         return (
-            <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
+            <div className="flex flex-col h-screen w-screen bg-tonal-a0 text-white">
                 <Navbar isOffline={isOffline} />
                 <div className="flex items-center justify-center h-full">
-                    <div className="flex flex-row items-center justify-center p-4 rounded-lg bg-gray-700 w-[calc(50%)]">
+                    <div className="flex flex-row items-center justify-center p-4 rounded-lg bg-surface-a1 w-[calc(50%)]">
                         <div className="flex flex-col items-center w-[calc(50%)]">
-                            <h2 className="text-2xl mb-4">Leaderboard</h2>
+                            <h2 className="text-2xl text-primary-a0 font-bold mb-4">Leaderboard</h2>
                             <ol className="list-decimal list-inside mb-4">
                                 {leaderBoard.map((entry, index) => (
                                     <li key={index} className="mb-2">
@@ -180,17 +180,17 @@ export default function Match({ isOffline = false }) {
                             </ol>
                         </div>
                         <div className="flex flex-col items-center w-[calc(50%)]">
-                            <h2 className="text-2xl mb-4">Game Over</h2>
+                            <h2 className="text-2xl text-primary-a0 font-bold mb-4">Game Over</h2>
                             <p className="mb-4">You have matched all cards!</p>
-                            <p className="mb-4">Time taken: {((endTime - startTime) / 1000).toFixed(0)} seconds</p>
+                            <p className="mb-4">Time taken: <span className="text-lg text-primary-a0 text-bold">{((endTime - startTime) / 1000).toFixed(0)}</span> seconds</p>
                             <div className="flex flex-row">
                                 <button
                                     onClick={handleReset}
-                                    className="bg-blue-500 hover:bg-blue-600 p-2 w-full rounded-lg mr-2"
+                                    className="bg-primary-a0 hover:bg-primary-a1 p-2 w-full rounded-lg mr-2"
                                 >Play again</button>
                                 <button
                                     onClick={() => window.location.href = `${isOffline ? '/downloads' : ''}/set/${id}`}
-                                    className="bg-gray-500 hover:bg-gray-600 p-2 w-full rounded-lg"
+                                    className="bg-surface-a2 hover:bg-surface-a3 p-2 w-full rounded-lg"
                                 >Back to Set</button>
                             </div>
                         </div>
@@ -201,7 +201,7 @@ export default function Match({ isOffline = false }) {
     }
 
     return (
-        <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
+        <div className="flex flex-col h-screen w-screen bg-tonal-a0 text-white">
             <Navbar isOffline={isOffline} />
             <div className="flex items-center justify-center h-full">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 w-[calc(80%)] h-full">
@@ -211,7 +211,7 @@ export default function Match({ isOffline = false }) {
                             <button
                                 key={index}
                                 onClick={(e) => handleCardClick(e, card)}
-                                className={`p-4  rounded-lg ${(selected1 === card || selected2 === card) ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-700 hover:bg-gray-800'}`}
+                                className={`p-4  rounded-lg ${(selected1 === card || selected2 === card) ? 'bg-primary-a0 hover:bg-primary-a1' : 'bg-surface-a2 hover:bg-surface-a3'}`}
                             >{card}</button>
                         )
                     })}

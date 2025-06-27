@@ -227,7 +227,7 @@ export default function Learn({ isOffline = false }) {
         <div className="flex flex-col h-screen w-screen bg-tonal-a0 text-white">
             <Navbar isOffline={isOffline} />
             <div className="flex flex-col items-center justify-center h-full w-screen">
-                <form className="flex flex-col items-center justify-center bg-surface-a1 rounded-lg p-4 w-1/3" onSubmit={handleAnswerSubmit}>
+                <form className="flex flex-col items-center justify-center bg-surface-a1 rounded-lg p-4 w-[calc(90%)] sm:w-3/4 md:w-1/2 lg:w-1/3" onSubmit={handleAnswerSubmit}>
                     {questions[currentQuestionIndex].questionType === 'trueFalse' && (
                         <TrueFalse
                             flashcard={questions[currentQuestionIndex].flashcard}
