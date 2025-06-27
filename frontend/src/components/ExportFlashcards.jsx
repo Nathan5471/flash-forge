@@ -28,11 +28,11 @@ export default function ExportFlashcards({ flashcardSetData }) {
 
     return (
         <div className="flex flex-col">
-            <h1 className="text-3xl mb-4 text-center">Export Flashcards</h1>
+            <h1 className="text-3xl text-primary-a0 font-bold text-center mb-4">Export Flashcards</h1>
             <textarea
                 value={exportText}
                 readOnly
-                className="mb-4 p-2 bg-gray-600 rounded w-144 h-48"
+                className="mb-4 p-2 bg-surface-a2 rounded w-144 h-48"
             />
             <div className="flex flex-row justify-between w-full">
                 <div className="flex flex-col w-[calc(50%)]">
@@ -46,7 +46,7 @@ export default function ExportFlashcards({ flashcardSetData }) {
                                 setExportBetweenSelected(e.target.value);
                                 setExportBetween(e.target.value);
                             }}
-                            className="mr-2"
+                            className="mr-2 accent-primary-a0"
                         />
                         Tab
                     </label>
@@ -59,11 +59,11 @@ export default function ExportFlashcards({ flashcardSetData }) {
                                 setExportBetweenSelected(e.target.value);
                                 setExportBetween(e.target.value);
                             }}
-                            className="mr-2"
+                            className="mr-2 accent-primary-a0"
                         />
                         Comma
                     </label>
-                    <label className="text-pretty">
+                    <label className="text-pretty accent-primary-a0">
                         <input
                             type="radio"
                             value="other"
@@ -81,7 +81,7 @@ export default function ExportFlashcards({ flashcardSetData }) {
                             type="text"
                             value={exportBetween}
                             onChange={(e) => setExportBetween(e.target.value)}
-                            className="mt-2 p-1 bg-gray-600 rounded"
+                            className="mt-2 p-1 bg-surface-a2 rounded mr-1"
                             placeholder="Enter custom separator"
                         />
                     )}
@@ -97,7 +97,7 @@ export default function ExportFlashcards({ flashcardSetData }) {
                                 setExportBetweenRowsSelected(e.target.value);
                                 setExportBetweenRows(e.target.value);
                             }}
-                            className="mr-2"
+                            className="mr-2 accent-primary-a0"
                         />
                         Newline
                     </label>
@@ -110,7 +110,7 @@ export default function ExportFlashcards({ flashcardSetData }) {
                                 setExportBetweenRowsSelected(e.target.value);
                                 setExportBetweenRows(e.target.value);
                             }}
-                            className="mr-2"
+                            className="mr-2 accent-primary-a0"
                         />
                         Semicolon
                     </label>
@@ -123,7 +123,7 @@ export default function ExportFlashcards({ flashcardSetData }) {
                                 setExportBetweenRowsSelected(e.target.value);
                                 setExportBetweenRows('\\n\\n');
                             }}
-                            className="mr-2"
+                            className="mr-2 accent-primary-a0"
                         />
                         Other:
                     </label>
@@ -132,7 +132,7 @@ export default function ExportFlashcards({ flashcardSetData }) {
                             type="text"
                             value={exportBetweenRows}
                             onChange={(e) => setExportBetweenRows(e.target.value)}
-                            className="mt-2 p-1 bg-gray-600 rounded"
+                            className="mt-2 p-1 bg-surface-a2 rounded"
                             placeholder="Enter custom separator"
                         />
                     )}
@@ -140,11 +140,11 @@ export default function ExportFlashcards({ flashcardSetData }) {
             </div>
             <div className="flex flex-row justify-between mt-4">
                 <button
-                    className="bg-blue-500 p-2 rounded-lg hover:bg-blue-600 w-[calc(50%)]"
+                    className="bg-primary-a0 hover:bg-primary-a1 p-2 rounded-lg w-[calc(50%)]"
                     onClick={handleCopy}
                 >Copy</button>
                 <button
-                    className="bg-gray-500 p-2 rounded-lg hover:bg-gray-600 w-[calc(50%)] ml-2"
+                    className="bg-surface-a2 p-2 rounded-lg hover:bg-surface-a3 w-[calc(50%)] ml-2"
                     onClick={handleClose}
                 >Close</button>
             </div>

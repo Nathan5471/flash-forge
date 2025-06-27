@@ -70,10 +70,10 @@ export default function DeleteFlashcardSet({ id, isOffline = false }) {
             ) : (
                 <p className="text-red-500 mb-4 text-center">This action can not be undone, are you sure you would like to delete {title}?</p>
             )}
-            <p className="text-red-500 mb-4 text-center">{error}</p>
+            {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
             <div className="flex flex-row w-full">
-                <button onClick={handleDelete} className="bg-red-500 hover:bg-red-600 py-2 px-6 rounded-lg text-white mr-2 w-[calc(50%)]">Delete</button>
-                <button onClick={handleCancel} className="bg-gray-500 hover:bg-gray-600 py-2 px-6 rounded-lg text-white w-[calc(50%)]">Cancel</button>
+                <button onClick={handleDelete} className="bg-red-500 hover:bg-red-600 p-2 rounded-lg mr-2 w-1/2">Delete</button>
+                <button onClick={handleCancel} className="bg-surface-a2 hover:bg-surface-a3 p-2 rounded-lg w-1/2">Cancel</button>
             </div>
         </div>
     )

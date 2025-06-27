@@ -36,20 +36,20 @@ export default function CloneSet({ flashcardSet, isOffline = false }) {
     
     return (
         <div className="flex flex-col">
-            <h1 className="text-3xl mb-4 text-center">Clone Flashcard Set</h1>
+            <h1 className="text-3xl text-primary-a0 font-bold text-center mb-4">Clone Flashcard Set</h1>
             <form onSubmit={handleSubmit} className="flex flex-col items-center">
-                <label className="mb-2 text-lg">New Title:</label>
+                <label className="mb-2 text-xl">New Title:</label>
                 <input
                     type="text"
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
                     placeholder="New Title..."
-                    className="mb-4 p-2 bg-gray-600 rounded w-full"
+                    className="mb-4 p-2 bg-surface-a2 rounded w-full"
                     required
                 />
                 <div className="flex flex-row w-full">
-                    <button type="submit" className="bg-blue-500 hover:bg-blue-600 py-2 px-6 rounded-lg mr-2 w-[calc(50%)]">Clone</button>
-                    <button onClick={handleCancel} className="bg-gray-500 hover:bg-gray-600 py-2 px-6 rounded-lg w-[calc(50%)]">Cancel</button>
+                    <button type="submit" className="bg-primary-a0 hover:bg-primary-a1 p-2 rounded-lg mr-2 w-1/2">Clone</button>
+                    <button onClick={handleCancel} className="bg-surface-a2 hover:bg-surface-a3 p-2 rounded-lg w-1/2">Cancel</button>
                 </div>
             </form>
         </div>
