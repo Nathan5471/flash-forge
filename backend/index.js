@@ -7,6 +7,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 import authRouter from './routes/authRouter.js';
 import flashcardRouter from './routes/flashcardRouter.js';
 import learnRouter from './routes/learnRouter.js';
+import matchRouter from './routes/matchRoute.js';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use(cookieParser());
 app.use('/api/auth', authRouter);
 app.use('/api/flashcards', flashcardRouter);
 app.use('/api/learn', learnRouter);
+app.use('/api/match', matchRouter);
 
 // Frontend
 app.use('/', createProxyMiddleware({
