@@ -42,7 +42,7 @@ export default function Home() {
 
     if (loading) {
         return (
-            <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
+            <div className="flex flex-col h-screen w-screen bg-tonal-a0 text-white">
                 <Navbar />
                 <div className="flex items-center justify-center h-full">
                     <p className="text-lg">Loading...</p>
@@ -52,11 +52,11 @@ export default function Home() {
     }
 
     return (
-        <div className="flex flex-col min-h-screen w-screen bg-gray-600 text-white">
+        <div className="flex flex-col min-h-screen w-screen bg-tonal-a0 text-white">
             <Navbar />
             { user ? (
                 <div className="flex flex-col items-center justify-center h-full">
-                    <h1 className="text-3xl mb-4">Welcome, {user.username}!</h1>
+                    <h1 className="text-3xl text-primary-a0 font-bold mb-4 mt-4">Welcome, {user.username}!</h1>
                     {recentlyViewed.length > 0 ? (
                         <>
                             <h2 className="text-2xl mb-4">Recently Viewed Flashcard Sets:</h2>

@@ -22,14 +22,14 @@ export default function Downloads() {
     }, []);
 
     if (loading) {
-        return <div className="bg-gray-600 h-screen flex flex-col items-center justify-center text-white">
+        return <div className="bg-tonal-a0 h-screen flex flex-col items-center justify-center text-white">
         <Navbar isOffline={true} />
             <p className="text-lg">Loading...</p>
         </div>
     }
 
     return (
-        <div className="flex flex-col min-h-screen w-screen bg-gray-600 text-white">
+        <div className="flex flex-col min-h-screen w-screen bg-tonal-a0 text-white">
             <Navbar isOffline={true} />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 mt-4">
                 {flashcards.length > 0 ? (
