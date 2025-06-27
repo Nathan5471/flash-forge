@@ -1,5 +1,6 @@
 import express from 'express';
 import { getMatch, getLeaderBoard, postMatch } from '../controllers/matchController.js';
+import authenticate from '../middleware/authenticate.js';
 
 const router = express.Router();
 
@@ -29,7 +30,7 @@ router.get('/:id', async (req, res) => {
     }
 })
 
-router.post('/:id', async (req, res) => {
+router.post('/:id', authenticate, async (req, res) => {
     const { id } = req.params;
     const { startTime, endTime } = req.body;
     try {

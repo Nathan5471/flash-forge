@@ -76,6 +76,7 @@ export const postMatch = async (req, res) => {
             entry.rank = index;
         })
         await leaderBoard.save();
+        await leaderBoard.populate('leaderBoard.user', 'username _id');
         return res.status(200).json(leaderBoard);
     } catch (error) {
         console.error('Error posting match:', error);
