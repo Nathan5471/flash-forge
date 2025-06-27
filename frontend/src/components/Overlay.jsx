@@ -7,7 +7,7 @@ export default function Overlay() {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 w-screen h-screen">
-            <div className="bg-[#282828] p-6 rounded-lg text-white">
+            <div className="bg-surface-a1 p-6 rounded-lg text-white">
                 {overlayContent}
             </div>
         </div>

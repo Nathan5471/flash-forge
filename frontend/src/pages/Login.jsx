@@ -23,9 +23,9 @@ export default function Login() {
         navigate('/')
     }
     return (
-        <div className="flex items-center justify-center w-screen h-screen bg-[#251d24] text-white">
-            <div className="bg-[#282828] p-6 rounded-lg w-[calc(80%)] sm:w-[calc(65%)] md:w-1/2 lg:w-[calc(30%)]">
-                <h1 className="text-4xl text-[#f081e7] font-bold text-center mb-4">Login</h1>
+        <div className="flex items-center justify-center w-screen h-screen bg-tonal-a0 text-white">
+            <div className="bg-surface-a1 p-6 rounded-lg w-[calc(80%)] sm:w-[calc(65%)] md:w-1/2 lg:w-[calc(30%)]">
+                <h1 className="text-4xl text-primary-a0 font-bold text-center mb-4">Login</h1>
                 <form>
                     <div className="mb-2">
                         <label className="text-xl block mb-1" htmlFor="username">Email</label>
@@ -35,7 +35,7 @@ export default function Login() {
                             name="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full p-2 rounded bg-[#3f3f3f]"
+                            className="w-full p-2 rounded bg-surface-a2"
                             placeholder="Enter your email"
                         />
                     </div>
@@ -47,7 +47,7 @@ export default function Login() {
                             name="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full p-2 rounded bg-[#3f3f3f]"
+                            className="w-full p-2 rounded bg-surface-a2"
                             placeholder="Enter your password"
                         />
                     </div>
@@ -55,13 +55,13 @@ export default function Login() {
                     <button
                         type="submit"
                         onClick={handleSubmit}
-                        className="w-full bg-[#f081e7] hover:bg-[#f390ea] p-2 rounded"
+                        className="w-full bg-primary-a0 hover:bg-primary-a1 p-2 rounded"
                     >
                         Login
                     </button>
                 </form>
                 <p className="mt-4 text-pretty">
-                    Don't have an account? <a href="/register" className="text-[#f081e7] hover:underline">Register</a>
+                    Don't have an account? <a href="/register" className="text-primary-a0 hover:underline">Register</a>
                 </p>
             </div>
         </div>

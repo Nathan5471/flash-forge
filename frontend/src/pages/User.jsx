@@ -71,25 +71,25 @@ export default function User({ isOffline = false }) {
 
     if (loading) {
         return (
-            <div className="flex flex-col h-screen w-screen bg-[#251d24] text-white">
+            <div className="flex flex-col h-screen w-screen bg-tonal-a0 text-white">
                 <Navbar isOffline={isOffline} />
             </div>
         )
     }
 
     return (
-        <div className="flex flex-col min-h-screen w-screen bg-[#251d24] text-white">
+        <div className="flex flex-col min-h-screen w-screen bg-tonal-a0 text-white">
             <Navbar isOffline={isOffline} />
-            <h1 className="text-4xl text-[#f081e7] font-bold text-center mt-6">{username}'s Flashcard Sets</h1>
+            <h1 className="text-4xl text-primary-a0 font-bold text-center mt-6">{username}'s Flashcard Sets</h1>
             <div className="flex flex-row justify-center mt-4">
                 <input
                     type="text"
                     placeholder="Search sets..."
-                    className="bg-[#282828] p-2 rounded w-[calc(40%)] sm:w-[calc(40%)] md:w-1/2 lg:w-1/3"
+                    className="bg-surface-a1 p-2 rounded w-[calc(40%)] sm:w-[calc(40%)] md:w-1/2 lg:w-1/3"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <select className="bg-[#282828] p-2 rounded ml-3 w-1/3 md:w-1/4" value={sortOption} onChange={(e) => handleSortChange(e)}>
+                <select className="bg-surface-a1 p-2 rounded ml-3 w-1/3 md:w-1/4" value={sortOption} onChange={(e) => handleSortChange(e)}>
                     <option value='date,false'>Sort by Date (Newest)</option>
                     <option value='date,true'>Sort by Date (Oldest)</option>
                     <option value='title,true'>Sort by Title (A-Z)</option>

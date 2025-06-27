@@ -29,10 +29,10 @@ export default function Flashcard({ flashcardData }) {
     return (
         <div className="aspect-[2/1] w-full [perspective:1000px] text-3xl" onClick={() => setFlipped(!flipped)}>
             <div className={`relative w-full h-full ${disableTransition ? '' : 'duration-700 transition-transform'} [transform-style:preserve-3d] ${flipped ? '[transform:rotateX(180deg)]': ''}`}>
-                <div className="absolute w-full h-full bg-[#282828] rounded-lg shadow-lg flex items-center justify-center [backface-visibility:hidden]">
+                <div className="absolute w-full h-full bg-surface-a1 rounded-lg shadow-lg flex items-center justify-center [backface-visibility:hidden]">
                     {flashcardData.question}
                 </div>
-                <div className="absolute w-full h-full bg-[#282828] rounded-lg shadow-lg flex items-center justify-center [transform:rotateX(180deg)] [backface-visibility:hidden]">
+                <div className="absolute w-full h-full bg-surface-a1 rounded-lg shadow-lg flex items-center justify-center [transform:rotateX(180deg)] [backface-visibility:hidden]">
                     {flashcardData.answer}
                 </div>
             </div>
