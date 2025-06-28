@@ -8,6 +8,7 @@ import authRouter from './routes/authRouter.js';
 import flashcardRouter from './routes/flashcardRouter.js';
 import learnRouter from './routes/learnRouter.js';
 import matchRouter from './routes/matchRouter.js';
+import classRouter from './routes/classRouter.js';
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/flashcards', flashcardRouter);
 app.use('/api/learn', learnRouter);
 app.use('/api/match', matchRouter);
+app.use('/api/class', classRouter);
 
 // Frontend
 app.use('/', createProxyMiddleware({
