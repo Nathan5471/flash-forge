@@ -13,6 +13,16 @@ const classSchema = new mongoose.Schema({
     students: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
+    }],
+    joinCode: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    assignedFlashcards: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'FlashcardSet',
+        default: []
     }]
 })
 
