@@ -27,7 +27,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/flashcards', flashcardRouter);
 app.use('/api/learn', learnRouter);
 app.use('/api/match', matchRouter);
-app.use('/api/class', classRouter);
+app.use('/api/classes', classRouter);
 
 // Frontend
 app.use('/', createProxyMiddleware({

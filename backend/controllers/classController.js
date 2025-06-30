@@ -25,11 +25,11 @@ export const createClass = async (req, res) => {
 export const joinClass = async (req, res) => {
     const { classCode } = req.params;
     try {
-        const classToJoin = Class.findOne({ joinCode: classCode });
+        const classToJoin = await Class.findOne({ joinCode: classCode });
         if (!classToJoin) {
-            return res.status(404).json({ message: 'Class not found' });
+            return res.status(404).json({ message: 'Invalid join code' });
         }
-        if (classToJoin.students.contains(req.user._id)) {
+        if (classToJoin.students.includes(req.user._id)) {
             return res.status(400).json({ message: 'User is already in class'});
         }
         classToJoin.students.concat(req.user._id);

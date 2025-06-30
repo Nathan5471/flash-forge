@@ -1,5 +1,5 @@
 import express from 'express';
-import { createClass, joinClass, leaveClass, deleteClass, assignFlashcardSet, unassignFlashcardSet } from '../controllers/classController.js';
+import { createClass, joinClass, leaveClass, deleteClass, assignFlashcardSet, unassignFlashcardSet, getClass } from '../controllers/classController.js';
 import authenticate from '../middleware/authenticate.js';
 
 const router = express.Router();
@@ -10,6 +10,7 @@ router.get('/:id', authenticate, async (req, res) => {
         if (!id) {
             return res.status(400).json({ message: 'Class ID is required' });
         }
+        await getClass(req, res);
     } catch (error) {
         console.error('Error in get class route:', error);
         return res.status(500).json({ message: 'Internal server error' });
