@@ -20,6 +20,11 @@ const userSchema = new mongoose.Schema({
         ref: 'flashcardSet',
         default: []
     }],
+    classes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Class',
+        default: []
+    }]
 })
 
 const User = mongoose.model('User', userSchema);

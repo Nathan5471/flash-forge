@@ -1,6 +1,9 @@
 import bcrypt from 'bcrypt';
-import User from '../models/user.js'
+import User from '../models/user.js';
+import FlashcardSet from '../models/flashcardSet.js';
 import generateToken from '../utils/generateToken.js';
+import Class from '../models/class.js';
+import Learn from '../models/learn.js';
 
 export const registerUser = async (req, res) => {
     const { username, email, password } = req.body;
@@ -117,6 +120,37 @@ export const deleteUser = async (req, res) => {
     const userId = req.user._id;
 
     try {
+        const userFlashcardSets = await FlashcardSet.findBy({ userId: userId });
+        if (userFlashcardSets.length > 0) {
+            userFlashcardSets.forEach(async (flashcardSet) => {
+                await FlashcardSet.findByIdAndDelete(flashcardSet._id)
+            })
+        }
+        const userClasses = await User.findById(userId).populate('classes');
+        if (userClasses.classes.length > 0) {
+            userClasses.classes.forEach(async (userClass) => {
+                if (userClass.teacher.toString() === userId.toString()) {
+                    userClass.students.forEach(async (studentId) => {
+                        const student = await User.findById(studentId);
+                        if (student) {
+                            student.classes = student.classes.filter(classId => classId.toString() !== userClass._id.toString());
+                            await student.save();
+                        }
+                    })
+                    await Class.findByIdAndDelete(userClass._id);
+                } else {
+                    const updatedclass = await Class.findByIdAndUpdate(userClass.id)
+                    updatedclass.students = updatedclass.students.filter(studentId => studentId.toString() !== userId.toString());
+                    await updatedclass.save();
+                }
+            })
+        }
+        const userLearn = await Learn.find({ user: userId });
+        if (userLearn.length > 0) {
+            userLearn.forEach(async (learn) => {
+                await Learn.findByIdAndDelete(learn._id);
+            })
+        }
         const deletedUser = await User.findByIdAndDelete(userId);
         if (!deletedUser) {
             return res.status(404).json({ message: 'User not found' });

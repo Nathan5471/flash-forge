@@ -55,6 +55,13 @@ export const deleteClass = async (req, res) => {
         if (classToDelete.teacher !== req.user._id) {
             return res.status(403).json({ message: 'You do not have permission to delete this class' })
         }
+        classToDelete.students.forEach(async (studentId) => {
+            const student = await User.findById(studentId);
+            if (student) {
+                student.classes = student.classes.filter(classId => classId.toString() !== id.toString());
+                await student.save();
+            }
+        })
         await Class.findByIdAndDelete(id);
         res.status(200).json({ message: 'Class delete sucessfully' })
     } catch (error) {
