@@ -54,3 +54,5 @@ router.delete('/delete/:id', authenticate, async (req, res) => {
         console.error('Error in delete router:')
     }
 })
+
+export default router;
