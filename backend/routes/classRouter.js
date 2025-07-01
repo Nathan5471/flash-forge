@@ -1,8 +1,17 @@
 import express from 'express';
-import { createClass, joinClass, leaveClass, deleteClass, assignFlashcardSet, unassignFlashcardSet, getClass } from '../controllers/classController.js';
+import { createClass, joinClass, leaveClass, deleteClass, assignFlashcardSet, unassignFlashcardSet, getClass, getUserClasses } from '../controllers/classController.js';
 import authenticate from '../middleware/authenticate.js';
 
 const router = express.Router();
+
+router.get('/all', authenticate, async (req, res) => {
+    try {
+        await getUserClasses(req, res);
+    } catch (error) {
+        console.error('Error in get all classes route:', error);
+        return res.status(500).json({ message: 'Internal server error'})
+    }
+})
 
 router.get('/:id', authenticate, async (req, res) => {
     const { id } = req.params;

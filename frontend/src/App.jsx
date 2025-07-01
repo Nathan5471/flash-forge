@@ -15,6 +15,7 @@ import User from './pages/User.jsx'
 import Settings from './pages/Settings.jsx'
 import Create from './pages/Create.jsx'
 import Edit from './pages/Edit.jsx'
+import Classes from './pages/Classes.jsx'
 import AuthenticatedRoute from './utils/AuthenticatedRoute.jsx'
 import { OfflineRoutes } from './utils/OfflineRoutes.jsx'
 
@@ -38,6 +39,7 @@ function App() {
             <Route path="/settings" element={<Settings />} />
             <Route path="/create" element={<Create />} />
             <Route path="/edit/:id" element={<Edit />} />
+            <Route path="/classes" element={<Classes />} />
           </Route>
         </Routes>
       </Router>

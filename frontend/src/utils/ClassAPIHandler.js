@@ -47,3 +47,8 @@ export const getClass = async (classId) => {
     const response = await api.get(`/${classId}`);
     return response.data;
 }
+
+export const getUserClasses = async () => {
+    const response = await api.get('/all');
+    return response.data;
+}

@@ -78,7 +78,7 @@ export default function Settings() {
             <Navbar />
             <div className="flex flex-col items-center justify-center h-full">
                 <h1 className="text-4xl text-primary-a0 font-bold mb-4">Settings</h1>
-                <div className="bg-surface-a1 p-6 rounded-lg w-[calc(80%)] sm:w-[calc(65%)] md:w-1/2 lg:w-1/3">
+                <div className="bg-surface-a1 p-6 rounded-lg w-[calc(80%)] sm:w-[calc(65%)] md:w-1/2 lg:w-1/3 ">
                     <h2 className="text-3xl font-bold mb-4 text-center">Account Settings</h2>
                     <div className="flex flex-row mb-2">
                         <p className="text-xl">Username ({user.username})</p>
@@ -92,7 +92,7 @@ export default function Settings() {
                     <button className="bg-primary-a0 hover:bg-primary-a1 w-full rounded-lg py-2 mb-2" onClick={handleLogout}>Logout</button>
                     <button className="bg-red-500 hover:bg-red-600 w-full rounded-lg py-2" onClick={handleDeleteAccount}>Delete Account</button>
                 </div>
-                <div className="bg-surface-a1 p-6 rounded-lg w-[calc(80%)] sm:w-[calc(65%)] md:w-1/2 lg:w-1/3 mt-6">
+                <div className="bg-surface-a1 p-6 rounded-lg w-[calc(80%)] sm:w-[calc(65%)] md:w-1/2 lg:w-1/3 mt-6 mb-4">
                     <h2 className="text-3xl font-bold mb-4 text-center">Classes</h2>
                     <button className="bg-primary-a0 hover:bg-primary-a1 w-full rounded-lg py-2 mb-2" onClick={() => navigate('/classes')}>View My Classes</button>
                     <button className="bg-primary-a0 hover:bg-primary-a1 w-full rounded-lg py-2 mb-2" onClick={handleJoinClass} >Join Class</button>

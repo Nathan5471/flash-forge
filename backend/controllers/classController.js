@@ -1,4 +1,5 @@
 import Class from '../models/class.js';
+import User from '../models/user.js';
 
 export const createClass = async (req, res) => {
     const { className, classCode } = req.body;
@@ -139,6 +140,23 @@ export const getClass = async (req, res) => {
         res.status(200).json({ class: classToGet });
     } catch (error) {
         console.error('Error getting class:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+export const getUserClasses = async (req, res) => {
+    try {
+        const classes = await req.user.classes.map(async (classId) => {
+            const classData = await Class.findById(classId)
+            if (!classData) {
+                return undefined;
+            }
+            return (await classData.populate('teacher', 'username _id')).populate('students', 'username _id').populate('assignedFlashcards');
+        })
+        classes.filter(classData => classData !== undefined);
+        res.status(200).json({ classes });
+    } catch (error) {
+        console.error('Error getting user classes:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }
