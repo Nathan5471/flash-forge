@@ -96,6 +96,7 @@ export default function Settings() {
                     <h2 className="text-3xl font-bold mb-4 text-center">Classes</h2>
                     <button className="bg-primary-a0 hover:bg-primary-a1 w-full rounded-lg py-2 mb-2" onClick={() => navigate('/classes')}>View My Classes</button>
                     <button className="bg-primary-a0 hover:bg-primary-a1 w-full rounded-lg py-2 mb-2" onClick={handleJoinClass} >Join Class</button>
+                    <button className="bg-primary-a0 hover:bg-primary-a1 w-full rounded-lg py-2 mb-2" onClick={() => navigate('/classes/create')}>Create Class</button>
                 </div>
             </div>
         </div>

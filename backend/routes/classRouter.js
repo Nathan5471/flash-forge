@@ -53,9 +53,9 @@ router.post('/leave/:classId', authenticate, async (req, res) => {
 })
 
 router.post('/create', authenticate, async (req, res) => {
-    const { className, classCode } = req.body;
+    const { className, joinCode } = req.body;
     try {
-        if (!className || !classCode) {
+        if (!className || !joinCode) {
             return res.status(400).json({ message: 'Class Name and Code are required' });
         }
         await createClass(req, res);

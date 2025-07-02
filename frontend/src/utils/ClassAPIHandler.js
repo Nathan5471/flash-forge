@@ -13,8 +13,8 @@ api.interceptors.response.use(
     }
 )
 
-export const createClass = async (className, classJoinCode) => {
-    const response = await api.post('/create', { className, joinCode: classJoinCode });
+export const createClass = async (className, joinCode) => {
+    const response = await api.post('/create', { className, joinCode });
     return response.data;
 }
 

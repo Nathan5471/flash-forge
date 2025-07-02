@@ -2,9 +2,9 @@ import Class from '../models/class.js';
 import User from '../models/user.js';
 
 export const createClass = async (req, res) => {
-    const { className, classCode } = req.body;
+    const { className, joinCode } = req.body;
     try {
-        const existingJoinCode = await Class.findOne({ joinCode: classCode });
+        const existingJoinCode = await Class.findOne({ joinCode: joinCode });
         if (existingJoinCode) {
             return res.status(400).json({ message: 'Class code already exists' });
         }
@@ -12,7 +12,7 @@ export const createClass = async (req, res) => {
             teacher: req.user._id,
             className: className,
             students: [],
-            joinCode: classCode,
+            joinCode: joinCode,
             assignedFlashcards: []
         });
         await newClass.save();
