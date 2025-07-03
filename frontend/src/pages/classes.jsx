@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { getUserClasses } from '../utils/ClassAPIHandler';
+import { useOverlayContext } from '../contexts/OverlayContext';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import LeaveClass from '../components/LeaveClass';
 
 export default function Classes() {
+    const { openOverlay } = useOverlayContext();
     const [classes, setClasses] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -23,7 +26,9 @@ export default function Classes() {
 
     const handleLeaveClass = async (e, classId) => {
         e.preventDefault();
-        console.log(`Implement leave class for class ID: ${classId}`);
+        openOverlay(
+            <LeaveClass classId={classId} />
+        );
     }
 
     if (loading) {
@@ -50,9 +55,9 @@ export default function Classes() {
                                     <p className="text-lg text-surface-a5">Teacher: {classData.teacher.username}</p>
                                 </div>
                                 <div className="flex flex-col w-[calc(15%)]">
-                                    <Link to={`/classes/${classData._id}`} className="bg-primary-ao hover:bg-primary-a1 text-center p-2 w-full rounded-lg">View</Link>
+                                    <Link to={`/classes/${classData._id}`} className="bg-primary-a0 hover:bg-primary-a1 text-center p-2 w-full rounded-lg">View</Link>
                                     <button
-                                        className="bg-primary-a0 hover:bg-primary-a1 text-center p-2 w-full rounded-lg mt-2"
+                                        className="bg-red-500 hover:bg-red-600 text-center p-2 w-full rounded-lg mt-2"
                                         onClick={(e) => handleLeaveClass(e, classData._id)}
                                     >Leave</button>
                                 </div>

@@ -16,6 +16,8 @@ export const createClass = async (req, res) => {
             assignedFlashcards: []
         });
         await newClass.save();
+        req.user.classes.push(newClass._id);
+        await req.user.save();
         res.status(201).json({ message: 'Class created successfully', class: newClass });
     } catch (error) {
         console.error('Error creating class:', error);
@@ -43,10 +45,16 @@ export const joinClass = async (req, res) => {
 }
 
 export const leaveClass = async (req, res) => {
-    const { classId } = req.parmas;
+    const { classId } = req.params;
     try {
-        const classToLeave = Class.findById(classId);
-        if (!classToJoin.students.contains(req.user._id)) {
+        const classToLeave = await Class.findById(classId);
+        if (!classToLeave) {
+            return res.status(404).json({ message: 'Class not found' });
+        }
+        if (!classToLeave.students.includes(req.user._id)) {
+            if (classToLeave.teacher.toString() === req.user._id.toString()) {
+                return res.status(403).json({ message: 'Teacher cannot leave class' });
+            }
             return res.status(400).json({ message: 'User is not in class'});
         }
         classToLeave.students.remove(req.user._id);
@@ -136,7 +144,11 @@ export const getClass = async (req, res) => {
         if (classToGet.teacher.toString() !== req.user._id.toString() && !classToGet.students.some(studentId => studentId.toString() === req.user._id.toString())) {
             return res.status(403).json({ message: 'You do not have permission to view this class' });
         }
-        classToGet.populate('teacher', 'username').populate('students', 'username').populate('assignedFlashcards');
+        await classToGet.populate([
+            { path: 'teacher', select: 'username _id' },
+            { path: 'students', select: 'username _id' },
+            { path: 'assignedFlashcards' }
+        ])
         res.status(200).json({ class: classToGet });
     } catch (error) {
         console.error('Error getting class:', error);
@@ -146,13 +158,17 @@ export const getClass = async (req, res) => {
 
 export const getUserClasses = async (req, res) => {
     try {
-        const classes = await req.user.classes.map(async (classId) => {
-            const classData = await Class.findById(classId)
+        const classes = await Promise.all(req.user.classes.map(async (classId) => {
+            const classData = await Class.findById(classId);
             if (!classData) {
                 return undefined;
             }
-            return (await classData.populate('teacher', 'username _id')).populate('students', 'username _id').populate('assignedFlashcards');
-        })
+            return classData.populate([
+                { path: 'teacher', select: 'username _id' },
+                { path: 'students', select: 'username _id' },
+                { path: 'assignedFlashcards' }
+            ])
+        }))
         classes.filter(classData => classData !== undefined);
         res.status(200).json({ classes });
     } catch (error) {
