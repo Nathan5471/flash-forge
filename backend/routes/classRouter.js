@@ -1,5 +1,5 @@
 import express from 'express';
-import { createClass, joinClass, leaveClass, deleteClass, assignFlashcardSet, unassignFlashcardSet, getClass, getUserClasses } from '../controllers/classController.js';
+import { createClass, joinClass, leaveClass, deleteClass, assignFlashcardSet, unassignFlashcardSet, getClass, getUserClasses, teacherRemoveStudent } from '../controllers/classController.js';
 import authenticate from '../middleware/authenticate.js';
 
 const router = express.Router();
@@ -89,6 +89,20 @@ router.post('/unassign/:classId', authenticate, async (req, res) => {
         await unassignFlashcardSet(req, res);
     } catch (error) {
         console.error('Error in unassign route:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+})
+
+router.post('/teacher/remove/:classId', authenticate, async (req, res) => {
+    const { classId } = req.params;
+    const { userId } = req.body;
+    try {
+        if (!classId || !userId) {
+            return res.status(400).json({ message: 'Class ID and User ID are required' });
+        }
+        await teacherRemoveStudent(req, res);
+    } catch (error) {
+        console.error('Error in teacher remove route:', error);
         return res.status(500).json({ message: 'Internal server error' });
     }
 })

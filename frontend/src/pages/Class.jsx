@@ -5,6 +5,7 @@ import { getUser } from '../utils/AuthAPIHandler';
 import { useOverlayContext } from '../contexts/OverlayContext';
 import Navbar from '../components/Navbar';
 import LeaveClass from '../components/LeaveClass';
+import RemoveStudent from '../components/RemoveStudent';
 
 export default function Class() {
     const navigate = useNavigate();
@@ -37,6 +38,20 @@ export default function Class() {
         openOverlay(
             <LeaveClass classId={classId} />
         );
+    }
+
+    const handleRemoveStudent = (e, student) => {
+        const removeStudent = () => {
+            classData.students = classData.students.filter(s => s._id !== student._id);
+            setClassData({ ...classData });
+        }
+        e.preventDefault();
+        if (!isTeacher) {
+            return;
+        }
+        openOverlay(
+            <RemoveStudent classId={classId} student={student} onRemove={removeStudent} />
+        )
     }
 
     if (loading) {
@@ -83,7 +98,7 @@ export default function Class() {
                                     {isTeacher && (
                                         <button
                                             className="ml-2 bg-red-500 hover:bg-red-600 p-2 rounded-lg"
-                                            onClick={() => console.log(`Remove student ${student.username}`)}
+                                            onClick={(e) => handleRemoveStudent(e, student)}
                                         >Kick</button>
                                     )}
                                 </div>

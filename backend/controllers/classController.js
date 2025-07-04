@@ -1,3 +1,4 @@
+import { resolvePath } from 'react-router-dom';
 import Class from '../models/class.js';
 import User from '../models/user.js';
 
@@ -35,9 +36,11 @@ export const joinClass = async (req, res) => {
         if (classToJoin.students.includes(req.user._id)) {
             return res.status(400).json({ message: 'User is already in class'});
         }
-        classToJoin.students.concat(req.user._id);
+        classToJoin.students.push(req.user._id);
         await classToJoin.save();
-        res.status(200).json({ message: 'Joined calss successfully', classId: classToJoin._id })
+        req.user.classes.push(classToJoin._id);
+        await req.user.save();
+        res.status(200).json({ message: 'Joined class successfully', classId: classToJoin._id })
     } catch (error) {
         console.error('Error joining class:', error);
         res.status(500).json({ message: 'Internal server error'})
@@ -173,6 +176,34 @@ export const getUserClasses = async (req, res) => {
         res.status(200).json({ classes });
     } catch (error) {
         console.error('Error getting user classes:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+export const teacherRemoveStudent = async (req, res) => {
+    const { classId } = req.params;
+    const { userId } = req.body;
+    try {
+        const classToUpdate = await Class.findById(classId);
+        if (!classToUpdate) {
+            return res.status(404).json({ message: 'Class not found' });
+        }
+        if (classToUpdate.teacher.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'You do not have permission to remove students from this class' });
+        }
+        if (!classToUpdate.students.includes(userId)) {
+            return res.status(400).json({ message: 'User is not in class' });
+        }
+        classToUpdate.students = classToUpdate.students.filter(studentId => studentId.toString() !== userId.toString());
+        await classToUpdate.save();
+        const userToRemove = await User.findById(userId);
+        if (userToRemove) {
+            userToRemove.classes = userToRemove.classes.filter(classId => classId.toString() !== classToUpdate._id.toString());
+            await userToRemove.save();
+        }
+        res.status(200).json({ message: 'Student removed from class successfully', class: classToUpdate });
+    } catch (error) {
+        console.error('Error removing student from class:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }

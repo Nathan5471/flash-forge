@@ -52,3 +52,8 @@ export const getUserClasses = async () => {
     const response = await api.get('/all');
     return response.data;
 }
+
+export const teacherRemoveStudent = async (classId, userId) => {
+    const response = await api.post(`/teacher/remove/${classId}`, { userId });
+    return response.data;
+}
