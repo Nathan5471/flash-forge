@@ -6,6 +6,7 @@ import { useOverlayContext } from '../contexts/OverlayContext';
 import Navbar from '../components/Navbar';
 import LeaveClass from '../components/LeaveClass';
 import RemoveStudent from '../components/RemoveStudent';
+import DeleteClass from '../components/DeleteClass';
 
 export default function Class() {
     const navigate = useNavigate();
@@ -35,6 +36,9 @@ export default function Class() {
 
     const handleLeaveClass = (e) => {
         e.preventDefault();
+        if (isTeacher) {
+            return;
+        }
         openOverlay(
             <LeaveClass classId={classId} />
         );
@@ -54,6 +58,16 @@ export default function Class() {
         )
     }
 
+    const handleDeleteClass = (e) => {
+        e.preventDefault();
+        if (!isTeacher) {
+            return;
+        }
+        openOverlay(
+            <DeleteClass classId={classId} />
+        );
+    }
+
     if (loading) {
         return (
             <div className="flex flex-col h-screen w-screen bg-tonal-a0 text-white">
@@ -71,6 +85,26 @@ export default function Class() {
             <div className="flex flex-col items-center justify-center h-[calc(100%)] p-4">
                 <h1 className="text-4xl text-primary-a0 font-bold mb-2">{classData.className}</h1>
                 <p className="text-lg mb-2 text-surface-a4">Join Code: {classData.joinCode}</p>
+                <div className="flex flex-row justify-center items-center mb-4">
+                    {isTeacher && (
+                        <button
+                            className="bg-primary-a0 hover:bg-primary-a1 p-2 rounded-lg mr-2"
+                            onClick={() => navigate(`/classes/edit/${classId}`)}
+                        >Edit Class</button>
+                    )}
+                    {!isTeacher && (
+                        <button
+                            className="bg-red-500 hover:bg-red-600 p-2 rounded-lg mr-2"
+                            onClick={handleLeaveClass}
+                        >Leave Class</button>
+                    )}
+                    {isTeacher && (
+                            <button
+                                className="bg-red-500 hover:bg-red-600 p-2 rounded-lg"
+                                onClick={handleDeleteClass}
+                            >Delete Class</button>
+                    )}
+                </div>
                 <div className="flex flex-row justify-between w-full">
                     <div className="flex flex-col bg-surface-a2 p-4 rounded-lg w-1/2 h-full overflow-y-auto">
                         <h2 className="text-2xl text-primary-a0 font-semibold text-center mb-2">Members</h2>
