@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerUser, loginUser, updateUsername, updateEmail, updatePassword, deleteUser, getUsername } from '../controllers/authController.js';
+import { registerUser, loginUser, updateUsername, updateEmail, updatePassword, deleteUser, getUsername, isTeacher } from '../controllers/authController.js';
 import authenticate from '../middleware/authenticate.js';
 
 const router = express.Router();
@@ -80,5 +80,14 @@ router.get('/username/:userId', async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+router.get('/isTeacher', authenticate, async (req, res) => {
+    try {
+        await isTeacher(req, res);
+    } catch (error) {
+        console.error('Error in isTeacher route:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+})
 
 export default router;

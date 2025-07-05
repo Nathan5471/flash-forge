@@ -57,3 +57,8 @@ export const getUsername = async (userId) => {
     const response = await api.get(`/username/${userId}`);
     return response.data;
 }
+
+export const checkIsTeacher = async () => {
+    const response = await api.get('/isTeacher');
+    return response.data;
+}

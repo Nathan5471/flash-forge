@@ -53,7 +53,17 @@ export const getUserClasses = async () => {
     return response.data;
 }
 
+export const getUserClassesWhereTeacher = async () => {
+    const response = await api.get('/all/IsTeacher');
+    return response.data;
+}
+
 export const teacherRemoveStudent = async (classId, userId) => {
     const response = await api.post(`/teacher/remove/${classId}`, { userId });
+    return response.data;
+}
+
+export const checkIsAssigned = async (classId, flashcardSetId) => {
+    const response = await api.get(`/isAssigned/${classId}/${flashcardSetId}`);
     return response.data;
 }

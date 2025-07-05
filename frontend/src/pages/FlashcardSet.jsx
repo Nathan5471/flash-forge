@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useOverlayContext } from '../contexts/OverlayContext';
 import { getFlashcardSet } from '../utils/FlashcardAPIHandler';
-import { getUser } from '../utils/AuthAPIHandler';
+import { getUser, checkIsTeacher } from '../utils/AuthAPIHandler';
 import { getDownloadedFlashcardSet, isFlashcardSetDownloaded, downloadFlashcardSet, syncFlashcardSet } from '../utils/DownloadManager';
 import Navbar from '../components/Navbar';
 import Flashcard from '../components/Flashcard';
@@ -19,6 +19,7 @@ export default function FlashcardSet({ isOffline = false }) {
     const [loading, setLoading] = useState(true);
     const [currentFlashcardIndex, setCurrentFlashcardIndex] = useState(0);
     const [isDownloaded, setIsDownloaded] = useState(false);
+    const [isTeacher, setIsTeacher] = useState(false);
 
     useEffect(() => {
         const fetchFlashcardSet = async () => {
@@ -37,6 +38,7 @@ export default function FlashcardSet({ isOffline = false }) {
                 const userData = await getUser();
                 if (userData) {
                     setUser(userData.user);
+                    setIsTeacher(await checkIsTeacher());
                 } else {
                     setUser(null);
                 }
@@ -181,6 +183,12 @@ export default function FlashcardSet({ isOffline = false }) {
                                     className="mt-4 bg-primary-a0 hover:bg-primary-a1 p-2 rounded-lg ml-4"
                                     onClick={handleCloneFlashcardSet}
                                 >Clone Flashcard Set</button>
+                            )}
+                            {isTeacher && (
+                                <button
+                                    className="mt-4 bg-primary-a0 hover:bg-primary-a1 p-2 rounded-lg ml-4"
+                                    onClick={() => console.log('Assign Flashcard Set')}
+                                >Assign Set</button>
                             )}
                             {flashcardSet.userId._id === user?._id && (
                             <>

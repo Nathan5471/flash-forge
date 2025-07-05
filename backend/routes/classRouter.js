@@ -1,5 +1,5 @@
 import express from 'express';
-import { createClass, joinClass, leaveClass, deleteClass, assignFlashcardSet, unassignFlashcardSet, getClass, getUserClasses, teacherRemoveStudent } from '../controllers/classController.js';
+import { createClass, joinClass, leaveClass, deleteClass, assignFlashcardSet, unassignFlashcardSet, getClass, getUserClasses, getUserClassesWhereTeacher, teacherRemoveStudent, isAssigned } from '../controllers/classController.js';
 import authenticate from '../middleware/authenticate.js';
 
 const router = express.Router();
@@ -10,6 +10,28 @@ router.get('/all', authenticate, async (req, res) => {
     } catch (error) {
         console.error('Error in get all classes route:', error);
         return res.status(500).json({ message: 'Internal server error'})
+    }
+})
+
+router.get('/all/IsTeacher', authenticate, async (req, res) => {
+    try {
+        await getUserClassesWhereTeacher(req, res);
+    } catch (error) {
+        console.error('Error in get all classes where user is teacher route:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+})
+
+router.get('/isAssigned/:classId/:flashcardSetId', authenticate, async (req, res) => {
+    const { classId, flashcardSetId } = req.params;
+    try {
+        if (!classId || !flashcardSetId) {
+            return res.status(400).json({ message: 'Class ID and Flashcard Set ID are required' });
+        }
+        await isAssigned(req, res);
+    } catch (error) {
+        console.error('Error in isAssigned route:', error);
+        return res.status(500).json({ message: 'Internal server error' });
     }
 })
 

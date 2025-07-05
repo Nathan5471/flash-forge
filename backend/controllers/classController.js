@@ -180,6 +180,20 @@ export const getUserClasses = async (req, res) => {
     }
 }
 
+export const getUserClassesWhereTeacher = async (req, res) => {
+    try {
+        const classes = await req.user.populate('classes');
+        const teacherClasses = classes.classes.filter(userClass => userClass.teacher.toString() === req.user._id.toString());
+        if (teacherClasses.length === 0) {
+            return res.status(404).json({ message: 'No classes found where user is teacher' });
+        }
+        res.status(200).json({ classes: teacherClasses });
+    } catch (error) {
+        console.error('Error getting user classes where user is teacher:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
 export const teacherRemoveStudent = async (req, res) => {
     const { classId } = req.params;
     const { userId } = req.body;
@@ -204,6 +218,21 @@ export const teacherRemoveStudent = async (req, res) => {
         res.status(200).json({ message: 'Student removed from class successfully', class: classToUpdate });
     } catch (error) {
         console.error('Error removing student from class:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+export const isAssigned = async (req, res) => {
+    const { classId, flashcardSetId } = req.params;
+    try {
+        const classToCheck = await Class.findById(classId);
+        if (!classToCheck) {
+            return res.status(404).json({ message: 'Class not found' });
+        }
+        const isAssigned = classToCheck.assignedFlashcards.includes(flashcardSetId);
+        res.status(200).json({ isAssigned });
+    } catch (error) {
+        console.error('Error checking if flashcard set is assigned:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }

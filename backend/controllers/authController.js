@@ -176,3 +176,14 @@ export const getUsername = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+export const isTeacher = async (req, res) => {
+    try {
+        const user = await req.user.populate('classes');
+        const isTeacher = user.classes.some(userClass => userClass.teacher.toString() === user._id.toString());
+        res.status(200).json({ isTeacher });
+    } catch (error) {
+        console.error('Error checking if user is teacher:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
