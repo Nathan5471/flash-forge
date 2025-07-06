@@ -1,5 +1,5 @@
 import express from 'express';
-import { createFlashcardSet, getFlashcardSet, searchFlashcardSets, getUserFlashcardSets, getRecentFlashcardSets, getRecentlyCreatedFlashcardSets, updateFlashcardSet, deleteFlashcardSet, cloneFlashcardSet, getLastEditTime, getRandomFlashcards, rateFlashcardSet, getFlashcardSetRating, addCommentToFlashcardSet, getFlashcardSetComments, deleteCommentFromFlashcardSet } from '../controllers/flashcardController.js';
+import { createFlashcardSet, getFlashcardSet, searchFlashcardSets, getUserFlashcardSets, getRecentFlashcardSets, getRecentlyCreatedFlashcardSets, updateFlashcardSet, deleteFlashcardSet, cloneFlashcardSet, getLastEditTime, getRandomFlashcards, rateFlashcardSet, getFlashcardSetRating, checkIfAlreadyRated, addCommentToFlashcardSet, getFlashcardSetComments, deleteCommentFromFlashcardSet } from '../controllers/flashcardController.js';
 import authenticate from '../middleware/authenticate.js';
 import nonRequiredAuthenticate from '../middleware/nonRequiredAuthenticate.js';
 
@@ -101,7 +101,7 @@ router.get('/random/:id', async (req, res) => {
     }
 })
 
-router.get('/:id/rating', async (req, res) => {
+router.get('/rating/:id', async (req, res) => {
     const { id } = req.params;
     try {
         if (!id) {
@@ -114,7 +114,20 @@ router.get('/:id/rating', async (req, res) => {
     }
 })
 
-router.get('/:id/comments', async (req, res) => {
+router.get('/alreadyRated/:id', authenticate, async (req, res) => {
+    const { id } = req.params;
+    try {
+        if (!id) {
+            return res.status(400).json({ message: 'Flashcard set ID is required' });
+        }
+        await checkIfAlreadyRated(req, res);
+    } catch (error) {
+        console.error('Error in check if flashcard set already rated route:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+})
+
+router.get('/comments/:id', async (req, res) => {
     const { id } = req.params;
     try {
         if (!id) {
@@ -154,7 +167,7 @@ router.put('/:id', authenticate, async (req, res) => {
     }
 });
 
-router.post('/:id/rate', authenticate, async (req, res) => {
+router.post('/rate/:id', authenticate, async (req, res) => {
     const { id } = req.params;
     const { rating } = req.body;
     try {
@@ -171,7 +184,7 @@ router.post('/:id/rate', authenticate, async (req, res) => {
     }
 })
 
-router.post('/:id/comment', authenticate, async ( req, res) => {
+router.post('/comment/:id', authenticate, async ( req, res) => {
     const { id } = req.params;
     const { comment } = req.body;
     try {
@@ -185,7 +198,7 @@ router.post('/:id/comment', authenticate, async ( req, res) => {
     }
 })
 
-router.delete('/:id/comment/:commentId', authenticate, async (req, res) => {
+router.delete('/comment/:id/:commentId', authenticate, async (req, res) => {
     const { id, commentId } = req.params;
     try {
         if (!id || !commentId) {

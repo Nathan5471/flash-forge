@@ -241,6 +241,24 @@ export const getFlashcardSetRating = async (req, res) => {
     }
 }
 
+export const checkIfAlreadyRated = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const flashcardSet = await FlashcardSet.findById(id);
+        if (!flashcardSet) {
+            return res.status(404).json({ message: 'Flashcard set not found' });
+        }
+        const alreadyRated = flashcardSet.ratings.some(rating => rating.userId.toString() === req.user._id.toString());
+        if (alreadyRated) {
+            const rating = flashcardSet.ratings.find(rating => rating.userId.toString() === req.user._id.toString());
+            return res.status(200).json({ alreadyRated: true, rating: rating.rating });
+        }
+    } catch (error) {
+        console.error('Error checking if flashcard set is already rated:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
 export const addCommentToFlashcardSet = async (req, res) => {
     const { id } = req.params;
     const { comment } = req.body;

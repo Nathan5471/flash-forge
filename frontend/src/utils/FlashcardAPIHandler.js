@@ -78,3 +78,33 @@ export const getRandomFlashcards = async (id, amount, excludeFlashcardId) => {
     });
     return response.data;
 }
+
+export const rateFlashcardSet = async (id, rating) => {
+    const response = await api.post(`/rate/${id}`, { rating });
+    return response.data;
+}
+
+export const getFlashcardSetRating = async (id) => {
+    const response = await api.get(`/rating/${id}`);
+    return response.data;
+}
+
+export const postComment = async (id, comment) => {
+    const response = await api.post(`/comment/${id}`, { comment });
+    return response.data;
+}
+
+export const getComments = async (id) => {
+    const response = await api.get(`/comments/${id}`);
+    return response.data;
+}
+
+export const deleteComment = async (id, commentId) => {
+    const response = await api.delete(`/comment/${id}/${commentId}`);
+    return response.data;
+}
+
+export const checkIfAlreadyRated = async (id) => {
+    const response = await api.get(`/alreadyRated/${id}`);
+    return response.data;
+}

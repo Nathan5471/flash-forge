@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useOverlayContext } from '../contexts/OverlayContext';
-import { getFlashcardSet } from '../utils/FlashcardAPIHandler';
+import { getFlashcardSet, rateFlashcardSet, getFlashcardSetRating, postComment, getComments, deleteComment } from '../utils/FlashcardAPIHandler';
 import { getUser, checkIsTeacher } from '../utils/AuthAPIHandler';
 import { getDownloadedFlashcardSet, isFlashcardSetDownloaded, downloadFlashcardSet, syncFlashcardSet } from '../utils/DownloadManager';
 import Navbar from '../components/Navbar';
@@ -10,12 +10,15 @@ import ExportFlashcards from '../components/ExportFlashcards';
 import CloneSet from '../components/CloneSet';
 import DeleteFlashcardSet from '../components/DeleteFlashcardSet';
 import Assign from '../components/Assign';
+import Rate from '../components/Rate';
 import { PiCardsDuotone, PiNotePencil, PiBookDuotone, PiShuffleDuotone, PiArrowsClockwise, PiDownloadSimpleDuotone } from "react-icons/pi";
 
 export default function FlashcardSet({ isOffline = false }) {
     const { openOverlay } = useOverlayContext();
     const { id } = useParams();
     const [flashcardSet, setFlashcardSet] = useState(null);
+    const [rating, setRating] = useState({ rating: 0, ratingsCount: 0 });
+    const [comments, setComments] = useState([]);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [currentFlashcardIndex, setCurrentFlashcardIndex] = useState(0);
@@ -42,6 +45,22 @@ export default function FlashcardSet({ isOffline = false }) {
                     setIsTeacher(await checkIsTeacher());
                 } else {
                     setUser(null);
+                }
+                if (!isOffline) {
+                    try {
+                        const flashcardSetRating = await getFlashcardSetRating(id);
+                        setRating(flashcardSetRating);
+                    } catch (error) {
+                        console.error('Error fetching flashcard set rating:', error);
+                        setRating({ rating: 0, ratingsCount: 0 });
+                    }
+                    try {
+                        const flashcardSetComments = await getComments(id);
+                        setComments(flashcardSetComments);
+                    } catch (error) {
+                        console.error('Error fetching flashcard set comments:', error);
+                        setComments([]);
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching flashcard set:', error);
@@ -71,6 +90,11 @@ export default function FlashcardSet({ isOffline = false }) {
     const handleAssignFlashcardSet = (e) => {
         e.preventDefault();
         openOverlay(<Assign flashcardSetId={flashcardSet._id} />);
+    }
+
+    const handleRateFlashcardSet = (e) => {
+        e.preventDefault();
+        openOverlay(<Rate flashcardSetId={flashcardSet._id} />);
     }
 
     if (loading) {
@@ -160,6 +184,7 @@ export default function FlashcardSet({ isOffline = false }) {
                 </div>
                 <p className="text-lg text-tonal-a5 text-left w-[calc(95%)] sm:w-[calc(80%)] md:w-3/4 lg:w-1/2">Created By: <Link to={`${isOffline ? '/downloads' : ''}/user/${flashcardSet.userId._id}`} className="hover:underline">{flashcardSet.userId.username}</Link></p>
                 <p className="text-lg text-tonal-a5 text-left w-[calc(95%)] sm:w-[calc(80%)] md:w-3/4 lg:w-1/2">Description: {flashcardSet.description}</p>
+                {!isOffline && (<p className="text-lg text-tonal-a5 text-left w-[calc(95%)] sm:w-[calc(80%)] md:w-3/4 lg:w-1/2">Rating: {rating.rating} ({rating.ratingsCount} ratings)</p>)}
                 <div className="flex flex-row mb-4">
                     <button
                         className="mt-4 bg-primary-a0 hover:bg-primary-a1 p-2 rounded-lg"
@@ -185,10 +210,16 @@ export default function FlashcardSet({ isOffline = false }) {
                     ) : (
                         <>
                             {user && (
-                                <button
-                                    className="mt-4 bg-primary-a0 hover:bg-primary-a1 p-2 rounded-lg ml-4"
-                                    onClick={handleCloneFlashcardSet}
-                                >Clone Flashcard Set</button>
+                                <>
+                                    <button
+                                        className="mt-4 bg-primary-a0 hover:bg-primary-a1 p-2 rounded-lg ml-4"
+                                        onClick={handleCloneFlashcardSet}
+                                    >Clone Flashcard Set</button>
+                                    <button
+                                        className="mt-4 bg-primary-a0 hover:bg-primary-a1 p-2 rounded-lg ml-4"
+                                        onClick={handleRateFlashcardSet}
+                                    >Rate</button>
+                                </>
                             )}
                             {isTeacher && (
                                 <button
