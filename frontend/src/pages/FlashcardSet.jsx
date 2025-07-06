@@ -9,6 +9,7 @@ import Flashcard from '../components/Flashcard';
 import ExportFlashcards from '../components/ExportFlashcards';
 import CloneSet from '../components/CloneSet';
 import DeleteFlashcardSet from '../components/DeleteFlashcardSet';
+import Assign from '../components/Assign';
 import { PiCardsDuotone, PiNotePencil, PiBookDuotone, PiShuffleDuotone, PiArrowsClockwise, PiDownloadSimpleDuotone } from "react-icons/pi";
 
 export default function FlashcardSet({ isOffline = false }) {
@@ -65,6 +66,11 @@ export default function FlashcardSet({ isOffline = false }) {
     const handleCloneFlashcardSet = (e) => {
         e.preventDefault();
         openOverlay(<CloneSet flashcardSet={flashcardSet} isOffline={isOffline} />);
+    }
+
+    const handleAssignFlashcardSet = (e) => {
+        e.preventDefault();
+        openOverlay(<Assign flashcardSetId={flashcardSet._id} />);
     }
 
     if (loading) {
@@ -187,7 +193,7 @@ export default function FlashcardSet({ isOffline = false }) {
                             {isTeacher && (
                                 <button
                                     className="mt-4 bg-primary-a0 hover:bg-primary-a1 p-2 rounded-lg ml-4"
-                                    onClick={() => console.log('Assign Flashcard Set')}
+                                    onClick={handleAssignFlashcardSet}
                                 >Assign Set</button>
                             )}
                             {flashcardSet.userId._id === user?._id && (
