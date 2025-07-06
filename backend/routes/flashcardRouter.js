@@ -1,5 +1,5 @@
 import express from 'express';
-import { createFlashcardSet, getFlashcardSet, searchFlashcardSets, getUserFlashcardSets, getRecentFlashcardSets, getRecentlyCreatedFlashcardSets, updateFlashcardSet, deleteFlashcardSet, cloneFlashcardSet, getLastEditTime, getRandomFlashcards } from '../controllers/flashcardController.js';
+import { createFlashcardSet, getFlashcardSet, searchFlashcardSets, getUserFlashcardSets, getRecentFlashcardSets, getRecentlyCreatedFlashcardSets, updateFlashcardSet, deleteFlashcardSet, cloneFlashcardSet, getLastEditTime, getRandomFlashcards, rateFlashcardSet, getFlashcardSetRating, addCommentToFlashcardSet, getFlashcardSetComments, deleteCommentFromFlashcardSet } from '../controllers/flashcardController.js';
 import authenticate from '../middleware/authenticate.js';
 import nonRequiredAuthenticate from '../middleware/nonRequiredAuthenticate.js';
 
@@ -101,6 +101,32 @@ router.get('/random/:id', async (req, res) => {
     }
 })
 
+router.get('/:id/rating', async (req, res) => {
+    const { id } = req.params;
+    try {
+        if (!id) {
+            return res.status(400).json({ message: 'Flashcard set ID is required' });
+        }
+        await getFlashcardSetRating(req, res);
+    } catch (error) {
+        console.error('Error in get flashcard set rating route:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+})
+
+router.get('/:id/comments', async (req, res) => {
+    const { id } = req.params;
+    try {
+        if (!id) {
+            return res.status(400).json({ message: 'Flashcard set ID is required' });
+        }
+        await getFlashcardSetComments(req, res);
+    } catch (error) {
+        console.error('Error in get flashcard set comments route:', error);
+        return res.status(500).json({ message: 'Internal server error'});
+    }
+})
+
 router.get('/:id', nonRequiredAuthenticate, async (req, res) => {
     const { id } = req.params;
     try {
@@ -127,6 +153,50 @@ router.put('/:id', authenticate, async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+router.post('/:id/rate', authenticate, async (req, res) => {
+    const { id } = req.params;
+    const { rating } = req.body;
+    try {
+        if (!id || !rating) {
+            return res.status(400).json({ message: 'Flashcard set ID and rating are required' });
+        }
+        if (rating < 1 || rating > 5) {
+            return res.status(400).json({ message: 'Rating must be between 1 and 5' });
+        }
+        await rateFlashcardSet(req, res);
+    } catch (error) {
+        console.error('Error in rate flashcard set route:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+})
+
+router.post('/:id/comment', authenticate, async ( req, res) => {
+    const { id } = req.params;
+    const { comment } = req.body;
+    try {
+        if (!id || !comment) {
+            return res.status(400).json({ message: 'Flashcard set ID and comment are required' });
+        }
+        await addCommentToFlashcardSet(req, res);
+    } catch (error) {
+        console.error('Error in comment flashcard set route:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+})
+
+router.delete('/:id/comment/:commentId', authenticate, async (req, res) => {
+    const { id, commentId } = req.params;
+    try {
+        if (!id || !commentId) {
+            return res.status(400).json({ message: 'Flashcard set ID and comment ID are required' });
+        }
+        await deleteCommentFromFlashcardSet(req, res);
+    } catch (error) {
+        console.error('Error in delete comment from flashcard set route:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+})
 
 router.delete('/:id', authenticate, async (req, res) => {
     const { id } = req.params;

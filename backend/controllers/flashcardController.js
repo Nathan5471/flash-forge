@@ -207,3 +207,96 @@ export const getRandomFlashcards = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+export const rateFlashcardSet = async (req, res) => {
+    const { id } = req.params;
+    const { rating } = req.body;
+    try {
+        const flashcardSet = await FlashcardSet.findById(id);
+        if (!flashcardSet) {
+            return res.status(404).json({ message: 'Flashcard set not found' });
+        }
+        flashcardSet.ratings.filter(rating => rating.userId.toString() !== req.user._id.toString());
+        flashcardSet.ratings.push({ userId: req.user._id, rating });
+        flashcardSet.averageRating = flashcardSet.ratings.reduce((acc, curr) => acc + curr.rating, 0) / flashcardSet.ratings.length;
+        await flashcardSet.save();
+        res.status(200).json({ rating: flashcardSet.averageRating });
+    } catch (error) {
+        console.error('Error rating flashcard set:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+export const getFlashcardSetRating = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const flashcardSet = await FlashcardSet.findById(id);
+        if (!flashcardSet) {
+            return res.status(404).json({ message: 'Flashcard set not found' });
+        }
+        res.status(200).json({ rating: flashcardSet.averageRating, ratingsCount: flashcardSet.ratings.length });
+    } catch (error) {
+        console.error('Error fetching flashcard set rating:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+export const addCommentToFlashcardSet = async (req, res) => {
+    const { id } = req.params;
+    const { comment } = req.body;
+    try {
+        const flashcardSet = await FlashcardSet.findById(id);
+        if (!flashcardSet) {
+            return res.status(404).json({ message: 'Flashcard set not found' });
+        }
+        flashcardSet.comments.push({
+            userId: req.user._id,
+            comment,
+        })
+        await flashcardSet.save();
+        res.status(200).json({ comments: flashcardSet.comments });
+    } catch (error) {
+        console.error('Error adding comment to flashcard set:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+export const getFlashcardSetComments = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const flashcardSet = await FlashcardSet.findById(id).populate('comments.userId', ['username', '_id']);
+        if (!flashcardSet) {
+            return res.status(404).json({ message: 'Flashcard set not found' });
+        }
+        if (flashcardSet.comments.length === 0) {
+            return res.status(200).json({ message: 'No comments found for this flashcard set', comments: [] });
+        }
+        res.status(200).json({ comments: flashcardSet.comments });
+    } catch (error) {
+        console.error('Error fetching flashcard set comments:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+export const deleteCommentFromFlashcardSet = async (req, res) => {
+    const { id, commentId } = req.params;
+    try {
+        const flashcardSet = await FlashcardSet.findById(id);
+        if (!flashcardSet) {
+            return res.status(404).json({ message: 'Flashcard set not found' });
+        }
+        const commentIndex = flashcardSet.comments.findIndex(comment => comment._id.toString() === commentId);
+        if (commentIndex === -1) {
+            return res.status(404).json({ message: 'Comment not found' });
+        }
+        if (flashcardSet.comments[commentIndex].userId.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'You do not have permission to delete this comment' });
+        }
+        flashcardSet.comments = flashcardSet.comments.filter(comment => comment._id.toString() !== commentId);
+        await flashcardSet.save();
+        res.status(200).json({ message: 'Comment deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting comment from flashcard set:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
