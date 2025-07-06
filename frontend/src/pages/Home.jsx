@@ -20,15 +20,25 @@ export default function Home() {
                 const userData = await getUser()
                 setUser(userData.user)
                 if (userData) {
-                    const recentSets = await getRecentlyViewedFlashcardSets()
-                    recentSets.reverse()
-                    setRecentlyViewed(recentSets)
-                    const userSets = await getUserFlashcardSets(userData.user._id)
-                    const sortedUserSets = sortSets(userSets, 'date', false) // Sort by date, descending
-                    if (sortedUserSets.length > 10) {
-                        setUserSets(sortedUserSets.slice(0, 10)) // Limit to 10 sets
-                    } else {
-                        setUserSets(sortedUserSets)
+                    try {
+                        const recentSets = await getRecentlyViewedFlashcardSets()
+                        recentSets.reverse()
+                        setRecentlyViewed(recentSets)
+                    } catch (error) {
+                        console.error('Error fetching recently viewed flashcard sets:', error)
+                        setRecentlyViewed([])
+                    }
+                    try {
+                        const userSets = await getUserFlashcardSets(userData.user._id)
+                        const sortedUserSets = sortSets(userSets, 'date', false) // Sort by date, descending
+                        if (sortedUserSets.length > 10) {
+                            setUserSets(sortedUserSets.slice(0, 10)) // Limit to 10 sets
+                        } else {
+                            setUserSets(sortedUserSets)
+                        }
+                    } catch (error) {
+                        console.error('Error fetching user flashcard sets:', error)
+                        setUserSets([])
                     }
                 }
             } catch (error) {

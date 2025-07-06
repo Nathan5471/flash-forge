@@ -160,7 +160,7 @@ export default function FlashcardSet({ isOffline = false }) {
                 </div>
                 <p className="text-lg text-tonal-a5 text-left w-[calc(95%)] sm:w-[calc(80%)] md:w-3/4 lg:w-1/2">Created By: <Link to={`${isOffline ? '/downloads' : ''}/user/${flashcardSet.userId._id}`} className="hover:underline">{flashcardSet.userId.username}</Link></p>
                 <p className="text-lg text-tonal-a5 text-left w-[calc(95%)] sm:w-[calc(80%)] md:w-3/4 lg:w-1/2">Description: {flashcardSet.description}</p>
-                <div className="flex flex-row">
+                <div className="flex flex-row mb-4">
                     <button
                         className="mt-4 bg-primary-a0 hover:bg-primary-a1 p-2 rounded-lg"
                         onClick={handleExportFlashcards}

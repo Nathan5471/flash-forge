@@ -45,10 +45,10 @@ export default function Classes() {
     return (
         <div className="flex flex-col min-h-screen w-screen bg-tonal-a0 text-white">
             <Navbar />
-            <div className="flex flex-col items-center justify-center mt-6">
+            <div className="flex flex-col items-center justify-center mt-4">
                 { classes.length > 0 ? (
                     classes.map((classData) => (
-                        <div className="bg-surface-a2 p-4 rounded-lg w-3/4" key={classData._id}>
+                        <div className="bg-surface-a2 p-4 rounded-lg w-3/4 mt-2" key={classData._id}>
                             <div className="flex flex-row justify-between">
                                 <div className="flex flex-col items-center">
                                     <h2 className="text-2xl font-bold text-primary-a0">{classData.className}</h2>

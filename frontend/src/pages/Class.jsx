@@ -1,6 +1,6 @@
 import React, {  useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getClass } from '../utils/ClassAPIHandler';
+import { getClass, unassignFlashcardSet } from '../utils/ClassAPIHandler';
 import { getUser } from '../utils/AuthAPIHandler';
 import { useOverlayContext } from '../contexts/OverlayContext';
 import Navbar from '../components/Navbar';
@@ -66,6 +66,19 @@ export default function Class() {
         openOverlay(
             <DeleteClass classId={classId} />
         );
+    }
+
+    const handleUnassignFlashcardSet = async (e, flashcardSetId) => {
+        e.preventDefault();
+        try {
+            await unassignFlashcardSet(classId, flashcardSetId);
+            setClassData(prev => ({
+                ...prev,
+                assignedFlashcards: prev.assignedFlashcards.filter(flashcardSet => flashcardSet._id !== flashcardSetId)
+            }))
+        } catch (error) {
+            console.error('Error unassigning flashcard set:', error);
+        }
     }
 
     if (loading) {
@@ -149,9 +162,16 @@ export default function Class() {
                                         <p className="text-sm text-surface-a5">{flashcard.description}</p>
                                     </div>
                                     <button
-                                        className="ml-auto bg-primary-a0 hover:bg-primary-a1 p-2 roundd-lg"
+                                        className="ml-auto bg-primary-a0 hover:bg-primary-a1 p-2 rounded-lg"
                                         onClick={() => navigate(`/flashcard/${flashcard._id}`)}
                                     >View</button>
+                                    {isTeacher && (
+                                        <button
+                                            className="ml-2 bg-red-500 hover:bg-red-600 p-2 rounded-lg"
+                                            onClick={(e) => handleUnassignFlashcardSet(e, flashcard._id)}
+                                        >Unassign</button>
+                                    )}
+                                    {}
                                 </div>
                             ))
                         ) : (
