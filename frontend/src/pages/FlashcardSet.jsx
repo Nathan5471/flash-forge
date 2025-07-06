@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useOverlayContext } from '../contexts/OverlayContext';
-import { getFlashcardSet, rateFlashcardSet, getFlashcardSetRating, postComment, getComments, deleteComment } from '../utils/FlashcardAPIHandler';
+import { getFlashcardSet, getFlashcardSetRating, postComment, getComments, deleteComment } from '../utils/FlashcardAPIHandler';
 import { getUser, checkIsTeacher } from '../utils/AuthAPIHandler';
 import { getDownloadedFlashcardSet, isFlashcardSetDownloaded, downloadFlashcardSet, syncFlashcardSet } from '../utils/DownloadManager';
 import Navbar from '../components/Navbar';
@@ -17,8 +17,10 @@ export default function FlashcardSet({ isOffline = false }) {
     const { openOverlay } = useOverlayContext();
     const { id } = useParams();
     const [flashcardSet, setFlashcardSet] = useState(null);
+    const [canFlip, setCanFlip] = useState(true);
     const [rating, setRating] = useState({ rating: 0, ratingsCount: 0 });
     const [comments, setComments] = useState([]);
+    const [newComment, setNewComment] = useState('');
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [currentFlashcardIndex, setCurrentFlashcardIndex] = useState(0);
@@ -56,7 +58,7 @@ export default function FlashcardSet({ isOffline = false }) {
                     }
                     try {
                         const flashcardSetComments = await getComments(id);
-                        setComments(flashcardSetComments);
+                        setComments(flashcardSetComments.comments || []);
                     } catch (error) {
                         console.error('Error fetching flashcard set comments:', error);
                         setComments([]);
@@ -95,6 +97,30 @@ export default function FlashcardSet({ isOffline = false }) {
     const handleRateFlashcardSet = (e) => {
         e.preventDefault();
         openOverlay(<Rate flashcardSetId={flashcardSet._id} />);
+    }
+
+    const handlePostComment = async (e) => {
+        e.preventDefault();
+        if (!newComment.trim()) {
+            return;
+        }
+        try {
+            const commentData = await postComment(flashcardSet._id, newComment);
+            setComments(commentData.comments);
+            setNewComment('');
+        } catch (error) {
+            console.error('Error posting comment:', error);
+        }
+    }
+
+    const handleDeleteComment = async (e, commentId) => {
+        e.preventDefault();
+        try {
+            await deleteComment(flashcardSet._id, commentId);
+            setComments(prevComments => prevComments.filter(comment => comment._id !== commentId));
+        } catch (error) {
+            console.error('Error deleting comment:', error);
+        }
     }
 
     if (loading) {
@@ -167,7 +193,7 @@ export default function FlashcardSet({ isOffline = false }) {
                     ))}
                 </div>
                 <div className='w-[calc(95%)] sm:w-[calc(80%)] md:w-3/4 lg:w-1/2 mb-4'>
-                    <Flashcard flashcardData={flashcardSet.flashCards[currentFlashcardIndex]} />
+                    <Flashcard flashcardData={flashcardSet.flashCards[currentFlashcardIndex]} canFlip={canFlip} />
                 </div>
                 <div className="flex flex-row justify-between w-[calc(95%)] sm:w-[calc(80%)] md:w-3/4 lg:w-1/2 mb-4 gap-4">
                     <button
@@ -241,6 +267,55 @@ export default function FlashcardSet({ isOffline = false }) {
                         </>
                     )}
                 </div>
+                {!isOffline && (
+                    <div className="w-[calc(95%)] sm:w-[calc(80%)] md:w-3/4 lg:w-1/2 mb-4">
+                        <h2 className="text-2xl font-bold mb-4">Comments</h2>
+                        {user && (
+                            <div className="flex flex-row mb-4">
+                                <input
+                                    type="text"
+                                    value={newComment}
+                                    onChange={(e) => setNewComment(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            handlePostComment(e);
+                                        }
+                                    }}
+                                    onFocus={() => setCanFlip(false)}
+                                    onBlur={() => setCanFlip(true)}
+                                    className="flex p-2 rounded-lg w-full mr-2 bg-surface-a2"
+                                    placeholder="Add a comment..."
+                                />
+                                <button
+                                    onClick={handlePostComment}
+                                    className="bg-primary-a0 hover:bg-primary-a1 p-2 rounded-lg"
+                                >Post</button>
+                            </div>
+                        )}
+                        <div className="max-h-60 overflow-y-auto">
+                            {comments.length > 0 ? (
+                                comments.map((comment) => (
+                                    <div key={comment._id} className="bg-surface-a2 p-4 rounded-lg mb-2 w-full">
+                                        <div className="flex flex-row justify-between">
+                                        <div className="flex flex-col">
+                                            <p className="text-lg">{comment.comment}</p>
+                                            <p className="text-sm text-surface-a5">Posted by <Link to={`/user/${comment.userId._id}`} className="hover:underline">{comment.userId.username}</Link> at {new Date(comment.createdAt).toLocaleString()}</p>
+                                        </div>
+                                        {user && user?._id === comment.userId._id && (
+                                            <button
+                                                className="bg-red-500 hover:bg-red-600 p-2 rounded-lg ml-4"
+                                                onClick={(e) => handleDeleteComment(e, comment._id)}
+                                            >Delete</button>
+                                        )}
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-lg text-tonal-a5">No comments yet. Be the first to comment!</p>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     )

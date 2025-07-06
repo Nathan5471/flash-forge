@@ -270,6 +270,7 @@ export const addCommentToFlashcardSet = async (req, res) => {
         flashcardSet.comments.push({
             userId: req.user._id,
             comment,
+            createdAt: new Date(),
         })
         await flashcardSet.save();
         res.status(200).json({ comments: flashcardSet.comments });

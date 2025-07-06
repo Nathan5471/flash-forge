@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
-export default function Flashcard({ flashcardData }) {
+export default function Flashcard({ flashcardData, canFlip = true }) {
     const [flipped, setFlipped] = useState(false);
     const [disableTransition, setDisableTransition] = useState(false);
 
     useEffect(() => {
+        if (!canFlip) return;
         const handleKeyDown = (event) => {
             if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
                 setFlipped(prev => !prev);
             }
         }
@@ -14,7 +16,7 @@ export default function Flashcard({ flashcardData }) {
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         }
-    }, []);
+    }, [canFlip]);
 
     useEffect(() => {
         setDisableTransition(true);
