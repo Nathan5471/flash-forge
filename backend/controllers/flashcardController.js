@@ -216,7 +216,7 @@ export const rateFlashcardSet = async (req, res) => {
         if (!flashcardSet) {
             return res.status(404).json({ message: 'Flashcard set not found' });
         }
-        flashcardSet.ratings.filter(rating => rating.userId.toString() !== req.user._id.toString());
+        flashcardSet.ratings = flashcardSet.ratings.filter(rating => rating.userId.toString() !== req.user._id.toString());
         flashcardSet.ratings.push({ userId: req.user._id, rating });
         flashcardSet.averageRating = flashcardSet.ratings.reduce((acc, curr) => acc + curr.rating, 0) / flashcardSet.ratings.length;
         await flashcardSet.save();

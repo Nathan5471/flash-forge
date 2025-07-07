@@ -172,7 +172,7 @@ export default function FlashcardSet({ isOffline = false }) {
                             onClick={() => syncFlashcardSet(flashcardSet._id)}
                         >
                             <div className="flex flex-col items-center justify-center mb-2">
-                                <PiArrowsClockwise className="text-4xl sm:text-5xl md:text-6xl text-[#fbc9f5]" />
+                                <PiArrowsClockwise className="text-4xl sm:text-5xl md:text-6xl text-primary-a5" />
                                 Sync Set
                             </div>
                         </button>
@@ -268,7 +268,7 @@ export default function FlashcardSet({ isOffline = false }) {
                     )}
                 </div>
                 {!isOffline && (
-                    <div className="w-[calc(95%)] sm:w-[calc(80%)] md:w-3/4 lg:w-1/2 mb-4">
+                    <div className="w-[calc(95%)] sm:w-[calc(80%)] md:w-3/4 lg:w-1/2 mb-4 bg-surface-a1 p-4 rounded-lg">
                         <h2 className="text-2xl font-bold mb-4">Comments</h2>
                         {user && (
                             <div className="flex flex-row mb-4">
