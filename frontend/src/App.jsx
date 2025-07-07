@@ -46,8 +46,8 @@ function App() {
             <Route path="/classes/create" element={<CreateClass />} />
           </Route>
         </Routes>
+        <Overlay />
       </Router>
-      <Overlay />
     </OverlayProvider>
     
   )
