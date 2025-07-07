@@ -42,13 +42,14 @@ export default function Navbar({ isOffline = false }) {
 
     const handleOpenMobileMenu = (e) => {
         e.preventDefault();
+        console.log(isOffline);
         openOverlay(<MobileMenu isOffline={isOffline} />);
     }
 
     return (
         <div className="flex flex-row h-[calc(10%)] w-full bg-tonal-a1 items-center justify-between p-2">
             <Link to={`/${isOffline ? 'downloads' : ''}`} className="text-lg sm:text-lg md:text-xl lg:text-3xl text-primary-a0 hover:text-primary-a1 font-bold">Flash Forge</Link>
-            <div className="flex flex-row gap-2 w-[calc(60%)] sm:w-[calc(40%)]">
+            <div className="flex flex-row gap-2 w-[calc(60%)] md:w-[calc(40%)]">
                 <input type="text" placeholder="Search flashcards..." className="p-2 rounded-lg bg-surface-a3 text-white w-full" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={(e) => {if (e.key === 'Enter') handleSearch(e)}}/>
                 <button className="bg-surface-a3 hover:bg-gray-500 p-2 rounded-lg" onClick={handleSearch}><GoSearch /></button>
             </div>
