@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'path';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -12,7 +13,6 @@ import classRouter from './routes/classRouter.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 const corsOptions = {
     origin: true,
     credentials: true,
@@ -20,6 +20,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.static(path.resolve('public')));
 
 // Routes
 app.use('/api/auth', authRouter);
@@ -29,7 +30,6 @@ app.use('/api/match', matchRouter);
 app.use('/api/classes', classRouter);
 
 // Frontend
-app.use(express.static('public'));
 app.use((req, res) => {
     res.sendFile('./public/index.html', { root: '.' }, (error) => {
         if (error) {
