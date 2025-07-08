@@ -30,15 +30,19 @@ app.use('/api/match', matchRouter);
 app.use('/api/classes', classRouter);
 
 // Frontend
-app.use('/', createProxyMiddleware({
-    target: 'http://localhost:5173',
-    changeOrigin: true,
-}))
+app.use((req, res) => {
+    res.sendFile('./public/index.html', { root: '.' }, (error) => {
+        if (error) {
+            console.error('Error sending index file:', error);
+            res.status(500).send('Page not found');
+        }
+    })
+})
 
 mongoose.connect(process.env.MONGODB_URL).then(() => {
     console.log('MongoDB connected');
-    app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
+    app.listen(3000, () => {
+        console.log('Server is running on port 3000');
     });
 }).catch((error) => {
     console.log(error);

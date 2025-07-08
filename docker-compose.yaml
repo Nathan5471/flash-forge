@@ -1,0 +1,10 @@
+services:
+  flash-forge:
+    image: nathan5471/flash-forge:latest
+    container_name: flash-forge
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGODB_URL=mongodbURL
+      - JWT_SECRET=your_jwt_secret
+    restart: unless-stopped
