@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import { createProxyMiddleware } from 'http-proxy-middleware';
 import authRouter from './routes/authRouter.js';
 import flashcardRouter from './routes/flashcardRouter.js';
 import learnRouter from './routes/learnRouter.js';
@@ -30,6 +29,7 @@ app.use('/api/match', matchRouter);
 app.use('/api/classes', classRouter);
 
 // Frontend
+app.use(express.static('public'));
 app.use((req, res) => {
     res.sendFile('./public/index.html', { root: '.' }, (error) => {
         if (error) {
