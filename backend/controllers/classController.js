@@ -1,4 +1,3 @@
-import { resolvePath } from 'react-router-dom';
 import Class from '../models/class.js';
 import User from '../models/user.js';
 
