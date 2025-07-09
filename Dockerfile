@@ -2,7 +2,7 @@ FROM node:22 AS frontend
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm install
-Copy frontend/ ./
+COPY frontend/ ./
 RUN npm run build
 
 FROM node:22

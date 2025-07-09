@@ -29,6 +29,7 @@ export default function MobileMenu({ isOffline = false }) {
             } catch (error) {
                 console.error('Error fetchign user data:', error);
                 setButtons([
+                    { label: 'Downloads', path: '/downloads' },
                     { label: 'Login', path: '/login' },
                     { label: 'Register', path: '/register' },
                 ])

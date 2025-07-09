@@ -72,6 +72,7 @@ export default function Navbar({ isOffline = false }) {
                             </div>
                         ) : (
                             <div className="gap-2 hidden md:flex md:flex-row">
+                                <Link to="/downloads" className="bg-surface-a3 rounded-lg hover:bg-surface-a4 md:text-lg lg:text-2xl lg:py-1 lg:px-2">Downloads</Link>
                                 <Link to="/login" className="bg-surface-a3 rounded-lg hover:bg-surface-a4 md:text-lg lg:text-2xl lg:py-1 lg:px-2">Login</Link>
                                 <Link to="/register" className="bg-surface-a3 rounded-lg hover:bg-surface-a4 md:text-lg lg:text-2xl lg:py-1 lg:px-2">Register</Link>
                             </div>

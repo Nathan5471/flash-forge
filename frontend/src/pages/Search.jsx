@@ -36,22 +36,22 @@ export default function Search({ isOffline = false }) {
 
     if (loading) {
         return (
-            <div className="flex flex-col h-screen w-screen bg-gray-600 text-white">
+            <div className="flex flex-col h-screen w-screen bg-tonal-a0 text-white">
                 <Navbar isOffline={isOffline} />
             </div>
         )
     }
 
     return (
-        <div className="flex flex-col min-h-screen w-screen bg-gray-600 text-white">
+        <div className="flex flex-col min-h-screen w-screen bg-tonal-a0 text-white">
             <Navbar isOffline={isOffline} />
             <div className="flex flex-col justify-center mt-4">
-                <h1 className="text-2xl font-bold text-center mb-4">Search Results for "{searchTerm}"</h1>
+                <h1 className="text-2xl text-primary-a0 font-bold text-center mb-4">Search Results for "{searchTerm}"</h1>
                 { flashcardSets.length > 0 ? (
                     <>
                         <div className="flex flex-row ml-auto mr-2">
                             <label className="mr-2 text-lg">Search result per page: </label>
-                            <select className="bg-gray-700 text-white p-2 rounded" value={limit} onChange={(e) => setLimit(Number(e.target.value))}>
+                            <select className="bg-surface-a2 text-white p-2 rounded" value={limit} onChange={(e) => setLimit(Number(e.target.value))}>
                                 <option value={10}>10</option>
                                 <option value={25}>25</option>
                                 <option value={50}>50</option>

@@ -32,16 +32,23 @@ export default function FlashcardSet({ isOffline = false }) {
             try {
                 let flashcardData;
                 if (isOffline) {
+                    console.log('Fetching downloaded flashcard set:', id);
                     flashcardData = await getDownloadedFlashcardSet(id);
                 } else {
+                    console.log('Fetching flashcard set from API:', id);
                     flashcardData = await getFlashcardSet(id);
                 }
+                console.log('Flashcard Data:', flashcardData);
                 setFlashcardSet(flashcardData);
                 if (isOffline) {
+                    console.log('Leaving if isOffline block');
                     return;
                 }
+                console.log('Checking if flashcard set is downloaded:', id);
                 setIsDownloaded(isFlashcardSetDownloaded(id));
+                console.log('Check is user:', id);
                 const userData = await getUser();
+                console.log('User Data:', userData);
                 if (userData) {
                     setUser(userData.user);
                     setIsTeacher(await checkIsTeacher());
@@ -66,7 +73,6 @@ export default function FlashcardSet({ isOffline = false }) {
                 }
             } catch (error) {
                 console.error('Error fetching flashcard set:', error);
-                setFlashcardSet(null);
             } finally {
                 setLoading(false);
             }
