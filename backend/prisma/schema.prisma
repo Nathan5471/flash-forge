@@ -6,3 +6,39 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  id                  String          @id @default(uuid())
+  username            String          @unique
+  password            String
+  flashcardSets       FlashcardSet[]  @relation("createdFlashcardSets")
+  viewedFlashcardSets FlashcardView[] @relation("viewedFlashcardSets")
+}
+
+model Flashcard {
+  id             String       @id @default(uuid())
+  term           String
+  definition     String
+  flashcardSet   FlashcardSet @relation(fields: [flashcardSetId], references: [id], onDelete: Cascade)
+  flashcardSetId String
+}
+
+model FlashcardSet {
+  id          String          @id @default(uuid())
+  name        String
+  description String
+  flashcards  Flashcard[]
+  creator     User            @relation(name: "createdFlashcardSets", fields: [creatorId], references: [id], onDelete: Cascade)
+  creatorId   String
+  views       FlashcardView[]
+  createdAt   DateTime        @default(now())
+  editedAt    DateTime        @updatedAt
+}
+
+model FlashcardView {
+  id             String       @id @default(uuid())
+  flashcardSet   FlashcardSet @relation(fields: [flashcardSetId], references: [id], onDelete: Cascade)
+  flashcardSetId String
+  user           User         @relation(name: "viewedFlashcardSets", fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+}
