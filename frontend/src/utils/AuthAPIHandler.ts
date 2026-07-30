@@ -40,3 +40,8 @@ export const login = async (
   const response = await api.post("/login", { username, password }, { signal });
   return response.data;
 };
+
+export const getCurrentUser = async (signal?: AbortSignal) => {
+  const response = await api.get("/me", { signal });
+  return response.data;
+};
