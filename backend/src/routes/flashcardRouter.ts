@@ -9,30 +9,41 @@ import {
 const router = express.Router();
 
 router.post("/create", authenticate, async (req: any, res: any) => {
-  const { name, description, cards } = req.body as {
+  const { name, description, flashcards } = req.body as {
     name: string;
     description: string;
-    cards: { index: number; term: string; definition: string }[];
+    flashcards: { index: number; term: string; definition: string }[];
   };
 
-  for (const card of cards) {
-    if (!card.index || typeof card.index !== "number" || card.index < 0) {
+  for (const flashcard of flashcards) {
+    if (
+      flashcard.index === null ||
+      flashcard.index === undefined ||
+      typeof flashcard.index !== "number" ||
+      flashcard.index < 0
+    ) {
       return res.status(400).json({ message: "Invalid card index" });
     }
     if (
-      !card.term ||
-      typeof card.term !== "string" ||
-      card.term.trim() === ""
+      !flashcard.term ||
+      typeof flashcard.term !== "string" ||
+      flashcard.term.trim() === ""
     ) {
       return res.status(400).json({ message: "Invalid card term" });
     }
     if (
-      !card.definition ||
-      typeof card.definition !== "string" ||
-      card.definition.trim() === ""
+      !flashcard.definition ||
+      typeof flashcard.definition !== "string" ||
+      flashcard.definition.trim() === ""
     ) {
       return res.status(400).json({ message: "Invalid card definition" });
     }
+  }
+
+  if (!name || !description) {
+    return res
+      .status(400)
+      .json({ message: "Name and description are required" });
   }
 
   await createFlashcardSet(req, res);

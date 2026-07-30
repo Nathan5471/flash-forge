@@ -2,10 +2,10 @@ import prisma from "../prisma/client";
 import type { AuthUser } from "../middleware/authenticate";
 
 export const createFlashcardSet = async (req: any, res: any) => {
-  const { name, description, cards } = req.body as {
+  const { name, description, flashcards } = req.body as {
     name: string;
     description: string;
-    cards: { index: number; term: string; definition: string }[];
+    flashcards: { index: number; term: string; definition: string }[];
   };
   const user = req.user as AuthUser;
 
@@ -15,10 +15,10 @@ export const createFlashcardSet = async (req: any, res: any) => {
         name,
         description,
         flashcards: {
-          create: cards.map((card) => ({
-            index: card.index,
-            term: card.term,
-            definition: card.definition,
+          create: flashcards.map((flashcard) => ({
+            index: flashcard.index,
+            term: flashcard.term,
+            definition: flashcard.definition,
           })),
         },
         creatorId: user.id,
