@@ -17,6 +17,7 @@ model User {
 
 model Flashcard {
   id             String       @id @default(uuid())
+  index          Int
   term           String
   definition     String
   flashcardSet   FlashcardSet @relation(fields: [flashcardSetId], references: [id], onDelete: Cascade)

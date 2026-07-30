@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/authRouter";
+import flashcardRouter from "./routes/flashcardRouter";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use("/api/auth", authRouter);
+app.use("/api/flashcards", flashcardRouter);
 
 if (process.env.IS_DEV) {
   app.use(
