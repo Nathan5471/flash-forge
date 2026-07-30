@@ -1,0 +1,19 @@
+.navbarContainer {
+  display: flex;
+  flex-direction: row;
+  background-color: Var(--surface-a1);
+  padding: 10px;
+  width: 100%;
+  font-family: Arial;
+}
+
+.navbarLogo {
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--primary-a0);
+  text-decoration: none;
+}
+
+.navbarLogo:hover {
+  color: var(--primary-a1);
+}
