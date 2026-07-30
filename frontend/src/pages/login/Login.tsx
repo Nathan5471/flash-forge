@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import styles from "./Login.module.css";
 import { login } from "../../utils/AuthAPIHandler";
+import { IoEye, IoEyeOff } from "react-icons/io5";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -44,14 +46,22 @@ function Login() {
           required
         />
         <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <div className={styles.passwordInputContainer}>
+          <input
+            type={showPassword ? "text" : "password"}
+            id="password"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+          >
+            {showPassword ? <IoEyeOff /> : <IoEye />}
+          </button>
+        </div>
         <button type="submit">Login</button>
         {error && <p className={styles.error}>{error}</p>}
         <p>

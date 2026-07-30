@@ -74,3 +74,39 @@
   font-size: 14px;
   margin-top: 10px;
 }
+
+.passwordInputContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: var(--surface-a2);
+  border-radius: 8px;
+  padding: 0 6px;
+}
+
+.passwordInputContainer input {
+  flex: 1;
+  background-color: transparent; 
+  padding: 6px 0; 
+  border: none;
+  outline: none;
+}
+
+.passwordInputContainer button {
+  margin-top: 0;
+  margin-left: 10px;
+  padding: 6px;
+  border-radius: 8px;
+  border: none;
+  background-color: transparent;
+  color: var(--text);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.passwordInputContainer button:hover {
+  background-color: var(--surface-a3);
+}
