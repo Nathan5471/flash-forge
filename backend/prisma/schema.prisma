@@ -42,4 +42,7 @@ model FlashcardView {
   flashcardSetId String
   user           User         @relation(name: "viewedFlashcardSets", fields: [userId], references: [id], onDelete: Cascade)
   userId         String
+  viewedAt       DateTime     @default(now())
+
+  @@unique([flashcardSetId, userId])
 }

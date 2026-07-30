@@ -13,15 +13,17 @@ export type AuthUser = Prisma.UserGetPayload<{
   };
 }>;
 
-const authenticate = async (req: any, res: any, next: any) => {
+const nonRequiredAuthenticate = async (req: any, res: any, next: any) => {
   const token = req.cookies.token;
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized" });
+    req.user = null;
+    return next();
   }
   const JWT_SECRET = process.env.JWT_SECRET;
   if (!JWT_SECRET) {
     console.error("JWT_SECRET is not defined");
-    return res.status(401).json({ message: "Unauthorized" });
+    req.user = null;
+    return next();
   }
 
   try {
@@ -41,14 +43,16 @@ const authenticate = async (req: any, res: any, next: any) => {
     });
     if (!user) {
       res.clearCookie("token");
-      return res.status(401).json({ message: "Unauthorized" });
+      req.user = null;
+      return next();
     }
     req.user = user;
     return next();
   } catch (error) {
     res.clearCookie("token");
-    return res.status(401).json({ message: "Unauthorized" });
+    req.user = null;
+    return next();
   }
 };
 
-export default authenticate;
+export default nonRequiredAuthenticate;

@@ -36,6 +36,7 @@ export const createFlashcardSet = async (req: any, res: any) => {
 
 export const getFlashcardSet = async (req: any, res: any) => {
   const { setId } = req.params as { setId: string };
+  const user = req.user as AuthUser | null;
 
   try {
     const flashcardSet = await prisma.flashcardSet.findUnique({
@@ -57,6 +58,23 @@ export const getFlashcardSet = async (req: any, res: any) => {
     if (!flashcardSet) {
       return res.status(404).json({ message: "Flashcard set not found" });
     }
+    if (user) {
+      await prisma.flashcardView.upsert({
+        where: {
+          flashcardSetId_userId: {
+            flashcardSetId: flashcardSet.id,
+            userId: user.id,
+          },
+        },
+        update: {
+          viewedAt: new Date(),
+        },
+        create: {
+          flashcardSetId: flashcardSet.id,
+          userId: user.id,
+        },
+      });
+    }
     const sortedFlashcards = flashcardSet.flashcards.sort(
       (a, b) => a.index - b.index,
     );
@@ -72,12 +90,10 @@ export const getFlashcardSet = async (req: any, res: any) => {
       creator: flashcardSet.creator.username,
       views: flashcardSet._count.views,
     };
-    return res
-      .status(200)
-      .json({
-        message: "Flashcard set fetched successfully",
-        flashcardSet: responseFlashcardSet,
-      });
+    return res.status(200).json({
+      message: "Flashcard set fetched successfully",
+      flashcardSet: responseFlashcardSet,
+    });
   } catch (error) {
     console.error("Error fetching flashcard set:", error);
     return res.status(500).json({ message: "Failed to fetch flashcard set" });

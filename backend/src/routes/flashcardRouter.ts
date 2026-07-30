@@ -1,5 +1,6 @@
 import express from "express";
 import authenticate from "../middleware/authenticate";
+import nonRequiredAuthenticate from "../middleware/nonRequiredAuthenticate";
 import {
   createFlashcardSet,
   getFlashcardSet,
@@ -37,15 +38,18 @@ router.post("/create", authenticate, async (req: any, res: any) => {
   await createFlashcardSet(req, res);
 });
 
-router.get("/set/:setId", async (req: any, res: any) => {
-  // Add non required auth
-  const { setId } = req.params as { setId: string };
+router.get(
+  "/set/:setId",
+  nonRequiredAuthenticate,
+  async (req: any, res: any) => {
+    const { setId } = req.params as { setId: string };
 
-  if (!setId) {
-    return res.status(400).json({ message: "setId is required" });
-  }
+    if (!setId) {
+      return res.status(400).json({ message: "setId is required" });
+    }
 
-  await getFlashcardSet(req, res);
-});
+    await getFlashcardSet(req, res);
+  },
+);
 
 export default router;
