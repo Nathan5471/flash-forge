@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/authRouter";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 dotenv.config();
 
@@ -21,6 +22,29 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use("/api/auth", authRouter);
+
+if (process.env.IS_DEV) {
+  app.use(
+    "/",
+    createProxyMiddleware({
+      target: "http://localhost:5173",
+      changeOrigin: true,
+    }),
+  );
+} else {
+  app.use(express.static("public"));
+
+  app.use("/", (req, res) => {
+    (res.sendFile("./public/index.html"),
+      { root: "." },
+      (error: any) => {
+        if (error) {
+          console.error("Error sending index.html:", error);
+          res.status(500).json({ message: "Internal Server Error" });
+        }
+      });
+  });
+}
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");

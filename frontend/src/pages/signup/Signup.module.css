@@ -68,3 +68,9 @@
 .signupFormLink:hover {
   text-decoration: underline;
 }
+
+.error {
+  color: var(--error);
+  font-size: 14px;
+  margin-top: 10px;
+}
