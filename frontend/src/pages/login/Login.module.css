@@ -1,0 +1,70 @@
+.loginContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--surface-a0);
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: var(--surface-a1);
+  color: var(--text);
+  font-family: Arial;
+}
+
+.loginForm h1 {
+  text-align: center;
+  font-size: 42px;
+  font-weight: bold;
+  color: var(--primary-a0);
+}
+
+.loginForm label {
+  margin-top: 10px;
+  font-size: 24px;
+}
+
+.loginForm input {
+  padding: 6px;
+  border-radius: 8px;
+  border: none;
+  background-color: var(--surface-a2);
+  color: var(--text);
+  font-size: 20px;
+}
+
+.loginForm button {
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background-color: var(--primary-a0);
+  color: var(--text);
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.loginForm button:hover {
+  background-color: var(--primary-a1);
+}
+
+.loginForm p {
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+.loginFormLink {
+  color: var(--primary-a0);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.loginFormLink:hover {
+  text-decoration: underline;
+}

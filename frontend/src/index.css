@@ -1,0 +1,25 @@
+:root {
+  --primary-a0: #1f8ee5;
+  --primary-a1: #419ae9;
+  --primary-a2: #5aa6ec;
+  --primary-a3: #70b1ef;
+  --primary-a4: #85bdf2;
+  --primary-a5: #9ac8f5;
+  --surface-a0: #121212;
+  --surface-a1: #252525;
+  --surface-a2: #393939;
+  --surface-a3: #4f4f4f;
+  --surface-a4: #666;
+  --surface-a5: #7d7d7d;
+  --text: #ffffff;
+  --success: #7dff95;
+  --warning: #ffbc5e;
+  --error: #ff8080;
+  /* I got these from https://colorffy.com/dark-theme-generator?colors=%231f8ee5&colors=%23121212&success=%237dff95&warning=%23ffbc5e&danger=%23ff8f8e&info=%2387d1ff&primaryCount=6&surfaceCount=6*/
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
