@@ -1,0 +1,50 @@
+.flashcardSetPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--surface-a0);
+  color: var(--text);
+  font-family: Arial;
+}
+
+.loadingText {
+  font-size: 36px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.errorBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  margin-top: 20px;
+  background-color: var(--surface-a1);
+  border-radius: 8px;
+}
+
+.errorBox h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.errorButton {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: var(--primary-a0);
+  border-radius: 4px;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.errorButton:hover {
+  background-color: var(--primary-a1);
+}
+
+.error {
+  color: var(--error);
+  font-size: 14px;
+  margin-top: 10px;
+}

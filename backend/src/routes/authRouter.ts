@@ -37,7 +37,6 @@ router.post("/login", async (req: any, res: any) => {
 
 router.get("/me", authenticate, async (req: any, res: any) => {
   const user = req.user as AuthUser;
-
   return res.status(200).json({
     message: "Authenticated",
     user: {
@@ -50,12 +49,12 @@ router.get("/me", authenticate, async (req: any, res: any) => {
         creator: set.creator.username,
         flashcards: set.flashcards.length,
       })),
-      viewedFlashcardSets: user.viewedFlashcardSets.map((set: any) => ({
-        id: set.id,
-        name: set.name,
-        description: set.description,
-        creator: set.creator.username,
-        flashcards: set.flashcards.length,
+      viewedFlashcardSets: user.viewedFlashcardSets.map((setView: any) => ({
+        id: setView.flashcardSet.id,
+        name: setView.flashcardSet.name,
+        description: setView.flashcardSet.description,
+        creator: setView.flashcardSet.creator.username,
+        flashcards: setView.flashcardSet.flashcards.length,
       })),
     },
   });
