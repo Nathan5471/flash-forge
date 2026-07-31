@@ -17,3 +17,21 @@
 .navbarLogo:hover {
   color: var(--primary-a1);
 }
+
+.navbarContainerRight {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-left: auto;
+  align-items: center;
+}
+
+.navbarLink {
+  background-color: var(--primary-a0);
+  color: var(--text);
+  padding: 8px 16px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 4px;
+}
