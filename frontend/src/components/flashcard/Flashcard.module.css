@@ -1,0 +1,41 @@
+.flashcardContainer {
+  aspect-ratio: 2 / 1;
+  width: 100%;
+  perspective: 1000px;
+  font-family: Arial;
+  font-size: 48px;
+  cursor: pointer;
+}
+
+.inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 500ms;
+}
+
+.noTransition {
+  transition: none;
+}
+
+.isFlipped {
+  transform: rotateX(180deg);
+}
+
+.front {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: var(--surface-a1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.back {
+  transform: rotateX(180deg);
+}
