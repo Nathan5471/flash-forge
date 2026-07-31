@@ -1,5 +1,6 @@
 .flashcardSetBox {
   display: flex;
+  flex: 0 0 auto;
   flex-direction: column;
   background-color: var(--surface-a1);
   width: 300px;

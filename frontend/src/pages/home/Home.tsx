@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import {
   getRecentlyViewedFlashcardSets,
@@ -24,6 +25,26 @@ function Home() {
   const [recentlyCreated, setRecentlyCreated] = useState<FlashcardSet[]>([]);
   const [recentlyEdited, setRecentlyEdited] = useState<FlashcardSet[]>([]);
 
+  const viewedRef = useRef<HTMLDivElement>(null);
+  const createdRef = useRef<HTMLDivElement>(null);
+  const editedRef = useRef<HTMLDivElement>(null);
+
+  const scrollRow = (
+    ref: React.RefObject<HTMLDivElement | null>,
+    direction: "left" | "right",
+  ) => {
+    if (ref.current) {
+      const { scrollLeft, clientWidth } = ref.current;
+      const scrollAmount = clientWidth * 0.4;
+      ref.current.scrollTo({
+        left:
+          direction === "left"
+            ? scrollLeft - scrollAmount
+            : scrollLeft + scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
   useEffect(() => {
     const fetchData = async () => {
       const controller = new AbortController();
@@ -56,32 +77,89 @@ function Home() {
         {user && <h2>Welcome, {user.username}!</h2>}
         {user && recentlyViewed.length > 0 && (
           <>
-            <h3>Recently Viewed Flashcard Sets</h3>
-            <div className={styles.flashcardRow}>
-              {recentlyViewed.map((set) => (
-                <FlashcardSetBox key={set.id} flashcardSet={set} />
-              ))}
+            <div className={styles.sectionHeader}>
+              <h3>Recently Viewed Flashcard Sets</h3>
+              <Link to="/recently-viewed" className={styles.sectionHeaderLink}>
+                View More
+              </Link>
+            </div>
+            <div className={styles.flashcardRowWrapper}>
+              <button
+                className={`${styles.scrollButton} ${styles.scrollButtonLeft}`}
+                onClick={() => scrollRow(viewedRef, "left")}
+              >
+                &lt;
+              </button>
+              <div className={styles.flashcardRow} ref={viewedRef}>
+                {recentlyViewed.map((set) => (
+                  <FlashcardSetBox key={set.id} flashcardSet={set} />
+                ))}
+              </div>
+              <button
+                className={`${styles.scrollButton} ${styles.scrollButtonRight}`}
+                onClick={() => scrollRow(viewedRef, "right")}
+              >
+                &gt;
+              </button>
             </div>
           </>
         )}
-        <h3>Recently Created Flashcard Sets</h3>
+        <div className={styles.sectionHeader}>
+          <h3>Recently Created Flashcard Sets</h3>
+          <Link to="/recently-created" className={styles.sectionHeaderLink}>
+            View More
+          </Link>
+        </div>
         {recentlyCreated.length > 0 ? (
-          <div className={styles.flashcardRow}>
-            {recentlyCreated.map((set) => (
-              <FlashcardSetBox key={set.id} flashcardSet={set} />
-            ))}
+          <div className={styles.flashcardRowWrapper}>
+            <button
+              className={`${styles.scrollButton} ${styles.scrollButtonLeft}`}
+              onClick={() => scrollRow(createdRef, "left")}
+            >
+              &lt;
+            </button>
+            <div className={styles.flashcardRow} ref={createdRef}>
+              {recentlyCreated.map((set) => (
+                <FlashcardSetBox key={set.id} flashcardSet={set} />
+              ))}
+            </div>
+            <button
+              className={`${styles.scrollButton} ${styles.scrollButtonRight}`}
+              onClick={() => scrollRow(createdRef, "right")}
+            >
+              &gt;
+            </button>
           </div>
         ) : (
           <p className={styles.noFlashcardsMessage}>
             No recently created flashcard sets found.
           </p>
         )}
-        <h3>Recently Edited Flashcard Sets</h3>
+        <div className={styles.sectionHeader}>
+          <h3>Recently Edited Flashcard Sets</h3>
+          <Link to="/recently-edited" className={styles.sectionHeaderLink}>
+            View More
+          </Link>
+        </div>
         {recentlyEdited.length > 0 ? (
-          <div className={styles.flashcardRow}>
-            {recentlyEdited.map((set) => (
-              <FlashcardSetBox key={set.id} flashcardSet={set} />
-            ))}
+          <div className={styles.flashcardRowWrapper}>
+            <button
+              className={`${styles.scrollButton} ${styles.scrollButtonLeft}`}
+              onClick={() => scrollRow(editedRef, "left")}
+            >
+              &lt;
+            </button>
+            <div className={styles.flashcardRow} ref={editedRef}>
+              {recentlyEdited.map((set) => (
+                <FlashcardSetBox key={set.id} flashcardSet={set} />
+              ))}
+            </div>
+            <button
+              className={`${styles.scrollButton} ${styles.scrollButtonRight}`}
+              onClick={() => scrollRow(editedRef, "right")}
+            >
+              &gt;
+            </button>
           </div>
         ) : (
           <p className={styles.noFlashcardsMessage}>
