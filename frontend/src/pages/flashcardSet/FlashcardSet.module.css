@@ -26,13 +26,53 @@
   margin-top: 20px;
 }
 
-.flashcardNavigation {
+.flashcardControls {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: 600px;
   margin-top: 10px;
+  width: 600px;
+}
+
+.shuffleContainer {
+  display: flex;
+  align-items: center;
+  width: 100px;
+}
+
+.shuffleButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  width: 50px;
+  background-color: var(--surface-a1);
+  border-radius: 4px;
+  border: none;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.shuffleButton:hover {
+  background-color: var(--surface-a2);
+}
+
+.shuffleButtonActive {
+  background-color: var(--primary-a0);
+}
+
+.shuffleButtonActive:hover {
+  background-color: var(--primary-a1);
+}
+
+.flashcardNavigation {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  width: 300px;
 }
 
 .flashcardNavigation button {
@@ -57,6 +97,20 @@
 .flashcardNavigation button:disabled {
   color: var(--surface-a3);
   pointer-events: none;
+}
+
+.changeFront {
+  display: flex;
+  flex-direction: column;
+  width: 100px;
+}
+
+.changeFront select {
+  padding: 2px;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--surface-a1);
+  color: var(--text);
 }
 
 .flashcardSetText {
