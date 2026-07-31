@@ -211,7 +211,15 @@ function FlashcardSet() {
           <p className={styles.description}>
             Description: {flashcardSet.description}
           </p>
-          <p>Creator: {flashcardSet.creator}</p>
+          <p>
+            Creator:{" "}
+            <Link
+              to={`/user/${flashcardSet.creator}`}
+              className={styles.creatorLink}
+            >
+              {flashcardSet.creator}
+            </Link>
+          </p>
           <p>Views: {flashcardSet.views}</p>
         </div>
       </div>
