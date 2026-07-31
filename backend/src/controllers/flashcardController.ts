@@ -192,6 +192,58 @@ export const getCreatedFlashcardSets = async (req: any, res: any) => {
   }
 };
 
+export const getFlashcardSetsByUsername = async (req: any, res: any) => {
+  const { username } = req.params as { username: string };
+  const { limit, offset } = req.query as { limit?: string; offset?: string };
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { username },
+      select: { id: true },
+    });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const flashcardSets = await prisma.flashcardSet.findMany({
+      where: { creatorId: user.id },
+      orderBy: { editedAt: "desc" },
+      take: limit ? parseInt(limit) : 10,
+      skip: offset ? parseInt(offset) : 0,
+      include: {
+        creator: {
+          select: {
+            username: true,
+          },
+        },
+        _count: {
+          select: {
+            views: true,
+            flashcards: true,
+          },
+        },
+      },
+    });
+    const responseFlashcardSets = flashcardSets.map((set) => ({
+      id: set.id,
+      name: set.name,
+      description: set.description,
+      creator: set.creator.username,
+      views: set._count.views,
+      flashcards: set._count.flashcards,
+    }));
+    return res.status(200).json({
+      message: "Flashcard sets fetched successfully",
+      flashcardSets: responseFlashcardSets,
+    });
+  } catch (error) {
+    console.error("Error fetching user by username:", error);
+    return res
+      .status(500)
+      .json({ message: "Failed to flashcard sets by username" });
+  }
+};
+
 export const getPopularFlashcardSets = async (req: any, res: any) => {
   const { limit, offset } = req.query as { limit?: string; offset?: string };
 

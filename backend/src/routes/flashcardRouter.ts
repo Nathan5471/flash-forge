@@ -6,6 +6,7 @@ import {
   getFlashcardSet,
   getRecentlyViewedFlashcardSets,
   getCreatedFlashcardSets,
+  getFlashcardSetsByUsername,
   getPopularFlashcardSets,
   getRecentlyCreatedFlashcardSets,
   getRecentlyEditedFlashcardSets,
@@ -71,6 +72,16 @@ router.get(
 router.get("/recently-viewed", authenticate, getRecentlyViewedFlashcardSets);
 
 router.get("/created", authenticate, getCreatedFlashcardSets);
+
+router.get("/user/:username", async (req: any, res: any) => {
+  const { username } = req.params as { username: string };
+
+  if (!username) {
+    return res.status(400).json({ message: "Username is required" });
+  }
+
+  await getFlashcardSetsByUsername(req, res);
+});
 
 router.get("/popular", getPopularFlashcardSets);
 

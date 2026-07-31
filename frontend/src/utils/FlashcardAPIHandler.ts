@@ -68,6 +68,17 @@ export const getCreatedFlashcardSets = async ({
   return response.data;
 };
 
+export const getFlashcardSetsByUsername = async (
+  username: string,
+  { limit, offset, signal }: FetchParameters,
+) => {
+  const response = await api.get(`/user/${username}`, {
+    params: { limit, offset },
+    signal,
+  });
+  return response.data;
+};
+
 export const getPopularFlashcardSets = async ({
   limit,
   offset,
