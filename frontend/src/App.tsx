@@ -3,6 +3,7 @@ import { useAuth } from "./contexts/AuthContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
+import Home from "./pages/home/Home";
 import FlashcardSet from "./pages/flashcardSet/FlashcardSet";
 import AuthenticatedRoute from "./utils/AuthenticatedRoute";
 import CreateFlashcardSet from "./pages/createFlashcardSet/CreateFlashcardSet";
@@ -19,7 +20,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<div>Home Page</div>} />
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/set/:setId" element={<FlashcardSet />} />

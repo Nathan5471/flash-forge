@@ -1,0 +1,48 @@
+.flashcardSetBox {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface-a1);
+  width: 300px;
+  height: 150px;
+  padding: 20px;
+  border-radius: 8px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.flashcardSetBox:hover {
+  background-color: var(--surface-a2);
+}
+
+.flashcardSetBox h4 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--primary-a0);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.flashcardSetDescription {
+  margin-top: 2px;
+  font-size: 14px;
+  color: var(--surface-a5);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.flashcardSetStats {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  font-size: 14px;
+}
+
+.flashcardSetCreator {
+  font-size: 14px;
+}

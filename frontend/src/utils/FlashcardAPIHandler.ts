@@ -38,11 +38,17 @@ export const getFlashcardSet = async (setId: string, signal?: AbortSignal) => {
   return response.data;
 };
 
-export const getRecentlyViewedFlashcardSets = async (
-  limit?: number,
-  offset?: number,
-  signal?: AbortSignal,
-) => {
+interface FetchParameters {
+  limit?: number;
+  offset?: number;
+  signal?: AbortSignal;
+}
+
+export const getRecentlyViewedFlashcardSets = async ({
+  limit,
+  offset,
+  signal,
+}: FetchParameters) => {
   const response = await api.get("/recently-viewed", {
     params: { limit, offset },
     signal,
@@ -50,11 +56,11 @@ export const getRecentlyViewedFlashcardSets = async (
   return response.data;
 };
 
-export const getRecentlyCreatedFlashcardSets = async (
-  limit?: number,
-  offset?: number,
-  signal?: AbortSignal,
-) => {
+export const getRecentlyCreatedFlashcardSets = async ({
+  limit,
+  offset,
+  signal,
+}: FetchParameters) => {
   const response = await api.get("/recently-created", {
     params: { limit, offset },
     signal,
@@ -62,11 +68,11 @@ export const getRecentlyCreatedFlashcardSets = async (
   return response.data;
 };
 
-export const getRecentlyEditedFlashcardSets = async (
-  limit?: number,
-  offset?: number,
-  signal?: AbortSignal,
-) => {
+export const getRecentlyEditedFlashcardSets = async ({
+  limit,
+  offset,
+  signal,
+}: FetchParameters) => {
   const response = await api.get("/recently-edited", {
     params: { limit, offset },
     signal,
