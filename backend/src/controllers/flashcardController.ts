@@ -148,6 +148,92 @@ export const getRecentlyViewedFlashcardSets = async (req: any, res: any) => {
   }
 };
 
+export const getCreatedFlashcardSets = async (req: any, res: any) => {
+  const user = req.user as AuthUser;
+  const { limit, offset } = req.query as { limit?: string; offset?: string };
+
+  try {
+    const createdFlashcardSets = await prisma.flashcardSet.findMany({
+      where: { creatorId: user.id },
+      orderBy: { editedAt: "desc" },
+      take: limit ? parseInt(limit) : 10,
+      skip: offset ? parseInt(offset) : 0,
+      include: {
+        creator: {
+          select: {
+            username: true,
+          },
+        },
+        _count: {
+          select: {
+            views: true,
+            flashcards: true,
+          },
+        },
+      },
+    });
+    const responseFlashcardSets = createdFlashcardSets.map((set) => ({
+      id: set.id,
+      name: set.name,
+      description: set.description,
+      creator: set.creator.username,
+      views: set._count.views,
+      flashcards: set._count.flashcards,
+    }));
+    return res.status(200).json({
+      message: "Created flashcard sets fetched successfully",
+      flashcardSets: responseFlashcardSets,
+    });
+  } catch (error) {
+    console.error("Error fetching created flashcard sets:", error);
+    return res
+      .status(500)
+      .json({ message: "Failed to fetch created flashcard sets" });
+  }
+};
+
+export const getPopularFlashcardSets = async (req: any, res: any) => {
+  const { limit, offset } = req.query as { limit?: string; offset?: string };
+
+  try {
+    const popularFlashcardSets = await prisma.flashcardSet.findMany({
+      orderBy: { views: { _count: "desc" } },
+      take: limit ? parseInt(limit) : 10,
+      skip: offset ? parseInt(offset) : 0,
+      include: {
+        creator: {
+          select: {
+            username: true,
+          },
+        },
+        _count: {
+          select: {
+            views: true,
+            flashcards: true,
+          },
+        },
+      },
+    });
+    const responseFlashcardSets = popularFlashcardSets.map((set) => ({
+      id: set.id,
+      name: set.name,
+      description: set.description,
+      creator: set.creator.username,
+      views: set._count.views,
+      flashcards: set._count.flashcards,
+    }));
+    return res.status(200).json({
+      message: "Popular flashcard sets fetched successfully",
+      flashcardSets: responseFlashcardSets,
+    });
+  } catch (error) {
+    console.error("Error fetching popular flashcard sets:", error);
+    return res
+      .status(500)
+      .json({ message: "Failed to fetch popular flashcard sets" });
+  }
+};
+
 export const getRecentlyCreatedFlashcardSets = async (req: any, res: any) => {
   const { limit, offset } = req.query as { limit?: string; offset?: string };
 

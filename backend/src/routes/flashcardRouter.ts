@@ -5,6 +5,8 @@ import {
   createFlashcardSet,
   getFlashcardSet,
   getRecentlyViewedFlashcardSets,
+  getCreatedFlashcardSets,
+  getPopularFlashcardSets,
   getRecentlyCreatedFlashcardSets,
   getRecentlyEditedFlashcardSets,
 } from "../controllers/flashcardController";
@@ -67,6 +69,10 @@ router.get(
 );
 
 router.get("/recently-viewed", authenticate, getRecentlyViewedFlashcardSets);
+
+router.get("/created", authenticate, getCreatedFlashcardSets);
+
+router.get("/popular", getPopularFlashcardSets);
 
 router.get("/recently-created", getRecentlyCreatedFlashcardSets);
 

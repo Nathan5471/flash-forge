@@ -101,3 +101,8 @@
 .scrollButtonRight {
   right: -20px;
 }
+
+.noFlashcardsMessage {
+  font-size: 24px;
+  margin-top: 10px;
+}

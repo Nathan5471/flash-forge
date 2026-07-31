@@ -56,6 +56,30 @@ export const getRecentlyViewedFlashcardSets = async ({
   return response.data;
 };
 
+export const getCreatedFlashcardSets = async ({
+  limit,
+  offset,
+  signal,
+}: FetchParameters) => {
+  const response = await api.get("/created", {
+    params: { limit, offset },
+    signal,
+  });
+  return response.data;
+};
+
+export const getPopularFlashcardSets = async ({
+  limit,
+  offset,
+  signal,
+}: FetchParameters) => {
+  const response = await api.get("/popular", {
+    params: { limit, offset },
+    signal,
+  });
+  return response.data;
+};
+
 export const getRecentlyCreatedFlashcardSets = async ({
   limit,
   offset,

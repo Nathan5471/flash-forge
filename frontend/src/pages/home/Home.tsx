@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import {
   getRecentlyViewedFlashcardSets,
+  getCreatedFlashcardSets,
+  getPopularFlashcardSets,
   getRecentlyCreatedFlashcardSets,
   getRecentlyEditedFlashcardSets,
 } from "../../utils/FlashcardAPIHandler";
@@ -22,12 +24,16 @@ interface FlashcardSet {
 function Home() {
   const { user } = useAuth();
   const [recentlyViewed, setRecentlyViewed] = useState<FlashcardSet[]>([]);
+  const [created, setCreated] = useState<FlashcardSet[]>([]);
+  const [popular, setPopular] = useState<FlashcardSet[]>([]);
   const [recentlyCreated, setRecentlyCreated] = useState<FlashcardSet[]>([]);
   const [recentlyEdited, setRecentlyEdited] = useState<FlashcardSet[]>([]);
 
   const viewedRef = useRef<HTMLDivElement>(null);
   const createdRef = useRef<HTMLDivElement>(null);
-  const editedRef = useRef<HTMLDivElement>(null);
+  const popularRef = useRef<HTMLDivElement>(null);
+  const recentlyCreatedRef = useRef<HTMLDivElement>(null);
+  const recentlyEditedRef = useRef<HTMLDivElement>(null);
 
   const scrollRow = (
     ref: React.RefObject<HTMLDivElement | null>,
@@ -54,7 +60,15 @@ function Home() {
             signal: controller.signal,
           });
           setRecentlyViewed(viewed.flashcardSets);
+          const created = await getCreatedFlashcardSets({
+            signal: controller.signal,
+          });
+          setCreated(created.flashcardSets);
         }
+        const popular = await getPopularFlashcardSets({
+          signal: controller.signal,
+        });
+        setPopular(popular.flashcardSets);
         const created = await getRecentlyCreatedFlashcardSets({
           signal: controller.signal,
         });
@@ -104,6 +118,69 @@ function Home() {
             </div>
           </>
         )}
+        {user && created.length > 0 && (
+          <>
+            <div className={styles.sectionHeader}>
+              <h3>Your Created Flashcard Sets</h3>
+              <Link
+                to={`/user/${user.id}`}
+                className={styles.sectionHeaderLink}
+              >
+                View More
+              </Link>
+            </div>
+            <div className={styles.flashcardRowWrapper}>
+              <button
+                className={`${styles.scrollButton} ${styles.scrollButtonLeft}`}
+                onClick={() => scrollRow(createdRef, "left")}
+              >
+                &lt;
+              </button>
+              <div className={styles.flashcardRow} ref={createdRef}>
+                {created.map((set) => (
+                  <FlashcardSetBox key={set.id} flashcardSet={set} />
+                ))}
+              </div>
+              <button
+                className={`${styles.scrollButton} ${styles.scrollButtonRight}`}
+                onClick={() => scrollRow(createdRef, "right")}
+              >
+                &gt;
+              </button>
+            </div>
+          </>
+        )}
+        <div className={styles.sectionHeader}>
+          <h3>Popular Flashcard Sets</h3>
+          <Link to="/popular" className={styles.sectionHeaderLink}>
+            View More
+          </Link>
+        </div>
+        {popular.length > 0 ? (
+          <div className={styles.flashcardRowWrapper}>
+            <button
+              className={`${styles.scrollButton} ${styles.scrollButtonLeft}`}
+              onClick={() => scrollRow(popularRef, "left")}
+            >
+              &lt;
+            </button>
+            <div className={styles.flashcardRow} ref={popularRef}>
+              {popular.map((set) => (
+                <FlashcardSetBox key={set.id} flashcardSet={set} />
+              ))}
+            </div>
+            <button
+              className={`${styles.scrollButton} ${styles.scrollButtonRight}`}
+              onClick={() => scrollRow(popularRef, "right")}
+            >
+              &gt;
+            </button>
+          </div>
+        ) : (
+          <p className={styles.noFlashcardsMessage}>
+            No popular flashcard sets found.
+          </p>
+        )}
         <div className={styles.sectionHeader}>
           <h3>Recently Created Flashcard Sets</h3>
           <Link to="/recently-created" className={styles.sectionHeaderLink}>
@@ -114,18 +191,18 @@ function Home() {
           <div className={styles.flashcardRowWrapper}>
             <button
               className={`${styles.scrollButton} ${styles.scrollButtonLeft}`}
-              onClick={() => scrollRow(createdRef, "left")}
+              onClick={() => scrollRow(recentlyCreatedRef, "left")}
             >
               &lt;
             </button>
-            <div className={styles.flashcardRow} ref={createdRef}>
+            <div className={styles.flashcardRow} ref={recentlyCreatedRef}>
               {recentlyCreated.map((set) => (
                 <FlashcardSetBox key={set.id} flashcardSet={set} />
               ))}
             </div>
             <button
               className={`${styles.scrollButton} ${styles.scrollButtonRight}`}
-              onClick={() => scrollRow(createdRef, "right")}
+              onClick={() => scrollRow(recentlyCreatedRef, "right")}
             >
               &gt;
             </button>
@@ -145,18 +222,18 @@ function Home() {
           <div className={styles.flashcardRowWrapper}>
             <button
               className={`${styles.scrollButton} ${styles.scrollButtonLeft}`}
-              onClick={() => scrollRow(editedRef, "left")}
+              onClick={() => scrollRow(recentlyEditedRef, "left")}
             >
               &lt;
             </button>
-            <div className={styles.flashcardRow} ref={editedRef}>
+            <div className={styles.flashcardRow} ref={recentlyEditedRef}>
               {recentlyEdited.map((set) => (
                 <FlashcardSetBox key={set.id} flashcardSet={set} />
               ))}
             </div>
             <button
               className={`${styles.scrollButton} ${styles.scrollButtonRight}`}
-              onClick={() => scrollRow(editedRef, "right")}
+              onClick={() => scrollRow(recentlyEditedRef, "right")}
             >
               &gt;
             </button>
