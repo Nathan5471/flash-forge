@@ -4,6 +4,9 @@ import nonRequiredAuthenticate from "../middleware/nonRequiredAuthenticate";
 import {
   createFlashcardSet,
   getFlashcardSet,
+  getRecentlyViewedFlashcardSets,
+  getRecentlyCreatedFlashcardSets,
+  getRecentlyEditedFlashcardSets,
 } from "../controllers/flashcardController";
 
 const router = express.Router();
@@ -62,5 +65,11 @@ router.get(
     await getFlashcardSet(req, res);
   },
 );
+
+router.get("/recently-viewed", authenticate, getRecentlyViewedFlashcardSets);
+
+router.get("/recently-created", getRecentlyCreatedFlashcardSets);
+
+router.get("/recently-edited", getRecentlyEditedFlashcardSets);
 
 export default router;

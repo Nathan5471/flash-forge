@@ -37,3 +37,39 @@ export const getFlashcardSet = async (setId: string, signal?: AbortSignal) => {
   const response = await api.get(`/set/${setId}`, { signal });
   return response.data;
 };
+
+export const getRecentlyViewedFlashcardSets = async (
+  limit?: number,
+  offset?: number,
+  signal?: AbortSignal,
+) => {
+  const response = await api.get("/recently-viewed", {
+    params: { limit, offset },
+    signal,
+  });
+  return response.data;
+};
+
+export const getRecentlyCreatedFlashcardSets = async (
+  limit?: number,
+  offset?: number,
+  signal?: AbortSignal,
+) => {
+  const response = await api.get("/recently-created", {
+    params: { limit, offset },
+    signal,
+  });
+  return response.data;
+};
+
+export const getRecentlyEditedFlashcardSets = async (
+  limit?: number,
+  offset?: number,
+  signal?: AbortSignal,
+) => {
+  const response = await api.get("/recently-edited", {
+    params: { limit, offset },
+    signal,
+  });
+  return response.data;
+};
