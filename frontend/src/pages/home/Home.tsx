@@ -123,7 +123,7 @@ function Home() {
             <div className={styles.sectionHeader}>
               <h3>Your Created Flashcard Sets</h3>
               <Link
-                to={`/user/${user.id}`}
+                to={`/user/${user.username}`}
                 className={styles.sectionHeaderLink}
               >
                 View More

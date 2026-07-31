@@ -5,6 +5,7 @@ import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
 import Home from "./pages/home/Home";
 import FilteredFlashcardSets from "./pages/filteredFlashcardSets/FilteredFlashcardSets";
+import UserSets from "./pages/userSets/UserSets";
 import FlashcardSet from "./pages/flashcardSet/FlashcardSet";
 import AuthenticatedRoute from "./utils/AuthenticatedRoute";
 import CreateFlashcardSet from "./pages/createFlashcardSet/CreateFlashcardSet";
@@ -36,6 +37,7 @@ function App() {
           path="/recently-edited"
           element={<FilteredFlashcardSets filter="recently-edited" />}
         />
+        <Route path="/user/:username" element={<UserSets />} />
         <Route path="/set/:setId" element={<FlashcardSet />} />
         <Route element={<AuthenticatedRoute />}>
           <Route path="/create" element={<CreateFlashcardSet />} />
