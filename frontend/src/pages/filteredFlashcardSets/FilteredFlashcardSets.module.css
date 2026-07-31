@@ -1,0 +1,55 @@
+.filteredFlashcardSetsPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--surface-a0);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  font-family: arial;
+  color: var(--text);
+}
+
+.filteredFlashcardSetsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+}
+
+.filteredFlashcardSetsContainer h1 {
+  margin-top: 20px;
+  font-size: 48px;
+  color: var(--primary-a0);
+}
+
+.flashcardSetsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  width: 75%;
+  margin-top: 20px;
+}
+
+.loadMoreButton {
+  padding: 10px 20px;
+  background-color: var(--primary-a0);
+  color: var(--text);
+  font-weight: bold;
+  font-size: 18px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.loadMoreButton:hover {
+  background-color: var(--primary-a1);
+}
+
+.noFlashcardsMessage {
+  margin-top: 20px;
+  font-size: 24px;
+  color: var(--surface-a5);
+}

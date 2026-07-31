@@ -75,6 +75,7 @@ function FilteredFlashcardSets({
   }, [filter]);
 
   const loadMore = async () => {
+    if (!canLoadMore) return;
     let data: { flashcardSets: FlashcardSet[] } = { flashcardSets: [] };
     try {
       if (filter === "recently-viewed") {
