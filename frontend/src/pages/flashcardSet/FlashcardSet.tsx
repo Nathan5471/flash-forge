@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import { useOverlay } from "../../contexts/OverlayContext";
 import { getFlashcardSet } from "../../utils/FlashcardAPIHandler";
 import Navbar from "../../components/navbar/Navbar";
 import Flashcard from "../../components/flashcard/Flashcard";
-import { FaShuffle } from "react-icons/fa6";
+import FlashcardSettings from "../../components/flashcardSettings/FlashcardSettings";
+import { FaShuffle, FaGear } from "react-icons/fa6";
 import {
   PiCardsDuotone,
   PiNotePencil,
@@ -25,6 +28,8 @@ interface FlashcardSet {
 
 function FlashcardSet() {
   const { setId } = useParams<{ setId: string }>();
+  const { user } = useAuth();
+  const { openOverlay } = useOverlay();
   const [flashcardSet, setFlashcardSet] = useState<
     FlashcardSet | null | undefined // Null is for when the set is not found and undefined is the loading state
   >(undefined);
@@ -134,6 +139,18 @@ function FlashcardSet() {
     setCurrentFlashcardIndex(0);
   };
 
+  const handleOpenSettings = () => {
+    if (!flashcardSet) return;
+    openOverlay(
+      <FlashcardSettings
+        flashcardSetId={flashcardSet.id}
+        initialFlashcardFront={flashcardFront}
+        setFlashcardFront={setFlashcardFront}
+        isCreator={user?.username === flashcardSet.creator}
+      />,
+    );
+  };
+
   if (flashcardSet === undefined) {
     return (
       <div className={styles.flashcardSetPage}>
@@ -237,18 +254,12 @@ function FlashcardSet() {
               Next
             </button>
           </div>
-          <div className={styles.changeFront}>
-            <p>Front: </p>
-            <select
-              value={flashcardFront}
-              onChange={(e) =>
-                setFlashcardFront(e.target.value as "term" | "definition")
-              }
-            >
-              <option value="term">Term</option>
-              <option value="definition">Definition</option>
-            </select>
-          </div>
+          <button
+            className={styles.settingsButton}
+            onClick={handleOpenSettings}
+          >
+            <FaGear />
+          </button>
         </div>
         <div className={styles.flashcardSetText}>
           <p>Description: {flashcardSet.description}</p>

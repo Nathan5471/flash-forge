@@ -1,0 +1,90 @@
+.flashcardSettingsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 500px;
+}
+
+.flashcardSettingsContainer h1 {
+  font-size: 36px;
+}
+
+.frontSetting {
+  display: flex;
+  flex-direction: row;
+  width: 75%;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.frontSetting label {
+  font-size: 24px;
+}
+
+.frontSetting select {
+  width: 60%;
+  padding: 5px;
+  font-size: 18px;
+  color: var(--text);
+  background-color: var(--surface-a2);
+  border: none;
+  border-radius: 4px;
+}
+
+.settingsButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  width: 75%;
+  margin-top: 10px;
+  background-color: var(--primary-a0);
+  border: none;
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.settingsButton:hover {
+  background-color: var(--primary-a1);
+}
+
+.deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  width: 75%;
+  margin-top: 10px;
+  background-color: var(--error);
+  border: none;
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.deleteButton:hover {
+  background-color: var(--error-a1);
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  width: 75%;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  background-color: var(--surface-a2);
+  border: none;
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.closeButton:hover {
+  background-color: var(--surface-a3);
+}
