@@ -23,6 +23,41 @@
   color: var(--primary-a0);
 }
 
+.mainButtonContainer {
+  display: flex;
+  flex-direction: row;
+  width: 600px;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.mainButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 110px;
+  height: 110px;
+  background-color: var(--primary-a0);
+  border: none;
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: bold;
+  font-family: Arial;
+  text-decoration: none;
+}
+
+.mainButton:hover {
+  background-color: var(--primary-a1);
+}
+
+.mainButtonIcon {
+  font-size: 64px;
+  color: var(--primary-a5);
+  margin-bottom: 5px;
+}
+
 .flashcard {
   width: 600px;
   margin-top: 20px;
@@ -123,9 +158,6 @@
   width: 600px;
   align-items: left;
   color: var(--surface-a4);
-}
-
-.description {
   font-size: 18px;
 }
 

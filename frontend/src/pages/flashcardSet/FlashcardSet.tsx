@@ -4,9 +4,18 @@ import { getFlashcardSet } from "../../utils/FlashcardAPIHandler";
 import Navbar from "../../components/navbar/Navbar";
 import Flashcard from "../../components/flashcard/Flashcard";
 import { FaShuffle } from "react-icons/fa6";
+import {
+  PiCardsDuotone,
+  PiNotePencil,
+  PiBookDuotone,
+  PiShuffleDuotone,
+  // PiArrowsClockwise, will be used later when downloaded is implemented
+  PiDownloadSimpleDuotone,
+} from "react-icons/pi";
 import styles from "./FlashcardSet.module.css";
 
 interface FlashcardSet {
+  id: string;
   name: string;
   description: string;
   flashcards: { index: number; term: string; definition: string }[];
@@ -154,6 +163,40 @@ function FlashcardSet() {
       <Navbar />
       <div className={styles.flashcardSetContainer}>
         <h1>{flashcardSet.name}</h1>
+        <div className={styles.mainButtonContainer}>
+          <Link
+            to={`/set/${flashcardSet.id}/flashcards`}
+            className={styles.mainButton}
+          >
+            <PiCardsDuotone className={styles.mainButtonIcon} />
+            Flashcards
+          </Link>
+          <Link
+            to={`/set/${flashcardSet.id}/test`}
+            className={styles.mainButton}
+          >
+            <PiNotePencil className={styles.mainButtonIcon} />
+            Take Test
+          </Link>
+          <Link
+            to={`/set/${flashcardSet.id}/learn`}
+            className={styles.mainButton}
+          >
+            <PiBookDuotone className={styles.mainButtonIcon} />
+            Learn
+          </Link>
+          <Link
+            to={`/set/${flashcardSet.id}/matching`}
+            className={styles.mainButton}
+          >
+            <PiShuffleDuotone className={styles.mainButtonIcon} />
+            Matching
+          </Link>
+          <button className={styles.mainButton}>
+            <PiDownloadSimpleDuotone className={styles.mainButtonIcon} />
+            Download Set
+          </button>
+        </div>
         <Flashcard
           flashcardData={
             flashcardFront === "term"
@@ -208,9 +251,7 @@ function FlashcardSet() {
           </div>
         </div>
         <div className={styles.flashcardSetText}>
-          <p className={styles.description}>
-            Description: {flashcardSet.description}
-          </p>
+          <p>Description: {flashcardSet.description}</p>
           <p>
             Creator:{" "}
             <Link
