@@ -1,4 +1,5 @@
 import prisma from "../prisma/client";
+import fuse from "fuse.js";
 import type { AuthUser } from "../middleware/authenticate";
 
 export const createFlashcardSet = async (req: any, res: any) => {
@@ -97,6 +98,90 @@ export const getFlashcardSet = async (req: any, res: any) => {
   } catch (error) {
     console.error("Error fetching flashcard set:", error);
     return res.status(500).json({ message: "Failed to fetch flashcard set" });
+  }
+};
+
+export const searchFlashcardSets = async (req: any, res: any) => {
+  const { query, limit, offset } = req.query as {
+    query: string;
+    limit?: string;
+    offset?: string;
+  };
+
+  try {
+    const flashcardSets = await prisma.flashcardSet.findMany({
+      select: {
+        id: true,
+        name: true,
+        description: true,
+      },
+    });
+    if (!flashcardSets || flashcardSets.length === 0) {
+      return res.status(404).json({ message: "No flashcard sets found" });
+    }
+
+    const fuseOptions = {
+      keys: [
+        { name: "name", weight: 0.7 },
+        { name: "description", weight: 0.3 },
+      ],
+      includeScore: true,
+      threshold: 0.3,
+    };
+    const fuseInstance = new fuse(flashcardSets, fuseOptions);
+    const results = fuseInstance.search(query);
+    if (results.length === 0) {
+      return res.status(404).json({ message: "No flashcard sets found" });
+    }
+    const sortedResults = results.sort((a, b) => a.score! - b.score!);
+    const selectedResults = sortedResults.slice(
+      offset ? parseInt(offset) : 0,
+      limit ? parseInt(limit) : 10,
+    );
+    if (selectedResults.length === 0) {
+      return res.status(404).json({ message: "No flashcard sets found" });
+    }
+    const responseFlashcardSets = await Promise.all(
+      selectedResults.map(async (result) => {
+        const flashcardSet = await prisma.flashcardSet.findUnique({
+          where: { id: result.item.id },
+          include: {
+            creator: {
+              select: {
+                username: true,
+              },
+            },
+            _count: {
+              select: {
+                views: true,
+                flashcards: true,
+              },
+            },
+          },
+        });
+        if (!flashcardSet) {
+          return null;
+        }
+        return {
+          id: flashcardSet.id,
+          name: flashcardSet.name,
+          description: flashcardSet.description,
+          creator: flashcardSet.creator.username,
+          views: flashcardSet._count.views,
+          flashcards: flashcardSet._count.flashcards,
+        };
+      }),
+    );
+    const filteredFlashcardSets = responseFlashcardSets.filter(
+      (set) => set !== null,
+    );
+    return res.status(200).json({
+      message: "Flashcard sets searched successfully",
+      flashcardSets: filteredFlashcardSets,
+    });
+  } catch (error) {
+    console.error("Error searching flashcard sets:", error);
+    return res.status(500).json({ message: "Failed to search flashcard sets" });
   }
 };
 

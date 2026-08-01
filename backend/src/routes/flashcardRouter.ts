@@ -4,6 +4,7 @@ import nonRequiredAuthenticate from "../middleware/nonRequiredAuthenticate";
 import {
   createFlashcardSet,
   getFlashcardSet,
+  searchFlashcardSets,
   getRecentlyViewedFlashcardSets,
   getCreatedFlashcardSets,
   getFlashcardSetsByUsername,
@@ -68,6 +69,16 @@ router.get(
     await getFlashcardSet(req, res);
   },
 );
+
+router.get("/search", async (req: any, res: any) => {
+  const { query } = req.query as { query: string };
+
+  if (!query || query.trim() === "") {
+    return res.status(400).json({ message: "Query is required" });
+  }
+
+  await searchFlashcardSets(req, res);
+});
 
 router.get("/recently-viewed", authenticate, getRecentlyViewedFlashcardSets);
 

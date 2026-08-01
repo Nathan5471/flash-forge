@@ -44,6 +44,17 @@ interface FetchParameters {
   signal?: AbortSignal;
 }
 
+export const searchFlashcardSets = async (
+  query: string,
+  { limit, offset, signal }: FetchParameters,
+) => {
+  const response = await api.get("/search", {
+    params: { query, limit, offset },
+    signal,
+  });
+  return response.data;
+};
+
 export const getRecentlyViewedFlashcardSets = async ({
   limit,
   offset,
