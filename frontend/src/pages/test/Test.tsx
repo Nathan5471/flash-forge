@@ -5,6 +5,7 @@ import { getFlashcardSet } from "../../utils/FlashcardAPIHandler";
 import generateQuestions from "../../utils/generateQuestions";
 import Navbar from "../../components/navbar/Navbar";
 import TestSettings from "../../components/testSettings/TestSettings";
+import MultipleChoiceQuestion from "../../components/testComponents/multipleChoiceQuestion/MultipleChoiceQuestion";
 import styles from "./Test.module.css";
 
 interface FlashcardSet {
@@ -29,7 +30,43 @@ interface Question {
   term: string;
   definition: string;
   questionNumber: number;
+  answers?: string[];
 }
+
+const handleShuffle = (answers: string[]) => {
+  const shuffled = [...answers];
+  var n = answers.length,
+    t,
+    i;
+  while (n) {
+    i = (Math.random() * n--) | 0;
+    t = shuffled[n];
+    shuffled[n] = shuffled[i];
+    shuffled[i] = t;
+  }
+  return shuffled;
+};
+
+const generateAnswers = (
+  correctAnswer: string,
+  flashcards: { index: number; term: string; definition: string }[],
+  count: number,
+) => {
+  let availableAnswers = flashcards.filter(
+    (flashcard) => flashcard.definition !== correctAnswer,
+  );
+  const answers: string[] = [correctAnswer];
+  while (answers.length < count && availableAnswers.length > 0) {
+    const randomIndex = Math.floor(Math.random() * availableAnswers.length);
+    const randomAnswer = availableAnswers[randomIndex].definition;
+    answers.push(randomAnswer);
+    availableAnswers = availableAnswers.filter(
+      (flashcard) => flashcard.definition !== randomAnswer,
+    );
+  }
+  const shuffledAnswers = handleShuffle(answers);
+  return shuffledAnswers;
+};
 
 function Test() {
   const { setId } = useParams<{ setId: string }>();
@@ -111,11 +148,18 @@ function Test() {
       flashcardSetRef.current.flashcards,
       settings,
     );
-    setMultipleChoiceQuestions(
-      generatedQuestions.filter(
-        (question) => question.type === "multipleChoice",
-      ),
-    );
+    const mcQuestionsWithOtherAnswers = generatedQuestions
+      .filter((question) => question.type === "multipleChoice")
+      .map((question) => ({
+        ...question,
+        answers: generateAnswers(
+          question.definition,
+          flashcardSetRef.current!.flashcards,
+          4,
+        ),
+      }));
+
+    setMultipleChoiceQuestions(mcQuestionsWithOtherAnswers);
     setWrittenQuestions(
       generatedQuestions.filter((question) => question.type === "written"),
     );
@@ -161,10 +205,11 @@ function Test() {
         {testSettings.multipleChoice && (
           <div className={styles.questionTypeContainer}>
             {multipleChoiceQuestions.map((question) => (
-              <>
-                {question.questionNumber}. {question.term} -{" "}
-                {question.definition}
-              </>
+              <MultipleChoiceQuestion
+                key={question.questionNumber}
+                question={question}
+                isSubmitted={false}
+              />
             ))}
           </div>
         )}

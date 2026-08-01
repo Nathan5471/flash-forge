@@ -12,10 +12,10 @@
   --surface-a4: #666;
   --surface-a5: #7d7d7d;
   --text: #ffffff;
-  --success: #7dff95;
+  --success: #3d8f0c; /* https://www.eggradients.com/color/christmas-green-color */
   --warning: #ffbc5e;
-  --error: #ff8080;
-  --error-a1: #ffa6a4;
+  --error: #cf352e; /* https://www.eggradients.com/color/flame-red */
+  --error-a1: #e5554e;
   /* I got these from https://colorffy.com/dark-theme-generator?colors=%231f8ee5&colors=%23121212&success=%237dff95&warning=%23ffbc5e&danger=%23ff8f8e&info=%2387d1ff&primaryCount=6&surfaceCount=6*/
 }
 
