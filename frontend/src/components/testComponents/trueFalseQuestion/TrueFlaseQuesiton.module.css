@@ -1,0 +1,58 @@
+.trueFalseQuestionContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  background-color: var(--surface-a1);
+  padding: 20px;
+  border-radius: 8px;
+  font-family: Arial;
+}
+
+.trueFalseQuestionContainer h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.trueFalseQuestionContainer p {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.answersGrid {
+  display: grid;
+  grid-template-columns: auto auto;
+  width: 100%;
+  gap: 10px;
+}
+
+.answerButton {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--surface-a2);
+  color: var(--text);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.answerButton:not(:disabled):hover {
+  background-color: var(--surface-a3);
+}
+
+.answerButton.selectedAnswer {
+  background-color: var(--primary-a0);
+}
+
+.answerButton.selectedAnswer:hover {
+  background-color: var(--primary-a1);
+}
+
+.answerButton.correctAnswer {
+  background-color: var(--success);
+}
+
+.answerButton.incorrectAnswer {
+  background-color: var(--error);
+}

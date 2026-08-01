@@ -7,6 +7,7 @@ import Navbar from "../../components/navbar/Navbar";
 import TestSettings from "../../components/testSettings/TestSettings";
 import MultipleChoiceQuestion from "../../components/testComponents/multipleChoiceQuestion/MultipleChoiceQuestion";
 import WrittenQuestion from "../../components/testComponents/writtenQuestion/WrittenQuestion";
+import TrueFalseQuestion from "../../components/testComponents/trueFalseQuestion/TrueFalseQuestion";
 import styles from "./Test.module.css";
 
 interface FlashcardSet {
@@ -158,14 +159,22 @@ function Test() {
           4,
         ),
       }));
+    const tfQuestionsWithOtherAnswers = generatedQuestions
+      .filter((question) => question.type === "trueFalse")
+      .map((question) => ({
+        ...question,
+        answers: generateAnswers(
+          question.definition,
+          flashcardSetRef.current!.flashcards,
+          2,
+        ), // There is a 50/50 chance that the first answer is the correct answer or a random wrong answer. The first answer is used in the True/False question as the displayed answer.
+      }));
 
     setMultipleChoiceQuestions(mcQuestionsWithOtherAnswers);
     setWrittenQuestions(
       generatedQuestions.filter((question) => question.type === "written"),
     );
-    setTrueFalseQuestions(
-      generatedQuestions.filter((question) => question.type === "trueFalse"),
-    );
+    setTrueFalseQuestions(tfQuestionsWithOtherAnswers);
     setMatchingQuestions(
       generatedQuestions.filter((question) => question.type === "matching"),
     );
@@ -216,17 +225,14 @@ function Test() {
         {testSettings.written && (
           <div className={styles.questionTypeContainer}>
             {writtenQuestions.map((question) => (
-              <WrittenQuestion question={question} isSubmitted={true} />
+              <WrittenQuestion question={question} isSubmitted={false} />
             ))}
           </div>
         )}
         {testSettings.trueFalse && (
           <div className={styles.questionTypeContainer}>
             {trueFalseQuestions.map((question) => (
-              <>
-                {question.questionNumber}. {question.term} -{" "}
-                {question.definition}
-              </>
+              <TrueFalseQuestion question={question} isSubmitted={false} />
             ))}
           </div>
         )}
