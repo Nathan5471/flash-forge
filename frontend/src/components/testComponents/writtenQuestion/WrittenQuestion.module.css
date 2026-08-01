@@ -1,0 +1,44 @@
+.writtenQuestionContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  background-color: var(--surface-a1);
+  padding: 20px;
+  border-radius: 8px;
+  font-family: Arial;
+}
+
+.writtenQuestionContainer h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.answerInput {
+  width: 90%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--surface-a2);
+  color: var(--text);
+  font-size: 16px;
+}
+
+.correctAnswer {
+  background-color: var(--success);
+}
+
+.incorrectAnswer {
+  background-color: var(--error);
+}
+
+.correctAnswerText {
+  margin-top: 5px;
+  font-size: 20px;
+}
+
+.correctAnswerText span {
+  font-weight: bold;
+  color: var(--primary-a0);
+}

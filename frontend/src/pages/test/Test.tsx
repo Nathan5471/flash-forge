@@ -6,6 +6,7 @@ import generateQuestions from "../../utils/generateQuestions";
 import Navbar from "../../components/navbar/Navbar";
 import TestSettings from "../../components/testSettings/TestSettings";
 import MultipleChoiceQuestion from "../../components/testComponents/multipleChoiceQuestion/MultipleChoiceQuestion";
+import WrittenQuestion from "../../components/testComponents/writtenQuestion/WrittenQuestion";
 import styles from "./Test.module.css";
 
 interface FlashcardSet {
@@ -141,7 +142,6 @@ function Test() {
     if (!flashcardSetRef.current) {
       return;
     }
-    console.log("Starting Test");
     setTestSettings(settings);
     setShowTestSettingOverlay(false);
     const generatedQuestions = generateQuestions(
@@ -216,10 +216,7 @@ function Test() {
         {testSettings.written && (
           <div className={styles.questionTypeContainer}>
             {writtenQuestions.map((question) => (
-              <>
-                {question.questionNumber}. {question.term} -{" "}
-                {question.definition}
-              </>
+              <WrittenQuestion question={question} isSubmitted={true} />
             ))}
           </div>
         )}
