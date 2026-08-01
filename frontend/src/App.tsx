@@ -11,6 +11,7 @@ import FlashcardFullscreen from "./pages/flashcardFullscreen/FlashcardFullscreen
 import Search from "./pages/search/Search";
 import AuthenticatedRoute from "./utils/AuthenticatedRoute";
 import CreateFlashcardSet from "./pages/createFlashcardSet/CreateFlashcardSet";
+import Overlay from "./components/overlay/Overlay";
 
 function App() {
   const { user, getUser } = useAuth();
@@ -54,6 +55,7 @@ function App() {
           />
         </Route>
       </Routes>
+      <Overlay />
     </Router>
   );
 }
