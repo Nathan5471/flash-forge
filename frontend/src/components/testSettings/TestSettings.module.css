@@ -1,0 +1,105 @@
+.testSettingsForm {
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+  padding: 10px 25px;
+  font-family: Arial;
+}
+
+.testSettingsForm h1 {
+  text-align: center;
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--primary-a0);
+}
+
+.testSettingsForm label {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+  font-size: 22px;
+}
+
+.testSettingsForm input {
+  margin-top: 5px;
+  padding: 5px;
+  font-size: 18px;
+  background-color: var(--surface-a2);
+  color: var(--text);
+  border: none;
+  border-radius: 4px;
+}
+
+.testSettingsForm h2 {
+  margin-top: 10px;
+  font-size: 24px;
+}
+
+.checkboxLabel {
+  position: relative;
+  display: flex;
+}
+
+.checkbox {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+  background-color: var(--surface-a3);
+}
+
+.checkbox:checked {
+  background-color: var(--primary-a0);
+}
+
+.check {
+  position: absolute;
+  font-size: 14px;
+  top: 8px;
+  left: 3px;
+  font-weight: bold;
+  color: var(--surface-a2);
+}
+
+.checkbox:checked + .check {
+  color: var(--text);
+}
+
+.buttonContainer {
+  display: flex;
+  margin-top: 20px;
+}
+
+.startButton {
+  padding: 10px;
+  width: 50%;
+  margin-right: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text);
+  background-color: var(--primary-a0);
+  border: none;
+  border-radius: 4px;
+}
+
+.startButton:hover {
+  background-color: var(--primary-a1);
+}
+
+.cancelButton {
+  padding: 10px;
+  width: 50%;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text);
+  background-color: var(--surface-a2);
+  border: none;
+  border-radius: 4px;
+}
+
+.cancelButton:hover {
+  background-color: var(--surface-a3);
+}
