@@ -7,6 +7,7 @@ import Home from "./pages/home/Home";
 import FilteredFlashcardSets from "./pages/filteredFlashcardSets/FilteredFlashcardSets";
 import UserSets from "./pages/userSets/UserSets";
 import FlashcardSet from "./pages/flashcardSet/FlashcardSet";
+import Search from "./pages/search/Search";
 import AuthenticatedRoute from "./utils/AuthenticatedRoute";
 import CreateFlashcardSet from "./pages/createFlashcardSet/CreateFlashcardSet";
 
@@ -39,6 +40,7 @@ function App() {
         />
         <Route path="/user/:username" element={<UserSets />} />
         <Route path="/set/:setId" element={<FlashcardSet />} />
+        <Route path="/search/:query" element={<Search />} />
         <Route element={<AuthenticatedRoute />}>
           <Route path="/create" element={<CreateFlashcardSet />} />
           <Route
