@@ -8,6 +8,7 @@ import TestSettings from "../../components/testSettings/TestSettings";
 import MultipleChoiceQuestion from "../../components/testComponents/multipleChoiceQuestion/MultipleChoiceQuestion";
 import WrittenQuestion from "../../components/testComponents/writtenQuestion/WrittenQuestion";
 import TrueFalseQuestion from "../../components/testComponents/trueFalseQuestion/TrueFalseQuestion";
+import MatchingQuestions from "../../components/testComponents/matchingQuestions/MatchingQuestions";
 import styles from "./Test.module.css";
 
 interface FlashcardSet {
@@ -95,7 +96,10 @@ function Test() {
   >([]);
   const [writtenQuestions, setWrittenQuestions] = useState<Question[]>([]);
   const [trueFalseQuestions, setTrueFalseQuestions] = useState<Question[]>([]);
-  const [matchingQuestions, setMatchingQuestions] = useState<Question[]>([]);
+  const [matchingQuestions, setMatchingQuestions] = useState<{
+    questions: Question[];
+    shuffledAnswers: string[];
+  }>({ questions: [], shuffledAnswers: [] });
 
   useEffect(() => {
     if (!setId) {
@@ -169,16 +173,22 @@ function Test() {
           2,
         ), // There is a 50/50 chance that the first answer is the correct answer or a random wrong answer. The first answer is used in the True/False question as the displayed answer.
       }));
+    const mQuestions = generatedQuestions.filter(
+      (question) => question.type === "matching",
+    );
+    const mShuffledAnswers = handleShuffle(
+      mQuestions.map((question) => question.definition),
+    );
 
     setMultipleChoiceQuestions(mcQuestionsWithOtherAnswers);
     setWrittenQuestions(
       generatedQuestions.filter((question) => question.type === "written"),
     );
     setTrueFalseQuestions(tfQuestionsWithOtherAnswers);
-    setMatchingQuestions(
-      generatedQuestions.filter((question) => question.type === "matching"),
-    );
-    console.log("Generated Questions:", generatedQuestions);
+    setMatchingQuestions({
+      questions: mQuestions,
+      shuffledAnswers: mShuffledAnswers,
+    });
   };
 
   if (showTestSettingOverlay) {
@@ -238,12 +248,11 @@ function Test() {
         )}
         {testSettings.matching && (
           <div className={styles.questionTypeContainer}>
-            {matchingQuestions.map((question) => (
-              <>
-                {question.questionNumber}. {question.term} -{" "}
-                {question.definition}
-              </>
-            ))}
+            <MatchingQuestions
+              questions={matchingQuestions.questions}
+              shuffledAnswers={matchingQuestions.shuffledAnswers}
+              isSubmitted={false}
+            />
           </div>
         )}
       </div>

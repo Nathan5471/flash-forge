@@ -1,0 +1,66 @@
+.matchingQuestionsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  background-color: var(--surface-a1);
+  padding: 20px;
+  gap: 10px;
+  border-radius: 8px;
+  font-family: Arial;
+}
+
+.matchingQuestionsContainer h2 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.matchingQuestion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: var(--surface-a2);
+}
+
+.matchingQuestionRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+
+.matchingQuestionRow p {
+  font-size: 22px;
+}
+
+.matchingQuestion select {
+  margin-left: auto;
+  padding: 10px;
+  width: 200px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: none;
+  background-color: var(--surface-a3);
+  color: var(--text);
+}
+
+.matchingQuestion select.correctAnswer {
+  background-color: var(--success);
+}
+
+.matchingQuestion select.incorrectAnswer {
+  background-color: var(--error);
+}
+
+.correctAnswerText {
+  margin-top: 8px;
+  font-size: 18px;
+}
+
+.correctAnswerText span {
+  font-weight: bold;
+  color: var(--primary-a0);
+}
