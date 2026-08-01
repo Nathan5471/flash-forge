@@ -100,10 +100,11 @@ function Test() {
     questions: Question[];
     shuffledAnswers: string[];
   }>({ questions: [], shuffledAnswers: [] });
-  const [submittedAnswers, setSubmittedAnswers] = useState<{
+  const [selectedAnswers, setSelectedAnswers] = useState<{
     [questionNumber: number]: { answer: string; isCorrect: boolean };
   }>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const testContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!setId) {
@@ -195,16 +196,42 @@ function Test() {
     });
   };
 
-  const handleSubmitAnswer = (
+  const handleSelectAnswer = (
     questionNumber: number,
     answer: string,
     isCorrect: boolean,
   ) => {
     if (isSubmitted) return;
-    setSubmittedAnswers((prevSubmittedAnswers) => ({
-      ...prevSubmittedAnswers,
+    setSelectedAnswers((prevSelectedAnswers) => ({
+      ...prevSelectedAnswers,
       [questionNumber]: { answer, isCorrect },
     }));
+  };
+
+  const handleSubmitTest = () => {
+    if (isSubmitted) return;
+    setIsSubmitted(true);
+    if (testContainerRef.current) {
+      testContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handleResetTest = () => {
+    if (!isSubmitted || !flashcardSetRef.current) return;
+    setSelectedAnswers({});
+    setIsSubmitted(false);
+    setMultipleChoiceQuestions([]);
+    setWrittenQuestions([]);
+    setTrueFalseQuestions([]);
+    setMatchingQuestions({ questions: [], shuffledAnswers: [] });
+    setShowTestSettingOverlay(true);
+    openOverlay(
+      <TestSettings
+        flashcardCount={flashcardSetRef.current!.flashcards.length}
+        flashcardSetId={flashcardSetRef.current!.id}
+        handleStartTest={handleStartTest}
+      />,
+    );
   };
 
   if (showTestSettingOverlay) {
@@ -235,7 +262,7 @@ function Test() {
   return (
     <div className={styles.testPage}>
       <Navbar />
-      <div className={styles.testContainer}>
+      <div className={styles.testContainer} ref={testContainerRef}>
         <h1>{flashcardSet.name} Test</h1>
         {testSettings.multipleChoice && (
           <div className={styles.questionTypeContainer}>
@@ -243,7 +270,8 @@ function Test() {
               <MultipleChoiceQuestion
                 key={question.questionNumber}
                 question={question}
-                globalSelectedAnswers={selectedAnswers}
+                selectedAnswers={selectedAnswers}
+                handleSelectAnswer={handleSelectAnswer}
                 isSubmitted={isSubmitted}
               />
             ))}
@@ -254,7 +282,8 @@ function Test() {
             {writtenQuestions.map((question) => (
               <WrittenQuestion
                 question={question}
-                globalSelectedAnswers={selectedAnswers}
+                selectedAnswers={selectedAnswers}
+                handleSelectAnswer={handleSelectAnswer}
                 isSubmitted={isSubmitted}
               />
             ))}
@@ -265,7 +294,8 @@ function Test() {
             {trueFalseQuestions.map((question) => (
               <TrueFalseQuestion
                 question={question}
-                globalSelectedAnswers={selectedAnswers}
+                selectedAnswers={selectedAnswers}
+                handleSelectAnswer={handleSelectAnswer}
                 isSubmitted={isSubmitted}
               />
             ))}
@@ -277,11 +307,22 @@ function Test() {
               questions={matchingQuestions.questions}
               shuffledAnswers={matchingQuestions.shuffledAnswers}
               selectedAnswers={selectedAnswers}
-              handleUpdateSelectedAnswers={handleUpdateSelectedAnswers}
+              handleSelectAnswer={handleSelectAnswer}
               isSubmitted={isSubmitted}
             />
           </div>
         )}
+        <div className={styles.submitButtonContainer}>
+          <button
+            className={styles.submitButton}
+            onClick={isSubmitted ? handleResetTest : handleSubmitTest}
+          >
+            {isSubmitted ? "Retake Test" : "Submit Test"}
+          </button>
+          <Link to={`/set/${flashcardSet.id}`} className={styles.closeButton}>
+            Back to Set
+          </Link>
+        </div>
       </div>
     </div>
   );

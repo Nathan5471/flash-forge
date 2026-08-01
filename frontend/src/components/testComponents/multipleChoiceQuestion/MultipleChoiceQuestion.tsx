@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import styles from "./MultipleChoiceQuestion.module.css";
 
 interface Question {
@@ -11,10 +10,10 @@ interface Question {
 
 interface MultipleChoiceQuestionProps {
   question: Question;
-  globalSubmittedAnswers: {
+  selectedAnswers: {
     [questionNumber: number]: { answer: string; isCorrect: boolean };
   };
-  handleSubmitAnswer: (
+  handleSelectAnswer: (
     questionNumber: number,
     answer: string,
     isCorrect: boolean,
@@ -24,8 +23,8 @@ interface MultipleChoiceQuestionProps {
 
 function MultipleChoiceQuestion({
   question,
-  globalSubmittedAnswers,
-  handleSubmitAnswer,
+  selectedAnswers,
+  handleSelectAnswer,
   isSubmitted,
 }: MultipleChoiceQuestionProps) {
   if (question.type !== "multipleChoice" || !question.answers) {
@@ -34,17 +33,13 @@ function MultipleChoiceQuestion({
     );
   }
 
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(
-    globalSubmittedAnswers[question.questionNumber]?.answer || null,
-  );
-
-  useEffect(() => {
-    if (!isSubmitted) return;
-  });
-
   const handleAnswerSelect = (answer: string) => {
     if (isSubmitted) return;
-    setSelectedAnswer(answer);
+    handleSelectAnswer(
+      question.questionNumber,
+      answer,
+      answer === question.definition,
+    );
   };
 
   return (
@@ -56,7 +51,7 @@ function MultipleChoiceQuestion({
         {question.answers.map((answer, index) => (
           <button
             key={index}
-            className={`${styles.answerButton} ${!isSubmitted && selectedAnswer === answer ? styles.selectedAnswer : ""} ${isSubmitted && answer === question.definition ? styles.correctAnswer : ""} ${isSubmitted && selectedAnswer === answer && answer !== question.definition ? styles.incorrectAnswer : ""}`}
+            className={`${styles.answerButton} ${!isSubmitted && selectedAnswers[question.questionNumber]?.answer === answer ? styles.selectedAnswer : ""} ${isSubmitted && answer === question.definition ? styles.correctAnswer : ""} ${isSubmitted && selectedAnswers[question.questionNumber]?.answer === answer && answer !== question.definition ? styles.incorrectAnswer : ""}`}
             onClick={() => handleAnswerSelect(answer)}
             disabled={isSubmitted}
           >

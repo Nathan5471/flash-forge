@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styles from "./WrittenQuestion.module.css";
 
 interface Question {
@@ -10,10 +9,10 @@ interface Question {
 
 interface WrittenQuestionProps {
   question: Question;
-  globalSubmittedAnswers: {
+  selectedAnswers: {
     [questionNumber: number]: { answer: string; isCorrect: boolean };
   };
-  handleSubmitAnswer: (
+  handleSelectAnswer: (
     questionNumber: number,
     answer: string,
     isCorrect: boolean,
@@ -23,8 +22,8 @@ interface WrittenQuestionProps {
 
 function WrittenQuestion({
   question,
-  globalSubmittedAnswers,
-  handleSubmitAnswer,
+  selectedAnswers,
+  handleSelectAnswer,
   isSubmitted,
 }: WrittenQuestionProps) {
   if (question.type !== "written") {
@@ -33,13 +32,14 @@ function WrittenQuestion({
     );
   }
 
-  const [userAnswer, setUserAnswer] = useState<string>(
-    globalSubmittedAnswers[question.questionNumber]?.answer || "",
-  );
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isSubmitted) return;
-    setUserAnswer(e.target.value);
+    handleSelectAnswer(
+      question.questionNumber,
+      e.target.value,
+      e.target.value.trim().toLowerCase() ===
+        question.definition.trim().toLowerCase(),
+    );
   };
 
   return (
@@ -49,14 +49,15 @@ function WrittenQuestion({
       </h2>
       <input
         type="text"
-        value={userAnswer}
+        value={selectedAnswers[question.questionNumber]?.answer || ""}
         onChange={handleInputChange}
         disabled={isSubmitted}
-        className={`${styles.answerInput} ${isSubmitted && userAnswer.trim().toLowerCase() === question.definition.trim().toLowerCase() ? styles.correctAnswer : ""} ${isSubmitted && userAnswer.trim().toLowerCase() !== question.definition.trim().toLowerCase() ? styles.incorrectAnswer : ""}`}
+        className={`${styles.answerInput} ${isSubmitted && selectedAnswers[question.questionNumber]?.answer.trim().toLowerCase() === question.definition.trim().toLowerCase() ? styles.correctAnswer : ""} ${isSubmitted && selectedAnswers[question.questionNumber]?.answer.trim().toLowerCase() !== question.definition.trim().toLowerCase() ? styles.incorrectAnswer : ""}`}
       />
       {isSubmitted &&
-        userAnswer.trim().toLowerCase() !==
-          question.definition.trim().toLowerCase() && (
+        selectedAnswers[question.questionNumber]?.answer
+          .trim()
+          .toLowerCase() !== question.definition.trim().toLowerCase() && (
           <p className={styles.correctAnswerText}>
             The correct answer is <span>{question.definition}</span>
           </p>

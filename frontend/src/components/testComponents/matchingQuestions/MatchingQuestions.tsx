@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import styles from "./MatchingQuestions.module.css";
 
 interface Question {
@@ -11,10 +10,10 @@ interface Question {
 interface MatchingQuestionsProps {
   questions: Question[];
   shuffledAnswers: string[];
-  globalSubmittedAnswers: {
+  selectedAnswers: {
     [questionNumber: number]: { answer: string; isCorrect: boolean };
   };
-  handleSubmitAnswer: (
+  handleSelectAnswer: (
     questionNumber: number,
     answer: string,
     isCorrect: boolean,
@@ -25,8 +24,8 @@ interface MatchingQuestionsProps {
 function MatchingQuestions({
   questions,
   shuffledAnswers,
-  globalSubmittedAnswers,
-  handleSubmitAnswer,
+  selectedAnswers,
+  handleSelectAnswer,
   isSubmitted,
 }: MatchingQuestionsProps) {
   if (questions.some((question) => question.type !== "matching")) {
@@ -35,42 +34,14 @@ function MatchingQuestions({
     );
   }
 
-  const [selectedAnswers, setSelectedAnswers] = useState<{
-    [questionNumber: number]: { answer: string; isCorrect: boolean };
-  }>(
-    Object.fromEntries(
-      Object.entries(globalSubmittedAnswers)
-        .filter(([questionNumber]) =>
-          questions.some(
-            (question) => question.questionNumber === Number(questionNumber),
-          ),
-        )
-        .map(([questionNumber, value]) => [Number(questionNumber), value]),
-    ),
-  );
-
-  useEffect(() => {
-    if (!isSubmitted) return;
-    for (const [questionNumber, { answer, isCorrect }] of Object.entries(
-      selectedAnswers,
-    )) {
-      handleSubmitAnswer(Number(questionNumber), answer, isCorrect);
-    }
-  }, [isSubmitted]);
-
   const handleAnswerSelect = (questionNumber: number, answer: string) => {
     if (isSubmitted) return;
-    setSelectedAnswers((prevAnswers) => ({
-      ...prevAnswers,
-      [questionNumber]: {
-        answer,
-        isCorrect:
-          answer ===
-          questions.find(
-            (question) => question.questionNumber === questionNumber,
-          )?.definition,
-      },
-    }));
+    handleSelectAnswer(
+      questionNumber,
+      answer,
+      answer ===
+        questions.find((q) => q.questionNumber === questionNumber)?.definition,
+    );
   };
 
   return (

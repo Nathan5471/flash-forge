@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styles from "./TrueFalseQuesiton.module.css";
 
 interface Question {
@@ -11,10 +10,10 @@ interface Question {
 
 interface TrueFalseQuestionProps {
   question: Question;
-  globalSubmittedAnswers: {
+  selectedAnswers: {
     [questionNumber: number]: { answer: string; isCorrect: boolean };
   };
-  handleSubmitAnswer: (
+  handleSelectAnswer: (
     questionNumber: number,
     answer: string,
     isCorrect: boolean,
@@ -24,8 +23,8 @@ interface TrueFalseQuestionProps {
 
 function TrueFalseQuestion({
   question,
-  globalSubmittedAnswers,
-  handleSubmitAnswer,
+  selectedAnswers,
+  handleSelectAnswer,
   isSubmitted,
 }: TrueFalseQuestionProps) {
   if (question.type !== "trueFalse" || !question.answers) {
@@ -34,17 +33,15 @@ function TrueFalseQuestion({
     );
   }
 
-  const [selectedAnswer, setSelectedAnswer] = useState<boolean | null>(
-    globalSubmittedAnswers[question.questionNumber]?.answer === "true"
-      ? true
-      : globalSubmittedAnswers[question.questionNumber]?.answer === "false"
-        ? false
-        : null,
-  );
-
-  const handleAnswerSelect = (answer: boolean) => {
-    if (isSubmitted) return;
-    setSelectedAnswer(answer);
+  const handleAnswerSelect = (answer: string) => {
+    if (isSubmitted || !question.answers) return;
+    handleSelectAnswer(
+      question.questionNumber,
+      answer,
+      answer === "true"
+        ? question.definition === question.answers[0]
+        : question.definition !== question.answers[0],
+    );
   };
 
   return (
@@ -55,15 +52,15 @@ function TrueFalseQuestion({
       <p>Answer: {question.answers[0]} (Is this true or false?)</p>
       <div className={styles.answersGrid}>
         <button
-          className={`${styles.answerButton} ${!isSubmitted && selectedAnswer === true ? styles.selectedAnswer : ""} ${isSubmitted && question.answers[0] === question.definition ? styles.correctAnswer : ""} ${isSubmitted && selectedAnswer === true && question.answers[0] !== question.definition ? styles.incorrectAnswer : ""}`}
-          onClick={() => handleAnswerSelect(true)}
+          className={`${styles.answerButton} ${!isSubmitted && selectedAnswers[question.questionNumber]?.answer === "true" ? styles.selectedAnswer : ""} ${isSubmitted && question.answers[0] === question.definition ? styles.correctAnswer : ""} ${isSubmitted && selectedAnswers[question.questionNumber]?.answer === "true" && question.answers[0] !== question.definition ? styles.incorrectAnswer : ""}`}
+          onClick={() => handleAnswerSelect("true")}
           disabled={isSubmitted}
         >
           True
         </button>
         <button
-          className={`${styles.answerButton} ${!isSubmitted && selectedAnswer === false ? styles.selectedAnswer : ""} ${isSubmitted && question.answers[0] !== question.definition ? styles.correctAnswer : ""} ${isSubmitted && selectedAnswer === false && question.answers[0] !== question.definition ? styles.incorrectAnswer : ""}`}
-          onClick={() => handleAnswerSelect(false)}
+          className={`${styles.answerButton} ${!isSubmitted && selectedAnswers[question.questionNumber]?.answer === "false" ? styles.selectedAnswer : ""} ${isSubmitted && question.answers[0] !== question.definition ? styles.correctAnswer : ""} ${isSubmitted && selectedAnswers[question.questionNumber]?.answer === "false" && question.answers[0] !== question.definition ? styles.incorrectAnswer : ""}`}
+          onClick={() => handleAnswerSelect("false")}
           disabled={isSubmitted}
         >
           False
