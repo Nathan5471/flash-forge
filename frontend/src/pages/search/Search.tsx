@@ -24,6 +24,7 @@ function Search() {
   useEffect(() => {
     if (!query) return;
     const controller = new AbortController();
+    setError(null);
 
     const fetchSearchResults = async () => {
       try {
