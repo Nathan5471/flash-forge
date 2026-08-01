@@ -1,0 +1,181 @@
+.flashcardSetPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: var(--surface-a0);
+  color: var(--text);
+  font-family: Arial;
+}
+
+.flashcardSetContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+}
+
+.flashcardSetContainer h1 {
+  font-size: 48px;
+  color: var(--primary-a0);
+}
+
+.flashcard {
+  width: 800px;
+  margin-top: 20px;
+}
+
+.flashcardControls {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  width: 800px;
+}
+
+.shuffleContainer {
+  display: flex;
+  align-items: center;
+  width: 150px;
+}
+
+.shuffleButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  width: 90px;
+  background-color: var(--surface-a1);
+  border-radius: 4px;
+  border: none;
+  color: var(--text);
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.shuffleButton:hover {
+  background-color: var(--surface-a2);
+}
+
+.shuffleButtonActive {
+  background-color: var(--primary-a0);
+}
+
+.shuffleButtonActive:hover {
+  background-color: var(--primary-a1);
+}
+
+.flashcardNavigation {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  width: 400px;
+}
+
+.flashcardNavigation button {
+  padding: 10px;
+  width: 150px;
+  background-color: var(--surface-a1);
+  border-radius: 4px;
+  border: none;
+  color: var(--text);
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.flashcardNavigation p {
+  font-size: 28px;
+}
+
+.flashcardNavigation button:not(:disabled):hover {
+  background-color: var(--surface-a2);
+}
+
+.flashcardNavigation button:disabled {
+  color: var(--surface-a3);
+  pointer-events: none;
+}
+
+.changeFront {
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+  font-size: 16px;
+}
+
+.changeFront select {
+  padding: 2px;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--surface-a1);
+  color: var(--text);
+  font-size: 16px;
+}
+
+.flashcardSetBackContainer {
+  width: 800px;
+  display: flex;
+  margin-top: 10px;
+}
+
+.flashcardSetBackLink {
+  background-color: var(--surface-a1);
+  color: var(--text);
+  padding: 10px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.flashcardSetBackLink:hover {
+  background-color: var(--surface-a2);
+}
+
+.loadingText {
+  font-size: 36px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.errorBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  margin-top: 20px;
+  background-color: var(--surface-a1);
+  border-radius: 8px;
+}
+
+.errorBox h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.errorButton {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: var(--primary-a0);
+  border-radius: 4px;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.errorButton:hover {
+  background-color: var(--primary-a1);
+}
+
+.error {
+  color: var(--error);
+  font-size: 14px;
+  margin-top: 10px;
+}
