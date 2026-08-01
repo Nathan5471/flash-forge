@@ -10,17 +10,32 @@ interface Question {
 
 interface WrittenQuestionProps {
   question: Question;
+  globalSubmittedAnswers: {
+    [questionNumber: number]: { answer: string; isCorrect: boolean };
+  };
+  handleSubmitAnswer: (
+    questionNumber: number,
+    answer: string,
+    isCorrect: boolean,
+  ) => void;
   isSubmitted: boolean;
 }
 
-function WrittenQuestion({ question, isSubmitted }: WrittenQuestionProps) {
+function WrittenQuestion({
+  question,
+  globalSubmittedAnswers,
+  handleSubmitAnswer,
+  isSubmitted,
+}: WrittenQuestionProps) {
   if (question.type !== "written") {
     throw new Error(
       `Invalid question type: ${question.type}. Expected "written".`,
     );
   }
 
-  const [userAnswer, setUserAnswer] = useState<string>("");
+  const [userAnswer, setUserAnswer] = useState<string>(
+    globalSubmittedAnswers[question.questionNumber]?.answer || "",
+  );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isSubmitted) return;

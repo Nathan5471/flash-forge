@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./MultipleChoiceQuestion.module.css";
 
 interface Question {
@@ -11,11 +11,21 @@ interface Question {
 
 interface MultipleChoiceQuestionProps {
   question: Question;
+  globalSubmittedAnswers: {
+    [questionNumber: number]: { answer: string; isCorrect: boolean };
+  };
+  handleSubmitAnswer: (
+    questionNumber: number,
+    answer: string,
+    isCorrect: boolean,
+  ) => void;
   isSubmitted: boolean;
 }
 
 function MultipleChoiceQuestion({
   question,
+  globalSubmittedAnswers,
+  handleSubmitAnswer,
   isSubmitted,
 }: MultipleChoiceQuestionProps) {
   if (question.type !== "multipleChoice" || !question.answers) {
@@ -24,7 +34,13 @@ function MultipleChoiceQuestion({
     );
   }
 
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(
+    globalSubmittedAnswers[question.questionNumber]?.answer || null,
+  );
+
+  useEffect(() => {
+    if (!isSubmitted) return;
+  });
 
   const handleAnswerSelect = (answer: string) => {
     if (isSubmitted) return;

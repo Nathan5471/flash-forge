@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "./TrueFlaseQuesiton.module.css";
+import styles from "./TrueFalseQuesiton.module.css";
 
 interface Question {
   type: "multipleChoice" | "written" | "trueFalse" | "matching";
@@ -11,17 +11,36 @@ interface Question {
 
 interface TrueFalseQuestionProps {
   question: Question;
+  globalSubmittedAnswers: {
+    [questionNumber: number]: { answer: string; isCorrect: boolean };
+  };
+  handleSubmitAnswer: (
+    questionNumber: number,
+    answer: string,
+    isCorrect: boolean,
+  ) => void;
   isSubmitted: boolean;
 }
 
-function TrueFalseQuestion({ question, isSubmitted }: TrueFalseQuestionProps) {
+function TrueFalseQuestion({
+  question,
+  globalSubmittedAnswers,
+  handleSubmitAnswer,
+  isSubmitted,
+}: TrueFalseQuestionProps) {
   if (question.type !== "trueFalse" || !question.answers) {
     throw new Error(
       `Invalid question type: ${question.type}. Expected "trueFalse".`,
     );
   }
 
-  const [selectedAnswer, setSelectedAnswer] = useState<boolean | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<boolean | null>(
+    globalSubmittedAnswers[question.questionNumber]?.answer === "true"
+      ? true
+      : globalSubmittedAnswers[question.questionNumber]?.answer === "false"
+        ? false
+        : null,
+  );
 
   const handleAnswerSelect = (answer: boolean) => {
     if (isSubmitted) return;

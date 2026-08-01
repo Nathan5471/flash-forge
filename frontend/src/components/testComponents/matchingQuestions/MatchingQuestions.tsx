@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./MatchingQuestions.module.css";
 
 interface Question {
@@ -11,12 +11,22 @@ interface Question {
 interface MatchingQuestionsProps {
   questions: Question[];
   shuffledAnswers: string[];
+  globalSubmittedAnswers: {
+    [questionNumber: number]: { answer: string; isCorrect: boolean };
+  };
+  handleSubmitAnswer: (
+    questionNumber: number,
+    answer: string,
+    isCorrect: boolean,
+  ) => void;
   isSubmitted: boolean;
 }
 
 function MatchingQuestions({
   questions,
   shuffledAnswers,
+  globalSubmittedAnswers,
+  handleSubmitAnswer,
   isSubmitted,
 }: MatchingQuestionsProps) {
   if (questions.some((question) => question.type !== "matching")) {
@@ -26,14 +36,40 @@ function MatchingQuestions({
   }
 
   const [selectedAnswers, setSelectedAnswers] = useState<{
-    [questionNumber: number]: string;
-  }>({});
+    [questionNumber: number]: { answer: string; isCorrect: boolean };
+  }>(
+    Object.fromEntries(
+      Object.entries(globalSubmittedAnswers)
+        .filter(([questionNumber]) =>
+          questions.some(
+            (question) => question.questionNumber === Number(questionNumber),
+          ),
+        )
+        .map(([questionNumber, value]) => [Number(questionNumber), value]),
+    ),
+  );
+
+  useEffect(() => {
+    if (!isSubmitted) return;
+    for (const [questionNumber, { answer, isCorrect }] of Object.entries(
+      selectedAnswers,
+    )) {
+      handleSubmitAnswer(Number(questionNumber), answer, isCorrect);
+    }
+  }, [isSubmitted]);
 
   const handleAnswerSelect = (questionNumber: number, answer: string) => {
     if (isSubmitted) return;
-    setSelectedAnswers((prevSelectedAnswers) => ({
-      ...prevSelectedAnswers,
-      [questionNumber]: answer,
+    setSelectedAnswers((prevAnswers) => ({
+      ...prevAnswers,
+      [questionNumber]: {
+        answer,
+        isCorrect:
+          answer ===
+          questions.find(
+            (question) => question.questionNumber === questionNumber,
+          )?.definition,
+      },
     }));
   };
 
@@ -50,11 +86,11 @@ function MatchingQuestions({
               {question.questionNumber}. {question.term}
             </p>
             <select
-              value={selectedAnswers[question.questionNumber] || ""}
+              value={selectedAnswers[question.questionNumber]?.answer || ""}
               onChange={(e) => {
                 handleAnswerSelect(question.questionNumber, e.target.value);
               }}
-              className={`${isSubmitted && selectedAnswers[question.questionNumber] === question.definition ? styles.correctAnswer : ""} ${isSubmitted && selectedAnswers[question.questionNumber] !== question.definition ? styles.incorrectAnswer : ""}`}
+              className={`${isSubmitted && selectedAnswers[question.questionNumber]?.answer === question.definition ? styles.correctAnswer : ""} ${isSubmitted && selectedAnswers[question.questionNumber]?.answer !== question.definition ? styles.incorrectAnswer : ""}`}
               disabled={isSubmitted}
             >
               <option value="" disabled>
@@ -68,7 +104,7 @@ function MatchingQuestions({
             </select>
           </div>
           {isSubmitted &&
-            selectedAnswers[question.questionNumber] !==
+            selectedAnswers[question.questionNumber]?.answer !==
               question.definition && (
               <p className={styles.correctAnswerText}>
                 The correct answer is <span>{question.definition}</span>

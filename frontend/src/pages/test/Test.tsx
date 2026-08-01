@@ -100,6 +100,10 @@ function Test() {
     questions: Question[];
     shuffledAnswers: string[];
   }>({ questions: [], shuffledAnswers: [] });
+  const [submittedAnswers, setSubmittedAnswers] = useState<{
+    [questionNumber: number]: { answer: string; isCorrect: boolean };
+  }>({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
     if (!setId) {
@@ -191,6 +195,18 @@ function Test() {
     });
   };
 
+  const handleSubmitAnswer = (
+    questionNumber: number,
+    answer: string,
+    isCorrect: boolean,
+  ) => {
+    if (isSubmitted) return;
+    setSubmittedAnswers((prevSubmittedAnswers) => ({
+      ...prevSubmittedAnswers,
+      [questionNumber]: { answer, isCorrect },
+    }));
+  };
+
   if (showTestSettingOverlay) {
     return (
       <div className={styles.testPage}>
@@ -227,7 +243,8 @@ function Test() {
               <MultipleChoiceQuestion
                 key={question.questionNumber}
                 question={question}
-                isSubmitted={false}
+                globalSelectedAnswers={selectedAnswers}
+                isSubmitted={isSubmitted}
               />
             ))}
           </div>
@@ -235,14 +252,22 @@ function Test() {
         {testSettings.written && (
           <div className={styles.questionTypeContainer}>
             {writtenQuestions.map((question) => (
-              <WrittenQuestion question={question} isSubmitted={false} />
+              <WrittenQuestion
+                question={question}
+                globalSelectedAnswers={selectedAnswers}
+                isSubmitted={isSubmitted}
+              />
             ))}
           </div>
         )}
         {testSettings.trueFalse && (
           <div className={styles.questionTypeContainer}>
             {trueFalseQuestions.map((question) => (
-              <TrueFalseQuestion question={question} isSubmitted={false} />
+              <TrueFalseQuestion
+                question={question}
+                globalSelectedAnswers={selectedAnswers}
+                isSubmitted={isSubmitted}
+              />
             ))}
           </div>
         )}
@@ -251,7 +276,9 @@ function Test() {
             <MatchingQuestions
               questions={matchingQuestions.questions}
               shuffledAnswers={matchingQuestions.shuffledAnswers}
-              isSubmitted={false}
+              selectedAnswers={selectedAnswers}
+              handleUpdateSelectedAnswers={handleUpdateSelectedAnswers}
+              isSubmitted={isSubmitted}
             />
           </div>
         )}
