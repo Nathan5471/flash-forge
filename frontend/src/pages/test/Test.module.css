@@ -27,6 +27,58 @@
   margin-bottom: 20px;
 }
 
+.testResultsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  margin-bottom: 20px;
+}
+
+.testResultsBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--surface-a1);
+  width: 100%;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.testResultsBox h2 {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: var(--primary-a0);
+}
+
+.testResultsBox p {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.testResultsBox span {
+  font-weight: bold;
+  color: var(--primary-a0);
+}
+
+.gradeChartContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  height: 300px;
+}
+
+.gradeChartContainer p {
+  position: absolute;
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--primary-a0);
+}
+
 .questionTypeContainer {
   display: flex;
   flex-direction: column;

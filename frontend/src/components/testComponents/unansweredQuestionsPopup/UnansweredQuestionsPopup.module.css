@@ -1,0 +1,47 @@
+.unansweredQuestionsPopupContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  font-family: Arial;
+}
+
+.unansweredQuestionsPopupContainer h2 {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: var(--primary-a0);
+}
+
+.unansweredQuestionsPopupContainer p {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.unansweredQuestionsPopupContainer span {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--primary-a0);
+}
+
+.buttonContainer {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+}
+
+.buttonContainer button {
+  padding: 10px;
+  width: 100%;
+  background-color: var(--primary-a0);
+  color: var(--text);
+  font-weight: bold;
+  font-family: Arial;
+  font-size: 18px;
+  border: none;
+  border-radius: 8px;
+}
+
+.buttonContainer button:hover {
+  background-color: var(--primary-a1);
+}

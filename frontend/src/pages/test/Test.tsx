@@ -9,6 +9,8 @@ import MultipleChoiceQuestion from "../../components/testComponents/multipleChoi
 import WrittenQuestion from "../../components/testComponents/writtenQuestion/WrittenQuestion";
 import TrueFalseQuestion from "../../components/testComponents/trueFalseQuestion/TrueFalseQuestion";
 import MatchingQuestions from "../../components/testComponents/matchingQuestions/MatchingQuestions";
+import UnansweredQuestionsPopup from "../../components/testComponents/unansweredQuestionsPopup/UnansweredQuestionsPopup";
+import GradeChart from "../../components/testComponents/gradeChart/GradeChart";
 import styles from "./Test.module.css";
 
 interface FlashcardSet {
@@ -208,6 +210,24 @@ function Test() {
     }));
   };
 
+  const checkForUnansweredQuestions = () => {
+    if (isSubmitted) return;
+    const answerCount = Object.entries(selectedAnswers).filter(
+      ([_, { answer }]) => answer.trim() !== "",
+    ).length;
+    if (answerCount < testSettings.questionCount) {
+      const unansweredCount = testSettings.questionCount - answerCount;
+      openOverlay(
+        <UnansweredQuestionsPopup
+          unansweredCount={unansweredCount}
+          handleSubmitTest={handleSubmitTest}
+        />,
+      );
+      return;
+    }
+    handleSubmitTest();
+  };
+
   const handleSubmitTest = () => {
     if (isSubmitted) return;
     setIsSubmitted(true);
@@ -264,6 +284,45 @@ function Test() {
       <Navbar />
       <div className={styles.testContainer} ref={testContainerRef}>
         <h1>{flashcardSet.name} Test</h1>
+        {isSubmitted && (
+          <div className={styles.testResultsContainer}>
+            <div className={styles.testResultsBox}>
+              <h2>Test Completed!</h2>
+              <p>
+                You answered{" "}
+                <span>
+                  {
+                    Object.entries(selectedAnswers).filter(
+                      ([_, { isCorrect }]) => isCorrect,
+                    ).length
+                  }
+                </span>{" "}
+                out of <span>{testSettings.questionCount}</span> questions
+                correctly!
+              </p>
+              <div className={styles.gradeChartContainer}>
+                <GradeChart
+                  correctAnswers={
+                    Object.entries(selectedAnswers).filter(
+                      ([_, { isCorrect }]) => isCorrect,
+                    ).length
+                  }
+                  totalQuestions={testSettings.questionCount}
+                />
+                <p>
+                  {Math.round(
+                    (Object.entries(selectedAnswers).filter(
+                      ([_, { isCorrect }]) => isCorrect,
+                    ).length /
+                      testSettings.questionCount) *
+                      100,
+                  )}
+                  %
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
         {testSettings.multipleChoice && (
           <div className={styles.questionTypeContainer}>
             {multipleChoiceQuestions.map((question) => (
@@ -315,7 +374,9 @@ function Test() {
         <div className={styles.submitButtonContainer}>
           <button
             className={styles.submitButton}
-            onClick={isSubmitted ? handleResetTest : handleSubmitTest}
+            onClick={
+              isSubmitted ? handleResetTest : checkForUnansweredQuestions
+            }
           >
             {isSubmitted ? "Retake Test" : "Submit Test"}
           </button>
