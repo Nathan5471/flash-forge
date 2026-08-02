@@ -157,3 +157,100 @@ export const checkLearnSessionExists = async (req: any, res: any) => {
       .json({ message: "Failed to check if learn session exists" });
   }
 };
+
+export const canContinueLearnSession = async (req: any, res: any) => {
+  const user = req.user as AuthUser;
+  const { sessionId } = req.params;
+
+  try {
+    const learnSession = await prisma.learnSession.findUnique({
+      where: { id: sessionId },
+      include: {
+        learnSessionQuestions: true,
+      },
+    });
+    if (!learnSession) {
+      return res.status(404).json({ message: "Learn session not found" });
+    }
+    if (learnSession.userId !== user.id) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+    if (learnSession.learnSessionQuestions.length === 0) {
+      await prisma.learnSession.delete({
+        where: { id: learnSession.id },
+      });
+    }
+    return res.status(200).json({
+      canContinue: learnSession.learnSessionQuestions.length > 0,
+    });
+  } catch (error) {
+    console.error("Error checking if learn session can continue:", error);
+    return res
+      .status(500)
+      .json({ message: "Failed to check if learn session can continue" });
+  }
+};
+
+export const getLearnSession = async (req: any, res: any) => {
+  const user = req.user as AuthUser;
+  const { sessionId } = req.params;
+
+  try {
+    const learnSession = await prisma.learnSession.findUnique({
+      where: { id: sessionId },
+      include: {
+        learnSessionQuestions: {
+          orderBy: { order: "asc" },
+          include: { flashcard: true },
+        },
+      },
+    });
+    if (!learnSession) {
+      return res.status(404).json({ message: "Learn session not found" });
+    }
+    if (learnSession.userId !== user.id) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    const sessionQuestions = learnSession.learnSessionQuestions
+      .slice(0, learnSession.amountPerSession)
+      .map((question) => ({
+        order: question.order,
+        type: question.type,
+        definition: question.flashcard.definition,
+      }));
+    return res.status(200).json({
+      questions: sessionQuestions,
+    });
+  } catch (error) {
+    console.error("Error getting learn session:", error);
+    return res.status(500).json({ message: "Failed to get learn session" });
+  }
+};
+
+export const endLearnSession = async (req: any, res: any) => {
+  const user = req.user as AuthUser;
+  const { sessionId } = req.params;
+
+  try {
+    const learnSession = await prisma.learnSession.findUnique({
+      where: { id: sessionId },
+    });
+    if (!learnSession) {
+      return res.status(404).json({ message: "Learn session not found" });
+    }
+    if (learnSession.userId !== user.id) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    await prisma.learnSession.delete({
+      where: { id: sessionId },
+    });
+    return res
+      .status(200)
+      .json({ message: "Learn session ended successfully" });
+  } catch (error) {
+    console.error("Error ending learn session:", error);
+    return res.status(500).json({ message: "Failed to end learn session" });
+  }
+};

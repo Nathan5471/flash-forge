@@ -4,6 +4,9 @@ import {
   startLearnSession,
   checkLearnSessionAnswer,
   checkLearnSessionExists,
+  canContinueLearnSession,
+  getLearnSession,
+  endLearnSession,
 } from "../controllers/learnSessionController";
 
 const router = Router();
@@ -67,6 +70,20 @@ router.get("/flashcard/:setId", authenticate, async (req: any, res: any) => {
   await checkLearnSessionExists(req, res);
 });
 
+router.get(
+  "/can-continue/:sessionId",
+  authenticate,
+  async (req: any, res: any) => {
+    const { sessionId } = req.params;
+
+    if (!sessionId) {
+      return res.status(400).json({ message: "Session ID is required" });
+    }
+
+    await canContinueLearnSession(req, res);
+  },
+);
+
 router.get("/:sessionId", authenticate, async (req: any, res: any) => {
   const { sessionId } = req.params;
 
@@ -74,7 +91,17 @@ router.get("/:sessionId", authenticate, async (req: any, res: any) => {
     return res.status(400).json({ message: "Session ID is required" });
   }
 
-  // Get session
+  await getLearnSession(req, res);
+});
+
+router.delete("/end/:sessionId", authenticate, async (req: any, res: any) => {
+  const { sessionId } = req.params;
+
+  if (!sessionId) {
+    return res.status(400).json({ message: "Session ID is required" });
+  }
+
+  await endLearnSession(req, res);
 });
 
 export default router;
