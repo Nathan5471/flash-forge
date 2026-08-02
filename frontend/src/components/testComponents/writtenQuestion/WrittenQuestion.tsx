@@ -49,7 +49,10 @@ function WrittenQuestion({
       </h2>
       <input
         type="text"
-        value={selectedAnswers[question.questionNumber]?.answer || ""}
+        value={
+          selectedAnswers[question.questionNumber]?.answer ||
+          (isSubmitted ? "No answer submitted" : "")
+        }
         onChange={handleInputChange}
         disabled={isSubmitted}
         className={`${styles.answerInput} ${isSubmitted && selectedAnswers[question.questionNumber]?.answer.trim().toLowerCase() === question.definition.trim().toLowerCase() ? styles.correctAnswer : ""} ${isSubmitted && selectedAnswers[question.questionNumber]?.answer.trim().toLowerCase() !== question.definition.trim().toLowerCase() ? styles.incorrectAnswer : ""}`}
