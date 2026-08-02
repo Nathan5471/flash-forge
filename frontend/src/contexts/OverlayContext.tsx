@@ -3,7 +3,8 @@ import { createContext, useContext, useState } from "react";
 interface OverlayContextType {
   isOverlayOpen: boolean;
   overlayContent: React.ReactNode | null;
-  openOverlay: (content: React.ReactNode) => void;
+  canCloseWithClickOutside: boolean;
+  openOverlay: (content: React.ReactNode, canClose?: boolean) => void;
   closeOverlay: () => void;
 }
 
@@ -16,20 +17,25 @@ export const OverlayProvider: React.FC<{ children: React.ReactNode }> = ({
   const [overlayContent, setOverlayContent] = useState<React.ReactNode | null>(
     null,
   );
+  const [canCloseWithClickOutside, setCanCloseWithClickOutside] =
+    useState(true);
 
-  const openOverlay = (content: React.ReactNode) => {
+  const openOverlay = (content: React.ReactNode, canClose: boolean = true) => {
     setOverlayContent(content);
     setIsOverlayOpen(true);
+    setCanCloseWithClickOutside(canClose);
   };
 
   const closeOverlay = () => {
     setOverlayContent(null);
     setIsOverlayOpen(false);
+    setCanCloseWithClickOutside(true);
   };
 
   const contextValue = {
     isOverlayOpen,
     overlayContent,
+    canCloseWithClickOutside,
     openOverlay,
     closeOverlay,
   };

@@ -71,6 +71,7 @@ function LearnSession() {
             setId={setId}
             onSessionStarted={handleSessionStarted}
           />,
+          false,
         );
       } catch (error: any) {
         if (error === "Axios request canceled") {

@@ -127,6 +127,7 @@ function Test() {
             flashcardSetId={data.flashcardSet.id}
             handleStartTest={handleStartTest}
           />,
+          false,
         );
       } catch (error: any) {
         if (error === "Axios request canceled") {
