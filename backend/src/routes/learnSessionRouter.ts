@@ -31,12 +31,19 @@ router.post("/start", authenticate, async (req: any, res: any) => {
   }
 
   if (
-    !amountPerSession ||
-    !multipleChoiceAmount ||
-    !trueFalseAmount ||
-    !writtenAmount
+    amountPerSession === undefined ||
+    multipleChoiceAmount === undefined ||
+    trueFalseAmount === undefined ||
+    writtenAmount === undefined
   ) {
     return res.status(400).json({ message: "Session settings are required" });
+  }
+
+  if (
+    amountPerSession <= 0 ||
+    multipleChoiceAmount + trueFalseAmount + writtenAmount <= 0
+  ) {
+    return res.status(400).json({ message: "Invalid session settings" });
   }
 
   await startLearnSession(req, res);

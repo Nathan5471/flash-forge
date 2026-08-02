@@ -12,6 +12,7 @@ import Test from "./pages/test/Test";
 import Search from "./pages/search/Search";
 import AuthenticatedRoute from "./utils/AuthenticatedRoute";
 import CreateFlashcardSet from "./pages/createFlashcardSet/CreateFlashcardSet";
+import LearnSession from "./pages/learnSession/LearnSession";
 import Overlay from "./components/overlay/Overlay";
 
 function App() {
@@ -55,6 +56,7 @@ function App() {
             path="/recently-viewed"
             element={<FilteredFlashcardSets filter="recently-viewed" />}
           />
+          <Route path="/set/:setId/learn" element={<LearnSession />} />
         </Route>
       </Routes>
       <Overlay />
