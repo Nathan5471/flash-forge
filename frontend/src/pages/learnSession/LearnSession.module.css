@@ -1,0 +1,58 @@
+.learnSessionPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: var(--surface-a0);
+  font-family: Arial;
+  color: var(--text);
+}
+
+.learnSessionContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.loadingText {
+  font-size: 32px;
+}
+
+.errorBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: var(--surface-a1);
+  border-radius: 8px;
+}
+
+.errorBox h2 {
+  font-size: 24px;
+  color: var(--primary-a0);
+}
+
+.errorBox p {
+  font-size: 16px;
+  color: var(--error);
+  margin-top: 10px;
+}
+
+.homeButton {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: var(--primary-a0);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.homeButton:hover {
+  background-color: var(--primary-a1);
+}
