@@ -30,6 +30,7 @@ interface Question {
   order: number;
   type: "multipleChoice" | "trueFalse" | "written";
   definition: string;
+  answerChoices?: string[];
 }
 
 function LearnSession() {
@@ -40,9 +41,11 @@ function LearnSession() {
   >("loading");
   const [flashcardSet, setFlashcardSet] = useState<FlashcardSet | null>(null);
   const [sessionExists, setSessionExists] = useState<boolean | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [questionIndex, setQuestionIndex] = useState<number>(0);
   const [anotherRound, setAnotherRound] = useState<boolean>(false);
+  const [wrongAnswer, setWrongAnswer] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -103,6 +106,7 @@ function LearnSession() {
   const handleSessionStarted = async (sessionId: string) => {
     try {
       const learnSessionQuestions = await getLearnSession(sessionId);
+      setSessionId(sessionId);
       setQuestions(learnSessionQuestions.questions);
       setState("active");
     } catch (error: any) {
@@ -118,6 +122,78 @@ function LearnSession() {
           : "An unknown error occured";
       setError(errorMessage);
       setState("error");
+    }
+  };
+
+  const handleCheckAnswer = async (selectedAnswer: string) => {
+    if (!sessionId) return;
+    const currentQuestion = questions[questionIndex];
+    try {
+      const isCorrect = await checkLearnSessionAnswer(
+        sessionId,
+        currentQuestion.order,
+        selectedAnswer,
+      );
+      if (!isCorrect.isCorrect) {
+        setWrongAnswer(isCorrect.correctAnswer);
+        return;
+      }
+      setWrongAnswer(null);
+      if (questionIndex + 1 < questions.length) {
+        setQuestionIndex(questionIndex + 1);
+      } else {
+        const canContinue = await checkCanContinueLearnSession(sessionId);
+        if (canContinue.canContinue) {
+          setAnotherRound(true);
+        } else {
+          setAnotherRound(false);
+        }
+        setState("startNextRound");
+      }
+    } catch (error) {
+      console.error("Error checking answer:", error);
+    }
+  };
+
+  const handleStartNextRound = async () => {
+    if (!sessionId) return;
+    try {
+      const learnSessionQuestions = await getLearnSession(sessionId);
+      setQuestions(learnSessionQuestions.questions);
+      setQuestionIndex(0);
+      setState("active");
+    } catch (error: any) {
+      if (error === "Axios request canceled") {
+        return;
+      }
+      const errorMessage =
+        typeof error == "object" &&
+        error !== null &&
+        "message" in error &&
+        typeof error.message === "string"
+          ? error.message
+          : "An unknown error occured";
+      setError(errorMessage);
+      setState("error");
+    }
+  };
+
+  const handleStartNewSession = async () => {
+    if (!setId) return;
+    try {
+      if (sessionId) {
+        await endLearnSession(sessionId).catch(); // Ignore error incase session has already ended
+      }
+      openOverlay(
+        <StartLearnSession
+          setId={setId}
+          onSessionStarted={handleSessionStarted}
+        />,
+        false,
+      );
+      setState("overlay");
+    } catch (error) {
+      console.error("Error ending learn session:", error);
     }
   };
 

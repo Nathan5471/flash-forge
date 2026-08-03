@@ -1,6 +1,7 @@
 import prisma from "../prisma/client";
 import type { AuthUser } from "../middleware/authenticate";
 import generateLearnSessionQuestions from "../utils/generateLearnSessionQuestions";
+import generateRandomAnswers from "../utils/generateRandomAnswers";
 
 export const startLearnSession = async (req: any, res: any) => {
   const user = req.user as AuthUser;
@@ -115,6 +116,7 @@ export const checkLearnSessionAnswer = async (req: any, res: any) => {
     return res.status(200).json({
       message: "Answer checked successfully",
       isCorrect,
+      correctAnswer: question.flashcard.definition,
     });
   } catch (error) {
     console.error("Error checking learn session answer:", error);
@@ -211,14 +213,31 @@ export const getLearnSession = async (req: any, res: any) => {
     if (learnSession.userId !== user.id) {
       return res.status(403).json({ message: "Unauthorized" });
     }
+    const answerOptions = learnSession.learnSessionQuestions.map((question) => {
+      return question.flashcard.definition;
+    });
 
     const sessionQuestions = learnSession.learnSessionQuestions
       .slice(0, learnSession.amountPerSession)
-      .map((question) => ({
-        order: question.order,
-        type: question.type,
-        definition: question.flashcard.definition,
-      }));
+      .map((question) => {
+        if (question.type === "written") {
+          return {
+            order: question.order,
+            type: question.type,
+            question: question.flashcard.term,
+          };
+        }
+        return {
+          order: question.order,
+          type: question.type,
+          question: question.flashcard.term,
+          answerOptions: generateRandomAnswers(
+            answerOptions,
+            question.type === "multipleChoice" ? 4 : 2,
+            question.flashcard.definition,
+          ),
+        };
+      });
     return res.status(200).json({
       questions: sessionQuestions,
     });
