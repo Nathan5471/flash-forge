@@ -14,12 +14,13 @@ enum QuestionType {
 }
 
 model User {
-  id                  String          @id @default(uuid())
-  username            String          @unique
+  id                  String                     @id @default(uuid())
+  username            String                     @unique
   password            String
-  flashcardSets       FlashcardSet[]  @relation("createdFlashcardSets")
-  viewedFlashcardSets FlashcardView[] @relation("viewedFlashcardSets")
+  flashcardSets       FlashcardSet[]             @relation("createdFlashcardSets")
+  viewedFlashcardSets FlashcardView[]            @relation("viewedFlashcardSets")
   learnSessions       LearnSession[]
+  leaderboardEntries  MatchingLeaderboardEntry[]
 }
 
 model Flashcard {
@@ -33,16 +34,17 @@ model Flashcard {
 }
 
 model FlashcardSet {
-  id            String          @id @default(uuid())
-  name          String
-  description   String
-  flashcards    Flashcard[]
-  creator       User            @relation(name: "createdFlashcardSets", fields: [creatorId], references: [id], onDelete: Cascade)
-  creatorId     String
-  views         FlashcardView[]
-  learnSessions LearnSession[]
-  createdAt     DateTime        @default(now())
-  editedAt      DateTime        @updatedAt
+  id                  String               @id @default(uuid())
+  name                String
+  description         String
+  flashcards          Flashcard[]
+  creator             User                 @relation(name: "createdFlashcardSets", fields: [creatorId], references: [id], onDelete: Cascade)
+  creatorId           String
+  views               FlashcardView[]
+  learnSessions       LearnSession[]
+  matchingLeaderboard MatchingLeaderboard?
+  createdAt           DateTime             @default(now())
+  editedAt            DateTime             @updatedAt
 }
 
 model FlashcardView {
@@ -79,4 +81,22 @@ model LearnSession {
   userId                String
 
   @@unique([flashcardSetId, userId])
+}
+
+model MatchingLeaderboardEntry {
+  id                    String              @id @default(uuid())
+  matchingLeaderboard   MatchingLeaderboard @relation(fields: [matchingLeaderboardId], references: [id], onDelete: Cascade)
+  matchingLeaderboardId String
+  user                  User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                String
+  length                Int
+
+  @@unique([matchingLeaderboardId, userId])
+}
+
+model MatchingLeaderboard {
+  id                         String                     @id @default(uuid())
+  flashcardSet               FlashcardSet               @relation(fields: [flashcardSetId], references: [id], onDelete: Cascade)
+  flashcardSetId             String                     @unique
+  matchingLeaderboardEntries MatchingLeaderboardEntry[]
 }
