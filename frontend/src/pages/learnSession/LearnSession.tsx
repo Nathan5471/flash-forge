@@ -12,6 +12,7 @@ import {
 import Navbar from "../../components/navbar/Navbar";
 import StartLearnSession from "../../components/startLearnSession/StartLearnSession";
 import MultipleChoiceQuestion from "../../components/learnComponents/multipleChoiceQuestion/MultipleChoiceQuestion";
+import TrueFalseQuestion from "../../components/learnComponents/trueFalseQuestion/TrueFalseQuestion";
 import styles from "./LearnSession.module.css";
 
 interface FlashcardSet {
@@ -71,6 +72,7 @@ function LearnSession() {
             sessionExistsCheck.learnSessionId,
             controller.signal,
           );
+          setSessionId(sessionExistsCheck.learnSessionId);
           setQuestions(learnSessionQuestions.questions);
           setState("active");
           return;
@@ -127,19 +129,27 @@ function LearnSession() {
     }
   };
 
-  const handleCheckAnswer = async (selectedAnswer: string) => {
-    if (!sessionId) return;
+  const handleCheckAnswer = async () => {
+    if (!sessionId || !selectedAnswer) return;
     const currentQuestion = questions[questionIndex];
     try {
+      let submittedAnswer = selectedAnswer;
+      if (currentQuestion.type === "trueFalse") {
+        submittedAnswer =
+          selectedAnswer === "True"
+            ? currentQuestion.answerOptions![0]
+            : currentQuestion.answerOptions![1];
+      }
       const isCorrect = await checkLearnSessionAnswer(
         sessionId,
         currentQuestion.order,
-        selectedAnswer,
+        submittedAnswer,
       );
       if (!isCorrect.isCorrect) {
         setWrongAnswer(isCorrect.correctAnswer);
         return;
       }
+      setSelectedAnswer(null);
       setWrongAnswer(null);
       if (questionIndex + 1 < questions.length) {
         setQuestionIndex(questionIndex + 1);
@@ -264,7 +274,10 @@ function LearnSession() {
                 : "You have completed this learning session!"}
             </p>
             <div className={styles.buttonContainer}>
-              <button className={styles.startNextRoundButton}>
+              <button
+                className={styles.startNextRoundButton}
+                onClick={handleStartNextRound}
+              >
                 {anotherRound ? "Next Round" : "New Session"}
               </button>
               <Link to={`/sets/${setId}`} className={styles.backToSetButton}>
@@ -283,6 +296,17 @@ function LearnSession() {
       <div className={styles.learnSessionContainer}>
         {questions[questionIndex].type === "multipleChoice" && (
           <MultipleChoiceQuestion
+            question={questions[questionIndex]}
+            selectedAnswer={selectedAnswer}
+            wrongAnswer={wrongAnswer}
+            onAnswerSelected={(answer: string) => setSelectedAnswer(answer)}
+            nextQuestion={handleNextQuestion}
+            onAnswerSubmitted={handleCheckAnswer}
+            handleResetSession={handleStartNewSession}
+          />
+        )}
+        {questions[questionIndex].type === "trueFalse" && (
+          <TrueFalseQuestion
             question={questions[questionIndex]}
             selectedAnswer={selectedAnswer}
             wrongAnswer={wrongAnswer}

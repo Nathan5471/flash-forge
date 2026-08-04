@@ -60,7 +60,7 @@ router.post("/check/:sessionId", authenticate, async (req: any, res: any) => {
     return res.status(400).json({ message: "Session ID is required" });
   }
 
-  if (!questionOrder || !answer) {
+  if (questionOrder === undefined || !answer) {
     return res.status(400).json({ message: "Question info is required" });
   }
 

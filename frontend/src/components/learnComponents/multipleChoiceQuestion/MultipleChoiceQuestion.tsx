@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styles from "./MultipleChoiceQuestion.module.css";
 
 interface Question {
@@ -13,7 +12,7 @@ interface MultipleChoiceQuestionProps {
   selectedAnswer: string | null;
   wrongAnswer: string | null;
   onAnswerSelected: (selectedAnswer: string) => void;
-  onAnswerSubmitted: (selectedAnswer: string) => void;
+  onAnswerSubmitted: () => void;
   nextQuestion: () => void;
   handleResetSession: () => void;
 }
@@ -28,7 +27,6 @@ function MultipleChoiceQuestion({
   handleResetSession,
 }: MultipleChoiceQuestionProps) {
   if (question.type !== "multipleChoice" || !question.answerOptions) {
-    console.log(question);
     throw new Error(
       "Invalid question type or missing answer choices for MultipleChoiceQuestion component.",
     );
@@ -51,15 +49,7 @@ function MultipleChoiceQuestion({
       </div>
       <div className={styles.submitContainer}>
         <button
-          onClick={
-            wrongAnswer
-              ? nextQuestion
-              : () => {
-                  if (selectedAnswer) {
-                    onAnswerSubmitted(selectedAnswer);
-                  }
-                }
-          }
+          onClick={wrongAnswer ? nextQuestion : onAnswerSubmitted}
           className={styles.submitButton}
           disabled={selectedAnswer === null}
         >

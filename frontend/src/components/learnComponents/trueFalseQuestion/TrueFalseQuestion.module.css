@@ -1,4 +1,4 @@
-.multipleChoiceContainer {
+.trueFalseContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -8,20 +8,26 @@
   width: 450px;
 }
 
-.multipleChoiceContainer h2 {
+.trueFalseContainer h2 {
   font-size: 32px;
+  margin-bottom: 5px;
+}
+
+.trueFalseContainer p {
+  font-size: 18px;
   margin-bottom: 10px;
 }
 
 .answerOptions {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  flex-direction: row;
   gap: 10px;
+  width: 100%;
 }
 
 .answerOptions button {
-  padding: 10px 40px;
+  width: 100%;
+  padding: 10px;
   background-color: var(--surface-a2);
   color: var(--text);
   border: none;
