@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import styles from "./WrittenQuestion.module.css";
 
 interface Question {
@@ -31,19 +32,42 @@ function WrittenQuestion({
     );
   }
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [question.order]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (wrongAnswer) {
+          nextQuestion();
+          return;
+        }
+        if (selectedAnswer !== null && selectedAnswer.trim() !== "") {
+          onAnswerSubmitted();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [nextQuestion, onAnswerSubmitted, selectedAnswer, wrongAnswer]);
+
   return (
     <div className={styles.writtenContainer}>
       <h2>{question.question}</h2>
       <input
         type="text"
+        ref={inputRef}
         value={selectedAnswer || ""}
         onChange={(e) => onAnswerSelected(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && selectedAnswer !== null) {
-            e.preventDefault();
-            wrongAnswer ? nextQuestion() : onAnswerSubmitted();
-          }
-        }}
         placeholder="Type your answer here..."
         className={wrongAnswer !== null ? styles.wrongAnswer : ""}
         disabled={wrongAnswer !== null}

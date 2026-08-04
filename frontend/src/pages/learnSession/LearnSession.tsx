@@ -264,7 +264,7 @@ function LearnSession() {
               >
                 {anotherRound ? "Next Round" : "New Session"}
               </button>
-              <Link to={`/sets/${setId}`} className={styles.backToSetButton}>
+              <Link to={`/set/${setId}`} className={styles.backToSetButton}>
                 Return to Set
               </Link>
             </div>
