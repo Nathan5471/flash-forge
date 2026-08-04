@@ -13,20 +13,8 @@ import Navbar from "../../components/navbar/Navbar";
 import StartLearnSession from "../../components/startLearnSession/StartLearnSession";
 import MultipleChoiceQuestion from "../../components/learnComponents/multipleChoiceQuestion/MultipleChoiceQuestion";
 import TrueFalseQuestion from "../../components/learnComponents/trueFalseQuestion/TrueFalseQuestion";
+import WrittenQuestion from "../../components/learnComponents/writtenQuestions/WrittenQuestion";
 import styles from "./LearnSession.module.css";
-
-interface FlashcardSet {
-  id: string;
-  name: string;
-  description: string;
-  flashcards: {
-    index: number;
-    term: string;
-    definition: string;
-  };
-  creator: string;
-  views: number;
-}
 
 interface Question {
   order: number;
@@ -41,8 +29,6 @@ function LearnSession() {
   const [state, setState] = useState<
     "loading" | "error" | "overlay" | "active" | "startNextRound"
   >("loading");
-  const [flashcardSet, setFlashcardSet] = useState<FlashcardSet | null>(null);
-  const [sessionExists, setSessionExists] = useState<boolean | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [questionIndex, setQuestionIndex] = useState<number>(0);
@@ -60,13 +46,11 @@ function LearnSession() {
 
     const fetchData = async () => {
       try {
-        const setData = await getFlashcardSet(setId, controller.signal);
-        setFlashcardSet(setData.flashcardSet);
+        await getFlashcardSet(setId, controller.signal); // Makes sure flashcard set exists, will give error if it doesn't
         const sessionExistsCheck = await checkIfLearnSessionExists(
           setId,
           controller.signal,
         );
-        setSessionExists(sessionExistsCheck.exists);
         if (sessionExistsCheck.exists) {
           const learnSessionQuestions = await getLearnSession(
             sessionExistsCheck.learnSessionId,
@@ -307,6 +291,17 @@ function LearnSession() {
         )}
         {questions[questionIndex].type === "trueFalse" && (
           <TrueFalseQuestion
+            question={questions[questionIndex]}
+            selectedAnswer={selectedAnswer}
+            wrongAnswer={wrongAnswer}
+            onAnswerSelected={(answer: string) => setSelectedAnswer(answer)}
+            nextQuestion={handleNextQuestion}
+            onAnswerSubmitted={handleCheckAnswer}
+            handleResetSession={handleStartNewSession}
+          />
+        )}
+        {questions[questionIndex].type === "written" && (
+          <WrittenQuestion
             question={questions[questionIndex]}
             selectedAnswer={selectedAnswer}
             wrongAnswer={wrongAnswer}
