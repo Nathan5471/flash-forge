@@ -1,0 +1,85 @@
+.multipleChoiceContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--surface-a1);
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.multipleChoiceContainer h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.answerOptions {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 10px;
+}
+
+.answerOptions button {
+  padding: 10px 40px;
+  background-color: var(--surface-a2);
+  color: var(--text);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.answerOptions button:not(:disabled):hover {
+  background-color: var(--surface-a3);
+}
+
+.answerOptions button.selected {
+  background-color: var(--primary-a0);
+  color: var(--text);
+}
+
+.answerOptions button.selected:hover {
+  background-color: var(--primary-a1);
+}
+
+.answerOptions button.correct {
+  background-color: var(--success);
+}
+
+.answerOptions button.wrong {
+  background-color: var(--error);
+}
+
+.submitContainer {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.submitContainer button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.submitContainer .submitButton {
+  background-color: var(--primary-a0);
+}
+
+.submitContainer .submitButton:not(:disabled):hover {
+  background-color: var(--primary-a1);
+}
+
+.submitContainer .resetButton {
+  background-color: var(--error);
+}
+
+.submitContainer .resetButton:not(:disabled):hover {
+  background-color: var(--error-a1);
+}

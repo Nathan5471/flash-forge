@@ -11,6 +11,7 @@ import {
 } from "../../utils/LearnSessionAPIHandler";
 import Navbar from "../../components/navbar/Navbar";
 import StartLearnSession from "../../components/startLearnSession/StartLearnSession";
+import MultipleChoiceQuestion from "../../components/learnComponents/multipleChoiceQuestion/MultipleChoiceQuestion";
 import styles from "./LearnSession.module.css";
 
 interface FlashcardSet {
@@ -29,8 +30,8 @@ interface FlashcardSet {
 interface Question {
   order: number;
   type: "multipleChoice" | "trueFalse" | "written";
-  definition: string;
-  answerChoices?: string[];
+  question: string;
+  answerOptions?: string[];
 }
 
 function LearnSession() {
@@ -44,6 +45,7 @@ function LearnSession() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [questionIndex, setQuestionIndex] = useState<number>(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [anotherRound, setAnotherRound] = useState<boolean>(false);
   const [wrongAnswer, setWrongAnswer] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -155,6 +157,22 @@ function LearnSession() {
     }
   };
 
+  const handleNextQuestion = async () => {
+    setSelectedAnswer(null);
+    setWrongAnswer(null);
+    if (questionIndex + 1 < questions.length) {
+      setQuestionIndex(questionIndex + 1);
+    } else {
+      const canContinue = await checkCanContinueLearnSession(sessionId!);
+      if (canContinue.canContinue) {
+        setAnotherRound(true);
+      } else {
+        setAnotherRound(false);
+      }
+      setState("startNextRound");
+    }
+  };
+
   const handleStartNextRound = async () => {
     if (!sessionId) return;
     try {
@@ -262,7 +280,19 @@ function LearnSession() {
   return (
     <div className={styles.learnSessionPage}>
       <Navbar />
-      <div className={styles.learnSessionContainer}></div>
+      <div className={styles.learnSessionContainer}>
+        {questions[questionIndex].type === "multipleChoice" && (
+          <MultipleChoiceQuestion
+            question={questions[questionIndex]}
+            selectedAnswer={selectedAnswer}
+            wrongAnswer={wrongAnswer}
+            onAnswerSelected={(answer: string) => setSelectedAnswer(answer)}
+            nextQuestion={handleNextQuestion}
+            onAnswerSubmitted={handleCheckAnswer}
+            handleResetSession={handleStartNewSession}
+          />
+        )}
+      </div>
     </div>
   );
 }
