@@ -18,13 +18,43 @@ interface Flashcard {
 interface Entry {
   position: number;
   username: string;
-  time: number;
+  length: number;
 }
+
+const shuffleCards = (flashcards: Flashcard[]) => {
+  const termCards = flashcards.map((flashcard, index) => ({
+    key: index,
+    id: flashcard.id,
+    value: flashcard.term,
+  }));
+  const definitionCards = flashcards.map((flashcard, index) => ({
+    key: index + flashcards.length,
+    id: flashcard.id,
+    value: flashcard.definition,
+  }));
+  const shuffled = [...termCards, ...definitionCards];
+  var n = shuffled.length,
+    t,
+    i;
+  while (n) {
+    i = (Math.random() * n--) | 0;
+    t = shuffled[n];
+    shuffled[n] = shuffled[i];
+    shuffled[i] = t;
+  }
+  return shuffled;
+};
 
 function Matching() {
   const { setId } = useParams<{ setId: string }>();
   const [leaderboardId, setLeaderboardId] = useState<string | null>(null);
   const [matchingData, setMatchingData] = useState<Flashcard[]>([]);
+  const [shuffledCards, setShuffledCards] = useState<
+    { key: number; id: string; value: string }[]
+  >([]);
+  const [selectedCards, setSelectedCards] = useState<
+    { key: number; id: string; value: string }[]
+  >([]);
   const [matchedFlashcardIds, setMatchedFlashcardIds] = useState<string[]>([]);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [endTime, setEndTime] = useState<number | null>(null);
@@ -54,6 +84,7 @@ function Matching() {
           controller.signal,
         );
         setMatchingData(matchingDataResponse.flashcards);
+        setShuffledCards(shuffleCards(matchingDataResponse.flashcards));
         setCurrentState("waiting");
       } catch (error: any) {
         const errorMessage =
@@ -78,19 +109,46 @@ function Matching() {
     setCurrentState("playing");
   };
 
+  const checkMatch = (card: { key: number; id: string; value: string }) => {
+    if (selectedCards.length === 0) {
+      setSelectedCards([card]);
+      return;
+    }
+    if (selectedCards.includes(card)) {
+      setSelectedCards([]);
+      return;
+    }
+    const [firstCard] = selectedCards;
+    if (firstCard.id === card.id) {
+      setMatchedFlashcardIds((prev) => [...prev, firstCard.id]);
+    }
+    setSelectedCards([]);
+    if (matchedFlashcardIds.length + 1 === matchingData.length) {
+      finishGame();
+    }
+  };
+
   const finishGame = async () => {
     if (leaderboardId === null || startTime === null) return;
-    if (matchedFlashcardIds.length !== matchingData.length) return;
     const endTime = Date.now();
     setEndTime(endTime);
     setCurrentState("finished");
     try {
       await postLeaderboardSubmission(leaderboardId, startTime, endTime);
       const leaderboardData = await getLeaderboard(leaderboardId);
-      setLeaderboard(leaderboardData.entries);
+      setLeaderboard(leaderboardData.leaderboard);
     } catch (error) {
       console.error("Error posting leaderboard submission:", error);
     }
+  };
+
+  const startNewGame = () => {
+    setMatchedFlashcardIds([]);
+    setSelectedCards([]);
+    setShuffledCards(shuffleCards(matchingData));
+    setStartTime(null);
+    setEndTime(null);
+    setCurrentState("waiting");
   };
 
   if (currentState === "loading") {
@@ -157,7 +215,7 @@ function Matching() {
                       className={styles.leaderboardEntry}
                     >
                       {entry.position}. {entry.username} -{" "}
-                      {Math.floor(entry.time / 1000)} seconds
+                      {Math.floor(entry.length / 1000)} seconds
                     </div>
                   ))}
                 </div>
@@ -171,7 +229,12 @@ function Matching() {
                 seconds!
               </p>
               <div className={styles.buttonContainer}>
-                <button className={styles.playAgainButton}>Play Again</button>
+                <button
+                  className={styles.playAgainButton}
+                  onClick={startNewGame}
+                >
+                  Play Again
+                </button>
                 <Link to={`/set/${setId}`} className={styles.backToSetButton}>
                   Back to Set
                 </Link>
@@ -182,6 +245,26 @@ function Matching() {
       </div>
     );
   }
+
+  return (
+    <div className={styles.matchingPage}>
+      <Navbar />
+      <div className={styles.matchingContainer}>
+        <div className={styles.matchingGrid}>
+          {shuffledCards.map((card) => (
+            <button
+              key={card.key}
+              className={`${styles.matchingCard} ${selectedCards.some((c) => c.key === card.key) ? styles.selected : ""}`}
+              onClick={() => checkMatch(card)}
+              disabled={matchedFlashcardIds.includes(card.id)}
+            >
+              {card.value}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default Matching;

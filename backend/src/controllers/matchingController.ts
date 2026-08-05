@@ -20,22 +20,36 @@ export const postLeaderboardSubmission = async (req: any, res: any) => {
         .json({ message: "Matching leaderboard not found" });
     }
     const length = new Date(endTime).getTime() - new Date(startTime).getTime();
-    await prisma.matchingLeaderboardEntry.upsert({
-      where: {
-        matchingLeaderboardId_userId: {
-          matchingLeaderboardId: leaderboard.id,
-          userId: user.id,
+    const currentLeaderboardEntry =
+      await prisma.matchingLeaderboardEntry.findUnique({
+        where: {
+          matchingLeaderboardId_userId: {
+            matchingLeaderboardId: id,
+            userId: user.id,
+          },
         },
-      },
-      update: {
-        length,
-      },
-      create: {
-        matchingLeaderboardId: leaderboard.id,
-        userId: user.id,
-        length,
-      },
-    });
+      });
+
+    if (currentLeaderboardEntry && currentLeaderboardEntry.length > length) {
+      await prisma.matchingLeaderboardEntry.update({
+        where: {
+          id: currentLeaderboardEntry.id,
+        },
+        data: {
+          length,
+        },
+      });
+    }
+
+    if (!currentLeaderboardEntry) {
+      await prisma.matchingLeaderboardEntry.create({
+        data: {
+          matchingLeaderboardId: id,
+          userId: user.id,
+          length,
+        },
+      });
+    }
 
     return res.status(200).json({ message: "Leaderboard submission posted" });
   } catch (error) {

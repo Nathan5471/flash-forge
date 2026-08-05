@@ -54,7 +54,175 @@
   background-color: var(--primary-a1);
 }
 
+.matchingGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 15px;
+  width: 80%;
+  height: 90%;
+}
+
+.matchingCard {
+  background-color: var(--surface-a1);
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.matchingCard:hover {
+  background-color: var(--surface-a2);
+}
+
+.selected {
+  background-color: var(--primary-a0);
+}
+
+.selected:hover {
+  background-color: var(--primary-a1);
+}
+
+.matchingCard:disabled {
+  background-color: var(--surface-a0);
+  color: var(--surface-a0);
+  cursor: default;
+}
+
+.resultsBox {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  width: 600px;
+  background-color: var(--surface-a1);
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.resultsBox h2 {
+  font-size: 28px;
+  color: var(--primary-a0);
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.leaderboard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.leaderboardEntries {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+}
+
+.leaderboardEntry {
+  display: flex;
+  font-size: 18px;
+  padding: 5px;
+}
+
+.results {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.results p {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.buttonContainer {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+}
+
+.playAgainButton {
+  padding: 10px;
+  width: 100%;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text);
+  background-color: var(--primary-a0);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.playAgainButton:hover {
+  background-color: var(--primary-a1);
+}
+
+.backToSetButton {
+  padding: 10px;
+  width: 100%;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text);
+  text-decoration: none;
+  text-align: center;
+  background-color: var(--surface-a2);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.backToSetButton:hover {
+  background-color: var(--surface-a3);
+}
+
 .loading {
   font-size: 24px;
   margin-top: 50px;
+}
+
+.errorContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.errorBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--surface-a1);
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+}
+
+.errorBox h2 {
+  font-size: 22px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.errorBox p {
+  font-size: 18px;
+  color: var(--error);
+  margin-bottom: 20px;
+}
+
+.homeLink {
+  padding: 10px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text);
+  text-decoration: none;
+  background-color: var(--primary-a0);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.homeLink:hover {
+  background-color: var(--primary-a1);
 }
