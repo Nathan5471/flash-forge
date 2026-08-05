@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import authRouter from "./routes/authRouter";
 import flashcardRouter from "./routes/flashcardRouter";
 import learnSessionRouter from "./routes/learnSessionRouter";
+import matchingRouter from "./routes/matchingRouter";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
 dotenv.config();
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api/flashcards", flashcardRouter);
 app.use("/api/learn-sessions", learnSessionRouter);
+app.use("/api/matching", matchingRouter);
 
 if (process.env.IS_DEV) {
   app.use(

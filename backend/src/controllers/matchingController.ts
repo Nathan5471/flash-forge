@@ -121,7 +121,6 @@ export const getLeaderboard = async (req: any, res: any) => {
       include: {
         matchingLeaderboardEntries: {
           orderBy: { length: "asc" },
-          take: 10,
           include: {
             user: {
               select: {
@@ -137,21 +136,17 @@ export const getLeaderboard = async (req: any, res: any) => {
         .status(404)
         .json({ message: "Matching leaderboard not found" });
     }
-    const topEntries = leaderboard.matchingLeaderboardEntries.map(
+    const leaderboardEntries = leaderboard.matchingLeaderboardEntries.map(
       (entry, index) => ({
         position: index + 1,
         username: entry.user.username,
         length: entry.length,
       }),
     );
-    const userEntry = await prisma.matchingLeaderboardEntry.findUnique({
-      where: {
-        matchingLeaderboardId_userId: {
-          matchingLeaderboardId: leaderboard.id,
-          userId: user.id,
-        },
-      },
-    });
+    const selectedEntries = leaderboardEntries.filter(
+      (entry, index) => index < 10 || entry.username === user.username,
+    );
+    return res.status(200).json({ leaderboard: selectedEntries });
   } catch (error) {
     console.error("Error retrieving leaderboard:", error);
     return res.status(500).json({ message: "Failed to retrieve leaderboard" });

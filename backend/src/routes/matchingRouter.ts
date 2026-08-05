@@ -3,6 +3,7 @@ import {
   postLeaderboardSubmission,
   getMatchingLeaderboardId,
   loadMatch,
+  getLeaderboard,
 } from "../controllers/matchingController";
 import authenticate from "../middleware/authenticate";
 
@@ -62,6 +63,8 @@ router.get("/leaderboard/:id", authenticate, async (req: any, res: any) => {
   if (!id) {
     return res.status(400).json({ message: "Missing matching leaderboard id" });
   }
+
+  await getLeaderboard(req, res);
 });
 
 export default router;
