@@ -13,6 +13,7 @@ import Search from "./pages/search/Search";
 import AuthenticatedRoute from "./utils/AuthenticatedRoute";
 import CreateFlashcardSet from "./pages/createFlashcardSet/CreateFlashcardSet";
 import LearnSession from "./pages/learnSession/LearnSession";
+import Matching from "./pages/matching/Matching";
 import Overlay from "./components/overlay/Overlay";
 
 function App() {
@@ -57,6 +58,7 @@ function App() {
             element={<FilteredFlashcardSets filter="recently-viewed" />}
           />
           <Route path="/set/:setId/learn" element={<LearnSession />} />
+          <Route path="/set/:setId/matching" element={<Matching />} />
         </Route>
       </Routes>
       <Overlay />

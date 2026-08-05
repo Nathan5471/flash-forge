@@ -21,8 +21,8 @@ api.interceptors.response.use(
 
 export const postLeaderboardSubmission = async (
   id: string,
-  startTime: string,
-  endTime: string,
+  startTime: number,
+  endTime: number,
   signal?: AbortSignal,
 ) => {
   const response = await api.post(
