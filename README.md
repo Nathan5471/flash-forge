@@ -1,14 +1,19 @@
-# Flash Forge
+# Flash Forge v2
 
 ## About
 
-Flash Forge is a flashcard managing website. It's main selling feature is that you are able to download and sync flashcards to be available to use offline. You can also use almost any of the online features in an offline mode. Flash Forge also supports features such as testing, learn mode, and a matching node. It also has support for having a class that you can assign flashcards.
+Flash Forge is a flashcard studying website. It has the option for anyone to study a flashcard set with flashcards, taking a test, using learn mode, and playing a matching game. Users are allowed to create as many flashcard sets as they want. You need to be signed in to use learn mode and the matching game.
 
 ## Technologies
 
-Frontend: The frontend was made using a React Vite app that usees Tailwind CSS for styling.
-Backend: The backned was made in Express JS with MongoDB as a database and is used to serve the frontend
+Frontend: The frontend was made using React, TypeScript, Axios, and CSS Modules
+Backend: The backend was made using Express, TypeScript, Prisma, and Postgres
+Deployment: This project is deployed with Docker
 
 ## How to Run
 
 To run a local instance of Flash Forge, you can use the docker-compose.yaml file to run it.
+
+## AI Usage
+
+GitHub Copilot autocomplete was used throughout this project

@@ -135,7 +135,6 @@ function FlashcardFullscreen() {
     if (!flashcardSet) return;
     openOverlay(
       <FlashcardSettings
-        flashcardSetId={flashcardSet.id}
         initialFlashcardFront={flashcardFront}
         setFlashcardFront={setFlashcardFront}
         isCreator={user?.username === flashcardSet.creator}

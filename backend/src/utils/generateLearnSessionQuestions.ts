@@ -1,4 +1,4 @@
-import { Prisma, Flashcard } from "../../generated/prisma/client";
+import { Prisma, Flashcard } from "../generated/prisma/client";
 
 type FlashcardSet = Prisma.FlashcardSetGetPayload<{
   include: { flashcards: true };

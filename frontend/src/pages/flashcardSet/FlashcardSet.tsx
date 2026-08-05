@@ -12,8 +12,6 @@ import {
   PiNotePencil,
   PiBookDuotone,
   PiShuffleDuotone,
-  // PiArrowsClockwise, will be used later when downloaded is implemented
-  PiDownloadSimpleDuotone,
 } from "react-icons/pi";
 import styles from "./FlashcardSet.module.css";
 
@@ -143,7 +141,6 @@ function FlashcardSet() {
     if (!flashcardSet) return;
     openOverlay(
       <FlashcardSettings
-        flashcardSetId={flashcardSet.id}
         initialFlashcardFront={flashcardFront}
         setFlashcardFront={setFlashcardFront}
         isCreator={user?.username === flashcardSet.creator}
@@ -209,10 +206,6 @@ function FlashcardSet() {
             <PiShuffleDuotone className={styles.mainButtonIcon} />
             Matching
           </Link>
-          <button className={styles.mainButton}>
-            <PiDownloadSimpleDuotone className={styles.mainButtonIcon} />
-            Download Set
-          </button>
         </div>
         <Flashcard
           flashcardData={

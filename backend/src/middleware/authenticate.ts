@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import prisma from "../prisma/client";
-import { Prisma } from "../../generated/prisma/client";
+import { Prisma } from "../generated/prisma/client";
 
 export type AuthUser = Prisma.UserGetPayload<{
   include: {

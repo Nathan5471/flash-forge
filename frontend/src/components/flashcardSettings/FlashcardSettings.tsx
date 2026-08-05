@@ -3,12 +3,10 @@ import { useOverlay } from "../../contexts/OverlayContext";
 import styles from "./FlashcardSettings.module.css";
 
 function FlashcardSettings({
-  flashcardSetId,
   initialFlashcardFront,
   setFlashcardFront,
   isCreator,
 }: {
-  flashcardSetId: string;
   initialFlashcardFront: "term" | "definition";
   setFlashcardFront: React.Dispatch<
     React.SetStateAction<"term" | "definition">
